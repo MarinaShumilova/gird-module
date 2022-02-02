@@ -5,8 +5,8 @@ const Endpoints = {
         "my-home-2": {"uri": "/my-home-2", "method": "get"},*/
 
         // guarantees
-        "guarantee":{"uri": "/guarantee", "method": "get"},
-        "causeWarranty":{"uri": "/causeWarranty","method": "get"},
+        // "guarantee":{"uri": "/guarantee", "method": "get"},
+        // "causeWarranty":{"uri": "/causeWarranty","method": "get"},
 
     },
 };

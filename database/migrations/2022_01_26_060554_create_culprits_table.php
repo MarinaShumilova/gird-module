@@ -10,7 +10,7 @@ class CreateCulpritsTable extends Migration
      * Run the migrations.
      *
      * @return void
-     * Виновная сторона
+     * Виновная сторона(Справочник)
      */
     public function up()
     {

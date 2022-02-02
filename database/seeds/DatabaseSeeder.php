@@ -1,7 +1,7 @@
 <?php
 
 
-use App\Models\StatusGuarantee;
+
 use GirdBase\database\seeds\AccessableIpSeeder;
 use GirdBase\database\seeds\ModuleSeeder;
 use Illuminate\Database\Seeder;
@@ -23,12 +23,19 @@ class DatabaseSeeder extends Seeder
             $this->call(UsersSeeder::class);
         }
 
-        $this->call(CauseWarrantyTableSeeder::class);
-        $this->call(GuaranteesTableSeeder::class);
-        $this->call(StatusesGuaranteeTableSeeder::class);
+        $this->call(CommentsTableSeeder::class);
+        $this->call(ComplaintsTableSeeder::class);
+        $this->call(ContractorsTableSeeder::class);
         $this->call(CulpritsTableSeeder::class);
-        $this->call(CorrectionsTableSeeder::class);
+        $this->call(ExecutorsTableSeeder::class);
+        $this->call(ExpensesTableSeeder::class);
+        $this->call(ReasonsTableSeeder::class);
+        $this->call(RegressesTableSeeder::class);
 
+        $this->call(StatusesTableSeeder::class);
+        $this->call(TypeCompsTableSeeder::class);
+        $this->call(WarrantyDecreesTableSeeder::class);
+        $this->call(WarrantyTypesTableSeeder::class);
 
 
     }

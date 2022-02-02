@@ -4,7 +4,7 @@ use App\Http\Controllers\GuaranteeController;
 use App\Http\Controllers\MyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CauseWarrantyController;
+//use App\Http\Controllers\CauseWarrantyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +24,6 @@ Route::get('my-home-2', [MyController::class, 'myHome2'])->name('my-home-2');
 //Route::get('my-home-2', 'MyController@myHome2')->name('my-home-2');*/
 
 //Гарантии
-Route::get('guarantee',[GuaranteeController::class, 'guarantees'])->name('guarantee');
-//Причина гарантии
-Route::get('causeWarranty',[CauseWarrantyController::class, 'causeWarrants'])->name('causeWarranty');
+//Route::get('guarantee',[GuaranteeController::class, 'guarantees'])->name('guarantee');
+////Причина гарантии
+//Route::get('causeWarranty',[CauseWarrantyController::class, 'causeWarrants'])->name('causeWarranty');

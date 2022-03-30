@@ -24,7 +24,9 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call(CommentsTableSeeder::class);
-        $this->call(ComplaintsTableSeeder::class);
+
+
+
         $this->call(ContractorsTableSeeder::class);
         $this->call(CulpritsTableSeeder::class);
         $this->call(ExecutorsTableSeeder::class);
@@ -36,6 +38,8 @@ class DatabaseSeeder extends Seeder
         $this->call(TypeCompsTableSeeder::class);
         $this->call(WarrantyDecreesTableSeeder::class);
         $this->call(WarrantyTypesTableSeeder::class);
+
+        $this->call(ComplaintsTableSeeder::class);
 
 
     }

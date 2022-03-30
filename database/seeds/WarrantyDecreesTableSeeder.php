@@ -13,6 +13,14 @@ class WarrantyDecreesTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $warrantysType = [
+            '5648',
+            '6545'
+        ];
+
+        foreach ($warrantysType as $w) {
+            \App\Models\WarrantyDecree::create(['number' => $w
+            ]);
+        }
     }
 }

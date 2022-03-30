@@ -27,7 +27,10 @@ class Expense extends Model
     */
 
 
-
+    public function complaint()
+    {
+        return $this->belongsTo(Complaint::class);
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

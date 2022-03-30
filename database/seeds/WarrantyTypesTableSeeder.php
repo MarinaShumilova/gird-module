@@ -14,11 +14,16 @@ class WarrantyTypesTableSeeder extends Seeder
      */
     public function run()
     {
-       WarrantyType::create([
-            'name' => 'Политика',
-        ]);
-       WarrantyType::create([
-            'name' => 'Производство'
-        ]);
+        $warrantyType = [
+            'Политика',
+            'Производство',
+
+        ];
+
+        foreach ($warrantyType as $w) {
+            WarrantyType::create(['name' => $w
+            ]);
+        }
+
     }
 }

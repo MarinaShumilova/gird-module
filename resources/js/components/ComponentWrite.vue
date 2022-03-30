@@ -1,175 +1,143 @@
 <!--Компонент(Завести новую запись)-->
 <template>
-    <v-card
-        class="mx-auto"
-        max-width="800"
-        elevation="0"
-        max-height="900"
-        outlined>
-        <v-card-actions>
-            <v-container>
-                <v-row dense>
-                    <v-col
-                        sm="12"
-                        lg="4"
-                        class="d-flex">
-                        <v-text-field
-                            label="Приказ"
-                            outlined
-                            dense
-                        ></v-text-field>
-                    </v-col>
-                    <v-col
-                        sm="12"
-                        lg="4"
-                        class="d-flex">
-                        <v-text-field
-                            label="№ Гарантийного приказа"
-                            outlined
-                            dense
-                        ></v-text-field>
-                    </v-col>
+    <v-form>
+            <v-row dense>
+                <v-col
+                    sm="12"
+                    lg="4"
+                    class="d-flex">
+                    <v-text-field
+                        v-model="complaint.numb_order"
+                        item-value="id"
+                        label="Приказ"
+                        outlined
+                        dense
+                    ></v-text-field>
+                </v-col>
+                <v-col
+                    sm="12"
+                    lg="4"
+                  >
+                    <v-text-field
+                        v-model="complaint.warranty_decree"
+                        item-value="id"
+                        item-text="number"
+                        label="№ Гарантийного приказа"
+                        outlined
+                        dense
+                    ></v-text-field>
+                </v-col>
 
-                    <v-col
-                        sm="6"
-                        lg="4">
-                        <base-date-picker v-model="date" dense outlined label="Дата начала рекламации">
+                <v-col
+                    sm="6"
+                    lg="4">
+                    <base-date-picker
+                        v-model="complaint.start_at"
+                        dense
+                        outlined
+                        label="Дата начала рекламации">
 
-                        </base-date-picker>
-                    </v-col>
+                    </base-date-picker>
+                </v-col>
 
-                    <v-col
-                        sm="4">
-                        <v-select
-                            v-model="selWarranty"
-                            item-value="id"
-                            item-text="name"
-                            :items="itemsWarranty "
-                            label="Гарантия"
-                            dense
-                            outlined
-                        ></v-select>
-                    </v-col>
-                    <v-col
-                        sm="4">
-                        <v-select
-                            v-model="causeWarranty"
-                            item-value="id"
-                            item-text="name"
-                            :items="itemsCause"
-                            label="Причина гарантии"
-                            dense
-                            outlined
-                        ></v-select>
-                    </v-col>
-                    <v-col
-                        sm="4">
-                        <v-select
-                            v-model="statusWarranty"
-                            item-value="id"
-                            item-text="name"
-                            :items="itemsStatus"
-                            label="Статус"
-                            dense
-                            outlined
-                        ></v-select>
-                    </v-col>
-                    <v-col
-                        sm="4">
-                        <v-text-field
-                            dense
-                            outlined
-                            label="Вид надстройки"
-                            rows="1"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col
-                        sm="4">
-                        <v-text-field
-                            dense
-                            outlined
-                            label="Заказчик"
-                            rows="1"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col
-                        sm="4">
-                        <v-select
-                            v-model="companyCul"
-                            item-value="id"
-                            item-text="name"
-                            :items="itemCompany"
-                            label="Предполагаемый виновник"
-                            dense
-                            outlined
-                        ></v-select>
-                    </v-col>
-                    <v-col
-                        sm="4">
-                        <v-select
-                            v-model="correctProblem"
-                            item-value="id"
-                            item-text="name"
-                            :items="itemCorrect "
-                            label="Устранение"
-                            dense
-                            outlined
-                        ></v-select>
-                    </v-col>
-                    <v-col
-                        sm="4">
+                <v-col sm="4">
+                    <v-select
+                        v-model="complaint.warranty_type_id"
+                        item-value="id"
+                        item-text="name"
+                        :items="warrantyTypes"
+                        label="Гарантия"
+                        dense
+                        outlined
+                    ></v-select>
+                </v-col>
+                <v-col
+                    sm="4">
+                    <v-select
+                        v-model="complaint.reason_id"
+                        item-value="id"
+                        item-text="name"
+                        :items="reasons"
+                        label="Причина гарантии"
+                        dense
+                        outlined
+                    ></v-select>
+                </v-col>
+                <v-col
+                    sm="4">
+                    <v-select
+                        v-model="complaint.type_comp_id"
+                        item-value="id"
+                        item-text="name"
+                        :items="type_comps"
+                        label="Статус"
+                        dense
+                        outlined
+                    ></v-select>
+                </v-col>
+                <v-col
+                    sm="4">
+                    <v-text-field
+                        v-model="complaint.vehicle"
+                        item-text="name"
+                        dense
+                        outlined
+                        label="Вид надстройки"
+                        rows="1"
+                    ></v-text-field>
+                </v-col>
+                <v-col
+                    sm="4">
+                    <v-select
+                        v-model="complaint.contractor_id"
+                        item-value="id"
+                        item-text="name"
+                        dense
+                        :items="contractors"
+                        outlined
+                        label="Заказчик"
+                        rows="1"
+                    ></v-select>
+                </v-col>
+                <v-col
+                    sm="4">
+                    <v-select
+                        v-model="complaint.culprit_id"
+                        item-value="id"
+                        item-text="name"
+                        :items="culprits"
+                        label="Предполагаемый виновник"
+                        dense
+                        outlined
+                    ></v-select>
+                </v-col>
+                <v-col
+                    sm="4">
+                    <v-select
+                        v-model="complaint.executor_id"
+                        item-value="id"
+                        item-text="name"
+                        :items="executors "
+                        label="Устранение"
+                        dense
+                        outlined
+                    ></v-select>
+                </v-col>
+                <v-col
+                    sm="4">
 
-                        <base-file-input></base-file-input>
-                        <v-text-field
-                            v-if="false"
-                        ></v-text-field>
-                        <comment></comment>
-                        <!--                        <v-file-input
-                                                    chips
-                                                    dense
-                                                    multiple
-                                                    label="Добавить файлы"
-                                                ></v-file-input>
-                                            </v-col>
-                                       <v-col
-                                                sm="2">
-                                                <comment ></comment>
-                                            </v-col>&ndash;&gt;
+<!--                    <base-file-input></base-file-input>-->
 
-                                            <v-col
-                                            sm="4">
-                                                <v-textarea
-                                                    dense
-                                                    rows="1"
-                                                    label = "Комментарий"
-                                                ></v-textarea>-->
+                    <v-text-field
+                        v-if="false"
+                    ></v-text-field>
+<!--                    <comment></comment>-->
 
-                    </v-col>
-                </v-row>
-            </v-container>
 
-        </v-card-actions>
-        <!--card нижний колотитул        -->
+                </v-col>
+            </v-row>
+    </v-form>
 
-<!--        <v-card-actions>-->
-<!--            <v-btn-->
-<!--                outlined-->
-<!--                rounded-->
-<!--                text>-->
-<!--                Отмена-->
-<!--            </v-btn>-->
-<!--            <v-spacer></v-spacer>-->
-<!--            <v-btn-->
-<!--                outlined-->
-<!--                rounded-->
-<!--                text-->
-<!--                color="primary">-->
-<!--                Сохранить-->
-<!--            </v-btn>-->
-
-<!--        </v-card-actions>-->
-
-    </v-card>
 </template>
 <script>
 
@@ -180,67 +148,53 @@ export default {
     name: "ComponentWrite",
 
     components: {BaseDatePicker, BaseFileInput},
+    props: {
+        warrantyTypes: {  //гарантия
+            type: Array,
+            required: true
+        },
+        reasons: { //причина гарантии
+            type: Array,
+            required:true
+        },
+        type_comps:{      //тип гарантии
+            type:Array,
+            required:true
+        },
+        culprits:{      //виновник
+            type:Array,
+            required:true,
+        },
+        executors:{     //устранение
+            type:Array,
+            required:true,
+        },
+
+        contractors:{
+          type:Array,
+          required:true,
+        },
+
+
+
+        value: {
+            type: Object,
+            required: true
+        }
+    },
     data() {
         return {
-            selWarranty: null,
-            itemsWarranty: [
-                // {id: 1, name: 'Политика'},
-                // {id: 2, name: 'Производство'},
-            ],
-
-            statusWarranty: null,
-            itemsStatus: [
-                {id: 1, name: 'Гарантийный'},
-                {id: 2, name: 'Не гарантийный'}
-            ],
-
-            causeWarranty: null,
-            itemsCause: [
-                {id: 1, name: 'Поставщик'}, {id: 2, name: 'Фургон'}, {id: 3, name: 'Металлоконструкция'}, {
-                    id: 4,
-                    name: 'ЛКП'
-                },
-                {id: 5, name: 'Сборка'}, {id: 6, name: 'Шасси'}, {id: 7, name: 'КМУ'}, {id: 8, name: 'Комплектующие'}],
-
-            companyCul: null,
-            itemCompany: [{id: 1, name: 'Поставщик'}, {id: 2, name: 'Производство'},
-                {id: 3, name: 'Конструкция'}, {id: 4, name: 'Приемка ОТК'}, {id: 5, name: 'Потребитель'}],
-
-            correctProblem: null,
-            itemCorrect: [{id: 1, name: 'Поставщик'}, {id: 2, name: 'Командировка(Производитель)'},
-                {id: 3, name: 'Силами заказчика'}, {id: 4, name: 'Сторонняя Организация'}],
-
-
+            complaint: this.value,
             Calendar: null,
-            date: new Date().toISOString().substr(0, 10),
-
-
-            DataOther: null,
-
-            OtherCheckbox: false,
-
-            files: [],
 
         }
-
 
     },
     methods: {
         close() {
             this.$emit('input', false);
-        },
-        guarantee(){
-            api.call(endpoint('guarantee'))
-                .then(response => {
-                    this.itemsWarranty = response.data;
-                });
         }
     },
-
-    created() {
-        this.guarantee();
-    }
-
 
 }
 </script>

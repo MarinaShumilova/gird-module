@@ -15,10 +15,12 @@ class CreateExpensesTable extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
-            $table->string('sum');
-            $table->date('month');
+            $table->unsignedBigInteger('sum');
+            $table->date('date');      //TODO::структура поменять
+            $table->unsignedBigInteger('complaint_id');
 
-            $table->foreignId('complaint_id')->constrained('complaints');
+            $table->foreign('complaint_id')->references('id')->on('complaints');
+
 
             $table->timestamps();
         });

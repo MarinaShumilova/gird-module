@@ -8,6 +8,9 @@ const Endpoints = {
         // "guarantee":{"uri": "/guarantee", "method": "get"},
         // "causeWarranty":{"uri": "/causeWarranty","method": "get"},
 
+        "complaints.create": {"uri": "/complaints/create", "method": "get"},
+        "complaints.store": {"uri": "/complaints", "method": "post"}
+
     },
 };
 

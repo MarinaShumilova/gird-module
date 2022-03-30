@@ -15,11 +15,17 @@ class TypeCompsTableSeeder extends Seeder
      */
     public function run()
     {
-        Typecomp::create([
-            'name' => 'Гарантийный',
-        ]);
-        Typecomp::create([
-            'name' => 'Не гарантийный',
-        ]);
+
+        $compType = [
+            'Гарантийный',
+            'Не гарантийный',
+        ];
+
+        foreach ($compType as $c) {
+            TypeComp::create(['name' => $c
+            ]);
+        }
+
+
     }
 }

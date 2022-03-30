@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AppController;
+use App\Models\Complaint;
 use GirdBase\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -14,5 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'AppController')->name('index');
+Route::get('/', AppController::class)->name('index');
 
+/*Route::get('/test', function() {
+
+
+   dump(Complaint::find(2));
+
+   dump(Complaint::where('vehicle',  '!=','Фургон')->get());
+
+
+
+});*/

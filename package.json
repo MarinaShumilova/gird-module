@@ -23,7 +23,7 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
-        "gird-base-front": "git+https://64efbe58a56c5477cfe9e8f7eaadb45c11872b2e:x-oauth-basic@github.com/tarashev/gird-base-front.git",
+        "gird-base-front": "git+https://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:x-oauth-basic@github.com/tarashev/gird-base-front.git",
         "ifvisible.js": "^1.0.6",
         "moment": "^2.29.1",
         "store": "^2.0.12",

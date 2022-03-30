@@ -23,7 +23,7 @@ class CulpritsTableSeeder extends Seeder
         ];
 
         foreach ($culpritType as $с){
-            Culprit::insert(['name'=>$с
+            Culprit::create(['name'=>$с
             ]);
 
         }

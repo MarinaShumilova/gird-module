@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Contractor;
 use Illuminate\Database\Seeder;
 
 class ContractorsTableSeeder extends Seeder
@@ -14,5 +15,24 @@ class ContractorsTableSeeder extends Seeder
     public function run()
     {
         //
+        $contractors = [
+            [
+                'inn' => '8787987',
+                'name' => 'Kamaz'
+            ],
+            [
+                'inn' => '8787988887',
+                'name' => 'Yral'
+            ],
+
+        ];
+
+
+
+        foreach ($contractors as $contractor) {
+            Contractor::create($contractor);
+        }
+
+
     }
 }

@@ -26,7 +26,7 @@ class ReasonsTableSeeder extends Seeder
         ];
 
         foreach ($reason as $r){
-            Reason::insert(['name'=>$r
+            Reason::create(['name'=>$r
             ]);
 
         }

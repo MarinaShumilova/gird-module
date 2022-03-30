@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Status;
 use Illuminate\Database\Seeder;
 
 class StatusesTableSeeder extends Seeder
@@ -11,14 +12,18 @@ class StatusesTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Status::create([
-            'name' => 'В работе',
-        ]);
-        \App\Models\Status::create([
-            'name' => 'Завершен',
-        ]);
-        \App\Models\Status::create([
-            'name' => 'Удален',
-        ]);
+
+        $statusType = [
+            'В работе',
+            'Завершен',
+            'Удален'
+
+        ];
+
+        foreach ($statusType as $s) {
+           Status::create(['name' => $s
+            ]);
+        }
+
     }
 }

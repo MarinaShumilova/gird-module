@@ -17,7 +17,7 @@ class Contractor extends Model
      |--------------------------------------------------------------------------
      */
 
-    protected $fillable = [];
+    protected $fillable = ['inn','name'];
 
 
     /*

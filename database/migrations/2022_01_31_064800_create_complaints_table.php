@@ -17,19 +17,30 @@ class CreateComplaintsTable extends Migration
             $table->id();
 
             $table->date('start_at');
-            $table->date('close_at');
+            $table->date('close_at')->nullable();
             $table->string('vehicle');          //вид надстройки
+            $table->string('numb_order')->comment('номер приказа');
+            $table->string('warranty_decree')->nullable()->comment('№ гар-го приказа');
 
-    /*        $table->foreignId('decree_id')->constrained(' '); //приказ*/
-            $table->foreignId('warranty_types_id')->constrained('warranty_types');       //гарантия
-            $table->foreignId('reason_id')->constrained('reasons');           //причина гар-ии
-            $table->foreignId('type_comps_id')->constrained('type_comps');       //тип рекламации
-            $table->foreignId('contractor_id')->constrained('contractors');       //контрагент
-            $table->foreignId('culprit_id')->constrained('culprits');          //виновник
-            $table->foreignId('executor_id')->constrained('executors');       //устранение
-            $table->foreignId('status_id')->constrained('statuses');
-            $table->foreignId('warranty_decree_id')->constrained('warranty_decrees');  //№ гар-го приказа
+            $table->unsignedBigInteger('warranty_type_id')->comment('гарантия');
+            $table->unsignedBigInteger('reason_id')->comment('причина гар-ии');
+            $table->unsignedBigInteger('type_comp_id')->comment('тип рекламации');
+            $table->unsignedBigInteger('contractor_id')->comment('контрагент');
+            $table->unsignedBigInteger('culprit_id')->comment('виновник');
+            $table->unsignedBigInteger('executor_id')->comment('устранение');
+            $table->unsignedBigInteger('status_id')->comment('статус');
 
+
+
+
+            $table->foreign('warranty_type_id')->references('id')->on('warranty_types');
+            $table->foreign('reason_id')->references('id')->on('reasons');
+            $table->foreign('type_comp_id')->references('id')->on('type_comps');
+            $table->foreign('contractor_id')->references('id')->on('contractors');
+            $table->foreign('culprit_id')->references('id')->on('culprits');
+            $table->foreign('executor_id')->references('id')->on('executors');
+            $table->foreign('status_id')->references('id')->on('statuses');
+          //  $table->foreign('warranty_decree')->references('id')->on('warranty_decrees');
 
             $table->timestamps();
 

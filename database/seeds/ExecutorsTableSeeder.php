@@ -20,7 +20,7 @@ class ExecutorsTableSeeder extends Seeder
         ];
 
         foreach ($executorsType as $ex) {
-            Executor::insert(['name' => $ex
+            Executor::create(['name' => $ex
             ]);
 
         }

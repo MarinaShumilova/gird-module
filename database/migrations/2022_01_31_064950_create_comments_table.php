@@ -15,10 +15,14 @@ class CreateCommentsTable extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->text('text');
+            $table->string('text');
             //ключи
-            $table->foreignId('regress_id')->constrained('regresses');
-           /* $table->foreignId('profile_id')->constrained(' ');*/
+
+            $table->unsignedBigInteger('regress_id')->comment('регресс');
+            $table->unsignedBigInteger('profile_id')->comment('профиль');
+
+            $table->foreign('regress_id')->references('id')->on('regresses');
+            $table->foreign('profile_id')->references('id')->on('profiles');
 
             $table->timestamps();
         });

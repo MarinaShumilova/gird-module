@@ -15,10 +15,10 @@ class CreateRegressesTable extends Migration
     {
         Schema::create('regresses', function (Blueprint $table) {
             $table->id();
-            $table->date('data');
+            $table->date('date');
+            $table->unsignedBigInteger('complaint_id');
 
-
-            $table->foreignId('complaint_id')->constrained('complaints');
+            $table->foreign('complaint_id')->references('id')->on('complaints');
 
             $table->timestamps();
         });

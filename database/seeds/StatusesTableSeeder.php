@@ -16,8 +16,7 @@ class StatusesTableSeeder extends Seeder
         $statusType = [
             'В работе',
             'Завершен',
-            'Удален'
-
+//            'Удален'
         ];
 
         foreach ($statusType as $s) {

@@ -16,7 +16,8 @@ class CreateExpensesTable extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('sum');
-            $table->date('date');      //TODO::структура поменять
+            $table->date('start_at');
+            $table->softDeletes();
             $table->unsignedBigInteger('complaint_id');
 
             $table->foreign('complaint_id')->references('id')->on('complaints');

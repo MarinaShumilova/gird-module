@@ -1,274 +1,319 @@
-<template>
-    <v-card>
-        <v-card maxHeight="70"
-                elevation="0">
-            <v-row justify="space-around">
-                <v-col sm="2">
-                    <v-checkbox
-                        v-model="selectAll"
-                        label="Выбрать все"
-                    ></v-checkbox>
-                </v-col>
-                <v-col
-                    sm="3"
-                    dense>
-                    <v-select
-                        :items="nameStatus"
-                        label="Статус"
-                        multiple
-                    ></v-select>
-                </v-col>
-                <v-col sm="3"
-                       dense>
-                    <v-menu
-                        ref="menu"
-                        v-model="menu"
-                        :close-on-content-click="false"
-                        :return-value.sync="date"
-                        transition="scale-transition"
-                        offset-y
-                        max-width="290px"
-                        min-width="auto"
-                    >
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
+<template xmlns="http://www.w3.org/1999/html">
+    <!--    <v-card>
+            <v-card maxHeight="70"
+                    elevation="0">
+                <v-row justify="space-around">
+                    <v-col sm="2">
+                        <v-checkbox
+                            v-model="selectAll"
+                            label="Показать удаленные"
+                        ></v-checkbox>
+                    </v-col>
+                    <v-col
+                        sm="3"
+                        dense>
+                        <v-select
+                            :items="nameStatus"
+                            label="Статус"
+                            multiple
+                        ></v-select>
+                    </v-col>
+                    <v-col sm="3"
+                           dense>
+                        &lt;!&ndash;                    Период для фильтра&ndash;&gt;
+                        <v-menu
+                            ref="menu"
+                            v-model="menu"
+                            :close-on-content-click="false"
+                            :return-value.sync="date"
+                            transition="scale-transition"
+                            offset-y
+                            max-width="290px"
+                            min-width="auto">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                    v-model="date"
+                                    label="Период"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                    v-bind="attrs"
+                                    v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker
                                 v-model="date"
-                                label="Период"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                            ></v-text-field>
-                        </template>
-                        <v-date-picker
-                            v-model="date"
-                            type="month"
-                            no-title
-                            scrollable
-                            multiple>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="menu = false"
-                            >
-                                Cancel
-                            </v-btn>
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="$refs.menu.save(date)"
-                            >
-                                OK
-                            </v-btn>
-                        </v-date-picker>
-                    </v-menu>
-                </v-col>
-            </v-row>
+                                type="month"
+                                no-title
+                                scrollable
+                                multiple>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                    text
+                                    color="primary"
+                                    @click="menu = false"
+                                >
+                                    Cancel
+                                </v-btn>
+                                <v-btn
+                                    text
+                                    color="primary"
+                                    @click="$refs.menu.save(date)"
+                                >
+                                    OK
+                                </v-btn>
+                            </v-date-picker>
+                        </v-menu>
+                    </v-col>
+                </v-row>
+            </v-card>
 
-        </v-card>
-<!--        основная таблица-->
-        <v-data-table
-            :headers="headers"
-            :items="complaint"
-            :search="search"
-            :options.sync="options"
-            :server-items-length="totalComplaint"
-            :loading="loading"
-            @click:row="openComponentAddCard"
-            dense>
-            <template v-slot:top>
-                <v-card-title>
-                    <v-btn icon>
-                        <v-icon>mdi-sync</v-icon>
-                    </v-btn>
+        </v-card>-->
+    <v-container full-height>
+        <v-row>
+            <v-col>
+                <base-data-table
+                    :fill-height="true"
+                    :options.sync="options"
+                    :items="complaints"
+                    :loading="loading"
+                    :meta="meta"
+                    :headers="headers"
+                    @click:row="openComponentEditCard"
+                >
 
-                    <v-text-field
-                        v-model="search"
-                        append-icon="mdi-magnify"
-                        label="Поиск"
-                        single-line
-                        hide-details
-                        dense
-                    ></v-text-field>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{on, attrs}">
-                            <v-btn icon
-                                   v-bind="attrs"
-                                   v-on="on"
-                                   large>
-                                <v-icon color="blue darken-1">mdi-microsoft-excel</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Выгрузить таблицу</span>
-                    </v-tooltip>
+<template #footer.prepend>
+<!--    всплывающее меню-->
+    <v-menu
+        v-if="showMenu"
+        v-model="showMenu"
+        :position-x="x"
+        :position-y="y"
+        absolute
+        offset-y
+    >
+        <v-list
+            width="270"
+            dense
+        >
+            <v-list-item-group>
+                <v-list-item @click.stop="openExpensesDialog">
+                    <v-list-item-icon>
+                        <v-icon right>mdi-card-bulleted-outline</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Затраты</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click.stop="openSendFileDialog">
+                    <v-list-item-icon>
+                        <v-icon right>mdi-shuffle-disabled</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Перенаправить документы</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click.stop="openAddFileDialog">
+                    <v-list-item-icon>
+                        <v-icon right>mdi-card-plus-outline</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Прикрепить документы</v-list-item-title>
+                </v-list-item>
 
-                    <v-btn
-                        @click.stop="cardCreateDialog = true"
-                        color="cyan lighten-1">
-                        Новая запись
-                    </v-btn>
-                </v-card-title>
-            </template>
+                <v-list-item v-if="editedRow.status_id === 1"
+                             @click="exitComplaints(editedRow.id)">
+                    <v-list-item-icon>
+                        <v-icon right>mdi-close</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title>Завершить</v-list-item-title>
+                    </v-list-item-content>
+
+                </v-list-item>
+
+                <v-list-item v-else
+                             @click="returnComplaints(editedRow.id)">
+                    <v-list-item-icon>
+                        <v-icon right>mdi-share</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Восстанавить</v-list-item-title>
+                    </v-list-item-content>
+
+                </v-list-item>
+            </v-list-item-group>
+        </v-list>
+    </v-menu>
+
+<!--   затраты-->
+    <expenses-card
+        v-if="expensesCreateDialog"
+        v-model="expensesCreateDialog"
+        @close-expenses="closeExpensesCard"
+        :complaint_id="editedRow.id"
+    ></expenses-card>
+
+<!--    перенаправить -->
+    <send-file
+        v-if="sendFileCreateDialog"
+        v-model="sendFileCreateDialog"
+        @expenses-created="sendFileCreateDialog = false"
+        :id="editedRow.id">
+    </send-file>
+<!--   прикрепить документ-->
+    <add-file
+        v-if="addFileCreateDialog"
+        v-model="addFileCreateDialog"
+        @expenses-created="addFileCreateDialog = false"
+        :id="editedRow.id">
+    </add-file>
 
 
-            <template v-slot:item.action="{ item }">
 
-                <v-tooltip bottom>
-                    <template v-slot:activator="{on, attrs}">
-                        <v-icon
-                            v-bind="attrs"
-                            v-on="on"
-                            small
-                            :color="getColor(item.status)"
-                        >mdi-octagon
-                        </v-icon>
-                    </template>
-                    <span>Status</span>
-                </v-tooltip>
+    <add-card
+        v-if="cardCreateDialog"
+        v-model="cardCreateDialog"
+        @store-complaint="getComplaints"
+        @expenses-created="cardCreateDialog= false">
+    </add-card>
+
+<!--   Просмотреть запись-->
+
+    <edit-card
+        v-if="dialogEdit"
+        v-model="dialogEdit"
+        :id="rowComplaint.id"
+        @store-complaint="getComplaints"
+        @expenses-created="dialogEdit = false"
+    ></edit-card>
 
 
-                <v-menu
-                    absolute
-                    offset-y>
-                    <template v-slot:activator="{ on, attrs }">
+</template>
+
+<!--                    удалить строку-->
+                    <template v-slot:item.deleteEntry="{item}">
                         <v-btn
-                            dense
                             icon
-                            v-bind="attrs"
-                            v-on="on">
+                            @click.stop="destroyMy(item.id)"
+                        >
+                            <v-icon small
+                                    color="red">
+                                mdi-bucket
+                            </v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:item.start_at="{ item }">
+                        {{ item.start_at | date }}
+                    </template>
+
+                    <template v-slot:item.close_at="{ item }">
+                        {{ item.close_at | date }}
+                    </template>
+
+
+                    <template v-slot:item.action="{ item }">
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{on, attrs}">
+                                <v-icon
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    small
+                                    :color="getColor(item.status_id)"
+                                >mdi-octagon
+                                </v-icon>
+                            </template>
+                            <span>{{textStatus(item.status_id)}}</span>
+                        </v-tooltip>
+
+
+
+                        <v-btn icon
+                               @click.stop="show(item, $event)">
                             <v-icon>mdi-menu</v-icon>
                         </v-btn>
 
+<!--                        если виновна другая сторона-->
+                        <v-tooltip right>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-icon
+                                    small
+                                    color="red darken-4"
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >mdi-email-send-outline
+                                </v-icon>
+                            </template>
+                            <span>Регресс + дата</span>
+                        </v-tooltip>
+
                     </template>
 
-                    <v-list
-                        width="300"
-                        dense
-                    >
-<!--                        выпадающее меню в таблице-->
-                        <v-list-item-group>
-                        <v-list-item @click.stop="openExpensesDialog">
-                            <v-list-item-icon>
-                                <v-icon right>mdi-card-bulleted-outline</v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>Затраты</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click.stop="openSendFileDialog">
-                            <v-list-item-icon>
-                                <v-icon right>mdi-shuffle-disabled</v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>Перенаправить документы</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click.stop="openAddFileDialog">
-                            <v-list-item-icon>
-                                <v-icon right>mdi-card-plus-outline</v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>Прикрепить документы</v-list-item-title>
-                        </v-list-item>
-
-                        <v-list-item>
-
-                            <v-list-item-icon>
-                                <v-icon right>mdi-close</v-icon>
-                            </v-list-item-icon >
-                            <v-list-item-content>
-
-                                <v-list-item-title>Завершить</v-list-item-title>
-                            </v-list-item-content>
-
-                        </v-list-item>
-
-                        </v-list-item-group>
-                    </v-list>
-
-                </v-menu>
-<!--если виновна другая сторона-->
-                <v-tooltip right>
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-icon
-                            small
-                            color="red darken-4"
+                    <template #footer.append>
+                        <v-tooltip
+                            top
+                            color="cyan lighten-3">
+                        <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            @click.stop="cardCreateDialog = true"
+                            color="cyan lighten-1"
+                            height="28"
+                            min-width="50"
                             v-bind="attrs"
-                            v-on="on"
-                        >mdi-email-send-outline
-                        </v-icon>
+                            v-on="on">
+                            <v-icon>
+                                mdi-plus
+                            </v-icon>
+                        </v-btn>
+                        </template>
+                            <span style="color: black">
+                              Добавить</span>
+                        </v-tooltip>
+
                     </template>
-                    <span>Регресс + дата</span>
-                </v-tooltip>
-<!--затраты-->
-                <expenses-card
-                    v-if="expensesCreateDialog"
-                    v-model="expensesCreateDialog"
-                    @expenses-created="expensesCreateDialog = false"
-                ></expenses-card>
-<!--перенаправить -->
-                <send-file
-                    v-if="sendFileCreateDialog"
-                    v-model="sendFileCreateDialog"
-                    @expenses-created="sendFileCreateDialog = false">
-                </send-file>
-<!--прикрепить документ-->
-                <add-file
-                    v-if="addFileCreateDialog"
-                    v-model="addFileCreateDialog"
-                    @expenses-created="addFileCreateDialog = false">
-                </add-file>
-
-<!--создание новой записи-->
-                <add-card
-                    v-if="cardCreateDialog"
-                    v-model="cardCreateDialog"
-                    @expenses-created="cardCreateDialog= false">
-                </add-card>
-
-            </template>
-
-
-            <template v-slot:item.deleteEntry="{ item }">
-                <v-btn
-                    dense
-                    icon>
-                    <v-icon small>mdi-bucket</v-icon>
-                </v-btn>
-            </template>
-
-
-        </v-data-table>
-
-<!--        Просмотреть запись-->
-
-        <add-card
-            v-if="showNewCardDialog"
-            v-model="showNewCardDialog"
-            @expenses-created="showNewCardDialog= false"
-        ></add-card>
 
 
 
-
-    </v-card>
+                </base-data-table>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 <script>
+
 import ExpensesCard from "../components/ExpensesCard";
 import SendFile from "./SendFile";
 import AddFile from "./AddFile";
 import AddCard from "./AddCard";
 import BaseMonthPicker from "./BaseMonthPicker";
+import EditCard from "./EditCard";
+import DeleteComplain from "./DeleteComplain"
+import BaseDataTable from "gird-base-front/src/components/BaseDataTable"
+import filtratable from "../mixins/filtratable"
 
 
 export default {
-    components: { AddCard, ExpensesCard, SendFile, AddFile, BaseMonthPicker},
+    components: {
+
+        AddCard, ExpensesCard, SendFile,
+        AddFile, BaseMonthPicker, EditCard,
+        DeleteComplain,
+        BaseDataTable
+    },
+
+    mixins:[
+        filtratable
+    ],
 
     data() {
         return {
+            showMenu: false,
+            x: 0,
+            y: 0,
+
+            editedRow: null,   //вернет строку со всеми данными при вызове
+
             type: 'number',
-            totalComplaint: 0,
             selectAll: false,    /*Выбор значения из списка*/
             search: '',         /*Поиск*/
-            complaint: [],      /*таблица*/
-            loading: true,      /*загрузка таблицы*/
-            options: {},
+            complaints: [],      /*таблица*/
+            loading: false,      /*загрузка таблицы*/
             headers: [          /*столбцы таблицы*/
                 {
                     text: 'Действия',
@@ -276,17 +321,17 @@ export default {
                     sortable: false,
                     value: 'action',
                 },
-                {text: 'Дата создания', value: 'createData'},
-                {text: 'Дата закрытия', value: 'closeData'},
-                {text: 'Приказ', value: 'order'},
-                {text: 'Гарантийный приказ', value: 'orderGuarantee'},
-                {text: 'Контрагент', value: 'contractor'},
-                {text: 'Причина ГС', value: 'reason'},
-                {text: 'Виновная сторона', value: 'faultSide'},
-                {text: 'Затраты', value: 'expenses'},
+                {text: 'Дата создания', value: 'start_at'},
+                {text: 'Дата закрытия', value: 'close_at'},
+                {text: 'Приказ', value: 'numb_order'},
+                {text: 'Гарантийный приказ', value: 'warranty_decree'},
+                {text: 'Контрагент', value: 'contractor.name'},
+                {text: 'Причина ГС', value: 'reason.name'},
+                {text: 'Виновная сторона', value: 'culprit.name'},
+                {text: 'Затраты', value: 'expense_sum'},
                 {text: 'Удалить', value: 'deleteEntry'}
             ],
-                /*меню действия*/
+            /*меню действия*/
             items: [
                 {title: 'Затраты', icon: "mdi-cash-fast"},
                 {title: 'Перенаправить документы', icon: "mdi-shuffle-disabled"},
@@ -294,7 +339,6 @@ export default {
             ],
 
             nameStatus: ['В работе', 'Завершен', 'Удален'],
-
 
             expensesCreateDialog: false, //затраты
             sendFileCreateDialog: false,  //перенаправить
@@ -306,25 +350,41 @@ export default {
             menu: false,        /*календарь*/
 
             //---
-            showNewCardDialog: false,     /*просмотр записи*/
+            dialogEdit: false,     /*просмотр записи*/
+
+            rowComplaint: {},
+            pagination:{},
 
         }
     },
-    watch: {
-        options: {
-            handler() {
-                this.getDataFromApi()
-            },
-            deep: true,
+
+    watch: {},
+    methods: {
+        /* открыть форму редактирования и загрузить данные с таблицы */
+
+        show(item, e) {
+
+            this.editedRow = item;
+
+            e.preventDefault()
+            this.showMenu = false
+            this.x = e.clientX
+            this.y = e.clientY
+            this.$nextTick(() => {
+                this.showMenu = true
+            })
         },
 
+        closeExpensesCard(){
+            this.getComplaints();
+        },
+        close() {
+            this.dialog = false;
+        },
+        openComponentEditCard(value) {
+            this.dialogEdit = true;
 
-    },
-    methods: {
-
-        openComponentAddCard(row) {
-            this.showNewCardDialog = true;
-            //this.id = row.id;
+            this.rowComplaint = value;
         },
         openAddFileDialog() {
             this.addFileCreateDialog = true;
@@ -339,90 +399,96 @@ export default {
 
         openCardDialog() {
             this.cardCreateDialog = true;
-        },
-
-
-        getDataFromApi() {
-            this.loading = true
-            this.fakeApiCall().then(data => {
-                this.complaint = data.items
-                this.totalComplaint = data.total
-                this.loading = false
-            })
-        },
+        },/*
         /*статсус*/
-        getColor(status) {
-
-            if (status === 1) return 'blue'
-            else if (status === 2) return 'green'
-            else return 'red'
+        getColor(status_id) {
+            switch (status_id) {
+                case 1:
+                    return 'blue lighten-1';
+                case 2:
+                    return 'teal lighten-1';
+            }
+            ;
         },
 
+        textStatus(status_id) {
+            switch (status_id) {
+                case 1:
+                    return 'В работе';
+                case 2:
+                    return 'Завершен';
+            }
+            ;
+        },
 
+        closeComplaint() {
+
+        },
 
         /**
          * In a real application this would be a call to fetch() or axios.get()
          */
-        fakeApiCall() {
-            return new Promise((resolve, reject) => {
-                const {sortBy, sortDesc, page, itemsPerPage} = this.options
+        /*  Получить данные*/
+        getComplaints() {
+            api.call(endpoint('complaints.index', this.params))
+                .then(response => {
+                    this.complaints = response.data.data;
+                    this.makePagination(response.data);
+                })
+                .catch(error => {
+                    //
+                })
 
-                let items = this.getComplaints();
-                const total = items.length
-
-                if (sortBy.length === 1 && sortDesc.length === 1) {
-                    items = items.sort((a, b) => {
-                        const sortA = a[sortBy[0]]
-                        const sortB = b[sortBy[0]]
-
-                        if (sortDesc[0]) {
-                            if (sortA < sortB) return 1
-                            if (sortA > sortB) return -1
-                            return 0
-                        } else {
-                            if (sortA < sortB) return -1
-                            if (sortA > sortB) return 1
-                            return 0
-                        }
-                    })
-                }
-
-                if (itemsPerPage > 0) {
-                    items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage)
-                }
-
-                setTimeout(() => {
-                    resolve({
-                        items,
-                        total,
-                    })
-                }, 1000)
-            })
         },
 
-      getComplaints() {
-            return [
-                {
-                    status: 2,
-                    action: '',
-                    createData: '21.01.21',
-                    closeData: '05.06.22',
-                    order: '6251',
-                    orderGuarantee: '5457',
-                    contractor: 'АО "Транснефть-Приволга"',
-                    reason: 'Шасси',
-                    faultSide: 'Производство',
-                    expenses: '26556',
-
-                },
-            ]
-      },
+        makePagination(response){
+            this.meta = {
+                current_page: response.current_page,
+                last_page: response.last_page,
+                prev_page_url: response.prev_page_url,
+                next_page_url: response.next_page_url,
+                from: response.from,
+                to: response.to,
+                total: response.total
+            }
+        },
 
 
+        /*
+        удалить комплайн*/
+        destroyMy(id) {
+            api.call(endpoint('complaints.destroy', id))
+                .then((response => {
+                    // перезагрузить id
+                    this.getComplaints();
 
+                }))
+
+        },
+        /* завершить */
+        exitComplaints(id) {
+            api.call(endpoint('complaints.finish', id))
+                .then((response => {
+                    this.getComplaints();
+                }))
+
+
+        },
+        /* восстановить*/
+        returnComplaints(id) {
+            api.call(endpoint('complaints.return', id))
+                .then((response => {
+                    this.getComplaints();
+                }))
+        },
 
 
     },
+
+    created() {
+        this.setDebounce(this.getComplaints);
+    },
+
 
 }
 </script>

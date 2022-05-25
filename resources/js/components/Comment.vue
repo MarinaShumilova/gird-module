@@ -1,5 +1,5 @@
 <template>
-    <div align="left">
+    <div >
         <v-dialog
             v-model="dialog"
             width="500"
@@ -58,5 +58,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

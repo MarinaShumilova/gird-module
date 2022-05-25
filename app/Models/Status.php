@@ -17,10 +17,13 @@ class Status extends Model
      |--------------------------------------------------------------------------
      */
 
+
+
+
     protected $fillable = [];
 
-    public $timestamps = null;
 
+    public $timestamps = null;
     /*
     |--------------------------------------------------------------------------
     | RELATIONS

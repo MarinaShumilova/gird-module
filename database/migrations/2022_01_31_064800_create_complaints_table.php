@@ -18,6 +18,8 @@ class CreateComplaintsTable extends Migration
 
             $table->date('start_at');
             $table->date('close_at')->nullable();
+            $table->softDeletes();
+
             $table->string('vehicle');          //вид надстройки
             $table->string('numb_order')->comment('номер приказа');
             $table->string('warranty_decree')->nullable()->comment('№ гар-го приказа');
@@ -40,7 +42,7 @@ class CreateComplaintsTable extends Migration
             $table->foreign('culprit_id')->references('id')->on('culprits');
             $table->foreign('executor_id')->references('id')->on('executors');
             $table->foreign('status_id')->references('id')->on('statuses');
-          //  $table->foreign('warranty_decree')->references('id')->on('warranty_decrees');
+
 
             $table->timestamps();
 

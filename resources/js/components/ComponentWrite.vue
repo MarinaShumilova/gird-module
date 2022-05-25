@@ -10,6 +10,7 @@
                         v-model="complaint.numb_order"
                         item-value="id"
                         label="Приказ"
+                        :error-messages="errors['numb_order']"
                         outlined
                         dense
                     ></v-text-field>
@@ -33,6 +34,7 @@
                     lg="4">
                     <base-date-picker
                         v-model="complaint.start_at"
+                        :error-messages="errors['start_at']"
                         dense
                         outlined
                         label="Дата начала рекламации">
@@ -80,6 +82,7 @@
                     <v-text-field
                         v-model="complaint.vehicle"
                         item-text="name"
+                        :error-messages="errors['vehicle']"
                         dense
                         outlined
                         label="Вид надстройки"
@@ -149,6 +152,10 @@ export default {
 
     components: {BaseDatePicker, BaseFileInput},
     props: {
+        errors: {
+          type:Object,
+          required:false
+        },
         warrantyTypes: {  //гарантия
             type: Array,
             required: true
@@ -176,7 +183,6 @@ export default {
         },
 
 
-
         value: {
             type: Object,
             required: true
@@ -187,6 +193,7 @@ export default {
             complaint: this.value,
             Calendar: null,
 
+
         }
 
     },
@@ -195,6 +202,14 @@ export default {
             this.$emit('input', false);
         }
     },
+    watch:{     //следить за изменением value
+        value: {
+            handler(value) {
+                this.complaint = value;
+            },
+            immediate: true,
+        }
+    }
 
 }
 </script>

@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\ComplaintController;
-use App\Http\Controllers\GuaranteeController;
-use App\Http\Controllers\MyController;
+use App\Http\Controllers\FinishComplaintController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ExpensesController;
 //use App\Http\Controllers\CauseWarrantyController;
 
 /*
@@ -17,12 +17,12 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-/*
-// от Сани
-Route::get('my-home-2', [MyController::class, 'myHome2'])->name('my-home-2');
-//Route::get('my-home-2', 'MyController@myHome2')->name('my-home-2');*/
 
+Route::prefix('complaints')->name('complaints.')->group(function() {
+    Route::patch('{complaint}/finish', [FinishComplaintController::class, 'finish'])->name('finish');
+    Route::delete('{complaint}/return', [FinishComplaintController::class, 'return'])->name('return');
 
-
+});
 Route::resource('complaints', ComplaintController::class);
 
+Route::resource('complaints.expenses', ExpensesController::class)->shallow();

@@ -1,16 +1,21 @@
 const Endpoints = {
     routes: {
-       // "users.edit": { "uri":"/users/{user}/edit", "method": "get" [, domain]}
-   /*     "my-home": {"uri": "/my-home", "method": "get"},
-        "my-home-2": {"uri": "/my-home-2", "method": "get"},*/
-
-        // guarantees
-        // "guarantee":{"uri": "/guarantee", "method": "get"},
-        // "causeWarranty":{"uri": "/causeWarranty","method": "get"},
 
         "complaints.create": {"uri": "/complaints/create", "method": "get"},
-        "complaints.store": {"uri": "/complaints", "method": "post"}
+        "complaints.store": {"uri": "/complaints", "method": "post"},
+        "complaints.index": {"uri": "/complaints", "method": "get"},
 
+        "complaints.edit": {"uri": "/complaints/{complaint}/edit","method": "get"},
+        "complaints.update": {"uri": "/complaints/{complaint}", "method": "put"},
+        "complaints.destroy":{"uri":"/complaints/{complaint}","method": "delete"},
+
+        "complaints.finish":{"uri":"/complaints/{complaint}/finish","method":"patch"},
+        "complaints.return":{"uri":"/complaints/{complaint}/return", "method":"delete"},
+
+        "complaints.expenses.index":{"uri":"/complaints/{complaint}/expenses","method":"get"},
+        "complaints.expenses.store":{"uri":"/complaints/{complaint}/expenses","method":"post"},
+        "complaints.expenses.destroy":{"uri":"expenses/{expense}","method":"delete"},
+        "complaints.expenses.update":{"uri":"expenses/{expense}","method":"put"},
     },
 };
 

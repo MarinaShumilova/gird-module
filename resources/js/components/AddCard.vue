@@ -1,7 +1,7 @@
 <!--Добавить новую запись-->
 <template>
     <base-dialog-action
-        v-if="dialog"
+        v-if="showDialog"
         v-model="dialog"
         max-width="800"
         persistent
@@ -19,10 +19,9 @@
                 :culprits="culprits"
                 :executors="executors"
                 :contractors="contractors"
-
+                :errors="validationErrors"
 
             >
-
             </component-write>
 
     </base-dialog-action>
@@ -44,8 +43,9 @@ export default {
         },
     },
     components: {ComponentWrite, BaseDialogAction},
-
+    /*Загрузить данные с базы*/
     created() {
+        this.showDialog = false;
         api.call(endpoint('complaints.create'))
             .then((response) => {
                 this.warrantyTypes = response.data.warranty_types;
@@ -54,6 +54,8 @@ export default {
                 this.culprits = response.data.culprits;
                 this.executors = response.data.executors;
                 this.contractors = response.data.contractors;
+                this.showDialog = true;
+
             });
 
 
@@ -70,7 +72,6 @@ export default {
             contractors:[],
 
 
-
             complaint: {
                 warranty_type_id: 1,
                 reason_id:1,
@@ -78,14 +79,21 @@ export default {
                 culprit_id:1,
                 executor_id:2,
                 contractor_id:1,
+                status_id:1,  /*статус в работе*/
+
 
                 warranty_decree:null,
                 numb_order:null,
                 vehicle:null,
-                start_at:null,
+                start_at: new Date().toISOString().substr(0, 10),
+
 
             },
-            dialog: this.value
+            dialog: this.value,
+            validationErrors: { },
+
+            showDialog:false,   /*загружает данные до отображения*/
+
         }
     },
 
@@ -95,19 +103,25 @@ export default {
         }
     },
     methods: {
-
+        /*Запись в базу*/
         submit() {
             api.call(endpoint('complaints.store'), this.complaint)
-            .then(response => {
-              this.vehicle = response.data.complaint;
-                this.numb_order = response.data.complaint;
-                this.warranty_decree = response.data.complaint;
-            })
+                .then(response => {
+                    this.$emit('store-complaint');
+                    this.close()
+                })
+                .catch(error =>{
+                    this.validationErrors = error.response.data.errors
+                    })
         },
+
+
+
 
         close() {
             this.$emit('input', false);
         },
+
 
     }
 

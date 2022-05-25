@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * This is the model class for table "{{%table}}
@@ -11,13 +12,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Expense extends Model
 {
+    use SoftDeletes;
+
+
+    protected $dates = ['deleted_at'];
+
      /*
      |--------------------------------------------------------------------------
      | GLOBAL VARIABLES
      |--------------------------------------------------------------------------
      */
 
-    protected $fillable = [];
+    protected $fillable = ['start_at','sum','complaint_id'];
 
 
     /*
@@ -29,13 +35,14 @@ class Expense extends Model
 
     public function complaint()
     {
-        return $this->belongsTo(Complaint::class);
+     /*   return $this->belongsTo(Complaint::class);*/
     }
     /*
     |--------------------------------------------------------------------------
     | SCOPES
     |--------------------------------------------------------------------------
     */
+
 
 
 

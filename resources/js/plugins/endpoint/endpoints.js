@@ -8,6 +8,8 @@ const Endpoints = {
         "complaints.edit": {"uri": "/complaints/{complaint}/edit","method": "get"},
         "complaints.update": {"uri": "/complaints/{complaint}", "method": "put"},
         "complaints.destroy":{"uri":"/complaints/{complaint}","method": "delete"},
+        "complaints.show":{"uri":"/complaints/{complaint}","method": "get"},
+
 
         "complaints.finish":{"uri":"/complaints/{complaint}/finish","method":"patch"},
         "complaints.return":{"uri":"/complaints/{complaint}/return", "method":"delete"},

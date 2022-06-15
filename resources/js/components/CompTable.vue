@@ -78,119 +78,121 @@
                     :loading="loading"
                     :meta="meta"
                     :headers="headers"
-                    @click:row="openComponentEditCard"
                 >
 
-<template #footer.prepend>
-<!--    всплывающее меню-->
-    <v-menu
-        v-if="showMenu"
-        v-model="showMenu"
-        :position-x="x"
-        :position-y="y"
-        absolute
-        offset-y
-    >
-        <v-list
-            width="270"
-            dense
-        >
-            <v-list-item-group>
-                <v-list-item @click.stop="openExpensesDialog">
-                    <v-list-item-icon>
-                        <v-icon right>mdi-card-bulleted-outline</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Затраты</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click.stop="openSendFileDialog">
-                    <v-list-item-icon>
-                        <v-icon right>mdi-shuffle-disabled</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Перенаправить документы</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click.stop="openAddFileDialog">
-                    <v-list-item-icon>
-                        <v-icon right>mdi-card-plus-outline</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Прикрепить документы</v-list-item-title>
-                </v-list-item>
+                    <template #footer.prepend>
+                        <!--    всплывающее меню-->
+                        <v-menu
+                            v-if="showMenu"
+                            v-model="showMenu"
+                            :position-x="x"
+                            :position-y="y"
+                            absolute
+                            offset-y
+                        >
+                            <v-list
+                                width="270"
+                                dense
+                            >
+                                <v-list-item-group>
+                                    <v-list-item @click.stop="openExpensesDialog">
+                                        <v-list-item-icon>
+                                            <v-icon right>mdi-card-bulleted-outline</v-icon>
+                                        </v-list-item-icon>
+                                        <v-list-item-title>Затраты</v-list-item-title>
+                                    </v-list-item>
+                                    <v-list-item @click.stop="openSendFileDialog">
+                                        <v-list-item-icon>
+                                            <v-icon right>mdi-shuffle-disabled</v-icon>
+                                        </v-list-item-icon>
+                                        <v-list-item-title>Перенаправить документы</v-list-item-title>
+                                    </v-list-item>
+                                    <v-list-item @click.stop="openAddFileDialog">
+                                        <v-list-item-icon>
+                                            <v-icon right>mdi-card-plus-outline</v-icon>
+                                        </v-list-item-icon>
+                                        <v-list-item-title>Прикрепить документы</v-list-item-title>
+                                    </v-list-item>
 
-                <v-list-item v-if="editedRow.status_id === 1"
-                             @click="exitComplaints(editedRow.id)">
-                    <v-list-item-icon>
-                        <v-icon right>mdi-close</v-icon>
-                    </v-list-item-icon>
+                                    <v-list-item v-if="editedRow.status_id === 1"
+                                                 @click="exitComplaints(editedRow.id)">
+                                        <v-list-item-icon>
+                                            <v-icon right>mdi-close</v-icon>
+                                        </v-list-item-icon>
+                                        <v-list-item-title>Завершить</v-list-item-title>
+                                    </v-list-item>
 
-                    <v-list-item-content>
-                        <v-list-item-title>Завершить</v-list-item-title>
-                    </v-list-item-content>
+                                    <v-list-item v-else
+                                                 @click="returnComplaints(editedRow.id)">
+                                        <v-list-item-icon>
+                                            <v-icon right>mdi-share</v-icon>
+                                        </v-list-item-icon>
+                                        <v-list-item-title left>Восстанавить</v-list-item-title>
+                                    </v-list-item>
 
-                </v-list-item>
+                                </v-list-item-group>
+                            </v-list>
+                        </v-menu>
 
-                <v-list-item v-else
-                             @click="returnComplaints(editedRow.id)">
-                    <v-list-item-icon>
-                        <v-icon right>mdi-share</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Восстанавить</v-list-item-title>
-                    </v-list-item-content>
+                        <!--   затраты-->
+                        <expenses-card
+                            v-show="showUser"
+                            v-if="expensesCreateDialog"
+                            v-model="expensesCreateDialog"
+                            @close-expenses="closeExpensesCard"
+                            :complaint_id="editedRow.id"
+                        ></expenses-card>
 
-                </v-list-item>
-            </v-list-item-group>
-        </v-list>
-    </v-menu>
+                        <!--    перенаправить -->
+                        <send-file
+                            v-show="showUser"
+                            v-if="sendFileCreateDialog"
+                            v-model="sendFileCreateDialog"
+                            @expenses-created="sendFileCreateDialog = false"
+                            :id="editedRow.id">
+                        </send-file>
+                        <!--   прикрепить документ-->
+                        <add-file
+                            v-show="showUser"
+                            v-if="addFileCreateDialog"
+                            v-model="addFileCreateDialog"
+                            @expenses-created="addFileCreateDialog = false"
+                            :id="editedRow.id">
+                        </add-file>
 
-<!--   затраты-->
-    <expenses-card
-        v-if="expensesCreateDialog"
-        v-model="expensesCreateDialog"
-        @close-expenses="closeExpensesCard"
-        :complaint_id="editedRow.id"
-    ></expenses-card>
+                        <add-card
+                            v-show="showUser"
+                            v-if="cardCreateDialog"
+                            v-model="cardCreateDialog"
+                            @store-complaint="getComplaints"
+                            @expenses-created="cardCreateDialog= false">
+                        </add-card>
 
-<!--    перенаправить -->
-    <send-file
-        v-if="sendFileCreateDialog"
-        v-model="sendFileCreateDialog"
-        @expenses-created="sendFileCreateDialog = false"
-        :id="editedRow.id">
-    </send-file>
-<!--   прикрепить документ-->
-    <add-file
-        v-if="addFileCreateDialog"
-        v-model="addFileCreateDialog"
-        @expenses-created="addFileCreateDialog = false"
-        :id="editedRow.id">
-    </add-file>
+                        <!--   Просмотреть запись-->
 
+                        <edit-card
+                            v-if="dialogEdit"
+                            v-model="dialogEdit"
+                            :id="rowComplaint.id"
+                            @store-complaint="getComplaints"
+                            @expenses-created="dialogEdit = false"
+                        ></edit-card>
 
+                        <look-record
+                         v-if="dialogRecord"
+                         v-model="dialogRecord">
 
-    <add-card
-        v-if="cardCreateDialog"
-        v-model="cardCreateDialog"
-        @store-complaint="getComplaints"
-        @expenses-created="cardCreateDialog= false">
-    </add-card>
-
-<!--   Просмотреть запись-->
-
-    <edit-card
-        v-if="dialogEdit"
-        v-model="dialogEdit"
-        :id="rowComplaint.id"
-        @store-complaint="getComplaints"
-        @expenses-created="dialogEdit = false"
-    ></edit-card>
+                        </look-record>
 
 
-</template>
+                    </template>
 
-<!--                    удалить строку-->
+                    <!--                    удалить строку-->
                     <template v-slot:item.deleteEntry="{item}">
                         <v-btn
                             icon
                             @click.stop="destroyMy(item.id)"
+                            v-show="showUser"
                         >
                             <v-icon small
                                     color="red">
@@ -222,14 +224,48 @@
                             <span>{{textStatus(item.status_id)}}</span>
                         </v-tooltip>
 
+                        <v-tooltip right >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    icon
+                                    @click.stop="openComponentEditCard(item.id)"
+                                    v-show="showUser"
+                                >
+                                    <v-icon
+                                        dense
+
+                                    >mdi-pencil
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Редактировать</span>
+                        </v-tooltip>
+
+<!--                        <v-tooltip right >-->
+<!--                            <template v-slot:activator="{ on, attrs }">-->
+                                <v-btn
+                                    icon
+                                    @click.stop="openComponentLookRecord"
+                                >
+                                    <v-icon
+                                        dense
+                                    >mdi-eye
+                                    </v-icon>
+                                </v-btn>
+<!--                            </template>-->
+<!--                            <span>Просмотреть запись</span>-->
+<!--                        </v-tooltip>-->
+
 
 
                         <v-btn icon
+                               v-show="showUser"
                                @click.stop="show(item, $event)">
                             <v-icon>mdi-menu</v-icon>
                         </v-btn>
 
-<!--                        если виновна другая сторона-->
+
+                        <!--                        если виновна другая сторона-->
                         <v-tooltip right>
                             <template v-slot:activator="{ on, attrs }">
                                 <v-icon
@@ -249,20 +285,20 @@
                         <v-tooltip
                             top
                             color="cyan lighten-3">
-                        <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            @click.stop="cardCreateDialog = true"
-                            color="cyan lighten-1"
-                            height="28"
-                            min-width="50"
-                            v-bind="attrs"
-                            v-on="on">
-                            <v-icon>
-                                mdi-plus
-                            </v-icon>
-                        </v-btn>
-                        </template>
-                            <span style="color: black">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    @click.stop="cardCreateDialog = true"
+                                    color="cyan lighten-1"
+                                    height="28"
+                                    min-width="50"
+                                    v-bind="attrs"
+                                    v-on="on">
+                                    <v-icon>
+                                        mdi-plus
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <span style="color: #8e3939">
                               Добавить</span>
                         </v-tooltip>
 
@@ -286,6 +322,7 @@ import EditCard from "./EditCard";
 import DeleteComplain from "./DeleteComplain"
 import BaseDataTable from "gird-base-front/src/components/BaseDataTable"
 import filtratable from "../mixins/filtratable"
+import LookRecord from "./LookRecord";
 
 
 export default {
@@ -293,7 +330,7 @@ export default {
 
         AddCard, ExpensesCard, SendFile,
         AddFile, BaseMonthPicker, EditCard,
-        DeleteComplain,
+        DeleteComplain, LookRecord,
         BaseDataTable
     },
 
@@ -306,6 +343,8 @@ export default {
             showMenu: false,
             x: 0,
             y: 0,
+
+            showUser:false,
 
             editedRow: null,   //вернет строку со всеми данными при вызове
 
@@ -321,7 +360,7 @@ export default {
                     sortable: false,
                     value: 'action',
                 },
-                {text: 'Дата создания', value: 'start_at'},
+                {text: 'Дата создания', value: 'start_at' },
                 {text: 'Дата закрытия', value: 'close_at'},
                 {text: 'Приказ', value: 'numb_order'},
                 {text: 'Гарантийный приказ', value: 'warranty_decree'},
@@ -329,7 +368,8 @@ export default {
                 {text: 'Причина ГС', value: 'reason.name'},
                 {text: 'Виновная сторона', value: 'culprit.name'},
                 {text: 'Затраты', value: 'expense_sum'},
-                {text: 'Удалить', value: 'deleteEntry'}
+
+
             ],
             /*меню действия*/
             items: [
@@ -350,7 +390,8 @@ export default {
             menu: false,        /*календарь*/
 
             //---
-            dialogEdit: false,     /*просмотр записи*/
+            dialogEdit: false,     /*редактировать запись*/
+            dialogRecord: false,     /*редактировать запись*/
 
             rowComplaint: {},
             pagination:{},
@@ -375,17 +416,29 @@ export default {
             })
         },
 
+        /* проверка пользователя*/
+        returnUser(){
+            return this.$store.getters.userHasRole('admin');
+        },
+
         closeExpensesCard(){
             this.getComplaints();
+
         },
         close() {
             this.dialog = false;
         },
+
         openComponentEditCard(value) {
             this.dialogEdit = true;
-
-            this.rowComplaint = value;
+            this.rowComplaint.id = value;
         },
+
+        openComponentLookRecord(){
+          this.dialogRecord = true;
+
+        },
+
         openAddFileDialog() {
             this.addFileCreateDialog = true;
         },
@@ -408,7 +461,6 @@ export default {
                 case 2:
                     return 'teal lighten-1';
             }
-            ;
         },
 
         textStatus(status_id) {
@@ -418,7 +470,6 @@ export default {
                 case 2:
                     return 'Завершен';
             }
-            ;
         },
 
         closeComplaint() {
@@ -486,7 +537,13 @@ export default {
     },
 
     created() {
+
+        this.showUser = this.returnUser();
+        if(this.showUser)
+            this.headers.push( {text: 'Удалить', value: 'deleteEntry'});
+
         this.setDebounce(this.getComplaints);
+
     },
 
 

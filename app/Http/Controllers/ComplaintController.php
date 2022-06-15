@@ -18,6 +18,7 @@ use function foo\func;
 
 class ComplaintController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -25,11 +26,8 @@ class ComplaintController extends Controller
      */
     public function index(Request $request)
     {
-        /* получить все записи*/
- /*       return Complaint::with('status')->all();*/
-//       dd(Complaint::with('culprit')->get());
+        $this->authorize('viewAny', Complaint::class);
 
-       // Complaint::paginate(15);
 
         return Complaint::
         with([
@@ -53,6 +51,8 @@ class ComplaintController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Complaint::class);
+
         //считать данные
         return [
             'warranty_types' => WarrantyType::get(),
@@ -87,12 +87,24 @@ class ComplaintController extends Controller
     public function show($id)
     {
         //
+
+        $complaint = Complaint::findOrFail($id);
+//        $this->authorize('view', $complaint);
+
+        return [
+            'complaint' =>$complaint
+        ];
+
+        dd($complaint);
+
     }
 
 
     public function edit($id)
     {
         $complaint = Complaint::findOrFail($id);
+
+        $this->authorize('update', $complaint);
 
         return [
             'warranty_types' => WarrantyType::get(),
@@ -118,6 +130,8 @@ class ComplaintController extends Controller
         // обращаемся в объект за id
         $complaint = Complaint::findOrFail($id);
 
+        $this->authorize('update', $complaint);
+
         $complaint->update($request->all());
     }
 
@@ -129,7 +143,10 @@ class ComplaintController extends Controller
      */
     public function destroy($id)
     {
+
        $complaint = Complaint::findOrFail($id);
+
+        $this->authorize('delete',$id);
         $complaint->delete();
     }
 }

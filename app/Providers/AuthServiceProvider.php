@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Complaint;
+use App\Models\Expense;
+use App\Policies\ComplaintPolicy;
+use App\Policies\ExpensePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -12,7 +16,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-
+        Complaint::class => ComplaintPolicy::class,
+        Expense::class => ExpensePolicy::class,
     ];
 
     /**

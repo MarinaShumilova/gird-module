@@ -20,6 +20,7 @@
            :executors="executors"
            :contractors="contractors"
            :errors="validationErrors"
+           :executor_id="executor_id"
            >
 
        </component-write>
@@ -48,6 +49,7 @@ export default {
     },
     components: {ComponentWrite, BaseDialogAction},
 
+    //создаем массив данных комплайн
     created() {
         this.showDialog = false;
         api.call(endpoint('complaints.edit', this.id))
@@ -58,7 +60,9 @@ export default {
                 this.culprits = response.data.culprits;
                 this.executors = response.data.executors;
                 this.contractors = response.data.contractors;
+                //this.executor_id = response.data.complaint;
                 this.complaint = response.data.complaint;
+                this.complaint.executor_id = response.data.executor_id;
                 this.showDialog = true;
 
             });
@@ -72,6 +76,7 @@ export default {
             type_comps:[],
             culprits:[],
             executors:[],
+            executor_id:[],
             contractors:[],
             complaint:{ },  //объект с данными
 

@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
 
         if(config('app.env') !== 'production') {
             $this->call(AccessableIpSeeder::class);   //разрешенные ip
-            $this->call(UsersSeeder::class);
+//            $this->call(UsersSeeder::class);
+            $this->call(RoleSeeder::class);             //роли/разрешения
         }
 
         $this->call(CommentsTableSeeder::class);
@@ -40,6 +41,14 @@ class DatabaseSeeder extends Seeder
         $this->call(WarrantyTypesTableSeeder::class);
 
         $this->call(ComplaintsTableSeeder::class);
+
+        $this->call(ComplaintExecutorTableSeeder::class);
+
+
+        $this->call(AddUsersSeeder::class);
+
+
+
 
 
     }

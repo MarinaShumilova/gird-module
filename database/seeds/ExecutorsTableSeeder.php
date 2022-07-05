@@ -13,10 +13,13 @@ class ExecutorsTableSeeder extends Seeder
     public function run()
     {
         $executorsType = [
-            'Поставщик',
-            'Командировка(Производитель)',
+            'Отправить ТМЦ',
+            'Командировка',
             'Силами заказчика',
-            'Сторонняя Организация',
+            'Сторонняя организация',
+            'На территории ГИРД',
+            'Поставщик'
+
         ];
 
         foreach ($executorsType as $ex) {

@@ -77,7 +77,7 @@ export default {
                 reason_id:1,
                 type_comp_id:1,
                 culprit_id:1,
-                executor_id:2,
+                executor_id: [],
                 contractor_id:1,
                 status_id:1,  /*статус в работе*/
 

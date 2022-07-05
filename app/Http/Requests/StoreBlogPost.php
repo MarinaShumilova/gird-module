@@ -34,7 +34,11 @@ class StoreBlogPost extends FormRequest
             'reason_id' => 'required|exists:App\Models\Reason,id',
             'type_comp_id' => 'required|exists:App\Models\TypeComp,id',
             'culprit_id' => 'required|exists:App\Models\Culprit,id',
-            'executor_id' => 'required|exists:App\Models\Executor,id',
+            'executor_id' => 'array|required',
+            'executor_id.*.' =>'integer|exist:App\Models\Executor,id',
+
+
+
             'contractor_id'=>'required|exists:App\Models\Contractor,id',
 
         ];

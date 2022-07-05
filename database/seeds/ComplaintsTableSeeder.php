@@ -24,7 +24,6 @@ class ComplaintsTableSeeder extends Seeder
                   'type_comp_id' => 1,
                   'contractor_id' => 1,
                   'culprit_id'=>1,
-                  'executor_id'=>1,
                   'status_id' => 1,
                   'warranty_decree'=>1,
               ],
@@ -37,7 +36,6 @@ class ComplaintsTableSeeder extends Seeder
               'type_comp_id' => 1,
               'contractor_id' => 2,
               'culprit_id'=>1,
-              'executor_id'=>1,
               'status_id' => 2,
               'warranty_decree'=>1,
           ],
@@ -50,7 +48,6 @@ class ComplaintsTableSeeder extends Seeder
               'type_comp_id' => 1,
               'contractor_id' => 1,
               'culprit_id'=>1,
-              'executor_id'=>1,
               'status_id' => 1,
               'warranty_decree'=>1,
           ]

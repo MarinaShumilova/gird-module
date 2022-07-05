@@ -23,13 +23,11 @@ class CreateComplaintsTable extends Migration
             $table->string('vehicle');          //вид надстройки
             $table->string('numb_order')->comment('номер приказа');
             $table->string('warranty_decree')->nullable()->comment('№ гар-го приказа');
-
             $table->unsignedBigInteger('warranty_type_id')->comment('гарантия');
             $table->unsignedBigInteger('reason_id')->comment('причина гар-ии');
             $table->unsignedBigInteger('type_comp_id')->comment('тип рекламации');
             $table->unsignedBigInteger('contractor_id')->comment('контрагент');
             $table->unsignedBigInteger('culprit_id')->comment('виновник');
-            $table->unsignedBigInteger('executor_id')->comment('устранение');
             $table->unsignedBigInteger('status_id')->comment('статус');
 
 
@@ -40,7 +38,6 @@ class CreateComplaintsTable extends Migration
             $table->foreign('type_comp_id')->references('id')->on('type_comps');
             $table->foreign('contractor_id')->references('id')->on('contractors');
             $table->foreign('culprit_id')->references('id')->on('culprits');
-            $table->foreign('executor_id')->references('id')->on('executors');
             $table->foreign('status_id')->references('id')->on('statuses');
 
 

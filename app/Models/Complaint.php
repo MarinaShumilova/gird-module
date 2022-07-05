@@ -27,11 +27,8 @@ class Complaint extends Model
 
     protected $fillable = ['start_at','close_at','vehicle','numb_order',
        'warranty_decree', 'warranty_type_id','reason_id','type_comp_id',
-        'contractor_id','culprit_id','executor_id'
+        'contractor_id','culprit_id'
     ];
-
-
-
 
 
     /*
@@ -59,10 +56,11 @@ class Complaint extends Model
         return $this->hasMany(Expense::class, 'complaint_id','id');
     }
 
-/*    public function status()
+    public function executors()
     {
-        return $this->belongsTo()
-    }*/
+        return $this->belongsToMany(Executor::class, 'complaints_executors');
+    }
+
 
     /*
     |--------------------------------------------------------------------------

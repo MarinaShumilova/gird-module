@@ -4,7 +4,7 @@
             <v-row dense>
                 <v-col
                     sm="12"
-                    lg="4"
+                    lg="2"
                     class="d-flex">
                     <v-text-field
                         v-model="complaint.numb_order"
@@ -14,6 +14,16 @@
                         outlined
                         dense
                     ></v-text-field>
+                </v-col>
+                <v-col
+                    sm="12"
+                    lg="2">
+                    <base-date-picker
+                        v-model="complaint.start_at"
+                        dense
+                        outlined
+                        label="Дата приказа">
+                    </base-date-picker>
                 </v-col>
                 <v-col
                     sm="12"
@@ -118,16 +128,28 @@
                     sm="4">
                     <v-select
                         v-model="complaint.executor_id"
+                        :error-messages="errors['executor_id']"
                         item-value="id"
                         item-text="name"
-                        :items="executors "
+                        :items="executors"
                         label="Устранение"
-                        dense
                         outlined
-                    ></v-select>
+                        multiple
+                        dense
+                    >
+
+                    </v-select>
+
                 </v-col>
                 <v-col
                     sm="4">
+                    <v-text-field
+                        item-value="id"
+                        label="Отгрузка,шасси"
+                        outlined
+                        dense
+                    ></v-text-field>
+
 
 <!--                    <base-file-input></base-file-input>-->
 
@@ -177,6 +199,12 @@ export default {
             required:true,
         },
 
+        executor_id:{     //устранение
+            type:Array,
+            required:true,
+        },
+
+
         contractors:{
           type:Array,
           required:true,
@@ -193,6 +221,7 @@ export default {
             complaint: this.value,
             Calendar: null,
 
+            selectedExecutors:[],   //список устранений
 
         }
 
@@ -200,6 +229,7 @@ export default {
     methods: {
         close() {
             this.$emit('input', false);
+
         }
     },
     watch:{     //следить за изменением value
@@ -208,7 +238,9 @@ export default {
                 this.complaint = value;
             },
             immediate: true,
-        }
+        },
+
+
     }
 
 }

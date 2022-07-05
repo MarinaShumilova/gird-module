@@ -6,7 +6,6 @@
         scrollable
         persistent
        >
-
         <v-card>
             <v-toolbar height="50" elevation="1">
                 <span>

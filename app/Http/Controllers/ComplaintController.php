@@ -73,9 +73,15 @@ class ComplaintController extends Controller
      */
     public function store(StoreBlogPost $request)
     {
-        $country = new Complaint($request->all());
-        $country->status_id = 1;
-        $country->save();
+        $complaint = new Complaint($request->all());
+        $complaint->status_id = 1;
+
+        $complaint->save();
+
+        foreach ($request->executor_id as $executorId) {
+            $complaint->executors()->attach($executorId);
+        }
+
     }
 
     /**
@@ -95,18 +101,30 @@ class ComplaintController extends Controller
             'complaint' =>$complaint
         ];
 
-        dd($complaint);
+
 
     }
 
 
     public function edit($id)
     {
+
+
+
         $complaint = Complaint::findOrFail($id);
+
+
+        $executors = $complaint->executors->pluck( 'id');       //сделать ключ, передать га фронт
+
+        $executors->all();
+
+
+        //dump($executors);
 
         $this->authorize('update', $complaint);
 
         return [
+            'executor_id'=>$executors,
             'warranty_types' => WarrantyType::get(),
             'reason' => Reason::get(),
             'type_comps' => TypeComp::get(),
@@ -130,7 +148,11 @@ class ComplaintController extends Controller
         // обращаемся в объект за id
         $complaint = Complaint::findOrFail($id);
 
+        $complaint->executors()->sync($request->executor_id);
+
         $this->authorize('update', $complaint);
+
+
 
         $complaint->update($request->all());
     }

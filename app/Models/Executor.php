@@ -26,6 +26,10 @@ class Executor extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function complaints()
+    {
+        return $this->belongsToMany( Complaint::class, 'complaints_executors');
+    }
 
 
 

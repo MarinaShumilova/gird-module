@@ -179,27 +179,31 @@
                         ></edit-card>
 
                         <look-record
-                         v-if="dialogRecord"
-                         v-model="dialogRecord">
+                            v-if="dialogRecord"
+                            v-model="dialogRecord"
+                            :id="rowComplaint.id"
+                            @store-complaint="getComplaints"
+                            @expenses-created="dialogRecord= false">
 
                         </look-record>
 
 
+
+
+                    </template>
+                    <template v-slot:item.deleteEntry="{item}">
+                    <v-btn
+                        icon
+                        @click.stop="destroyMy(item.id)"
+                        v-show="showUser"
+                    >
+                        <v-icon small
+                                color="red">
+                            mdi-bucket
+                        </v-icon>
+                    </v-btn>
                     </template>
 
-                    <!--                    удалить строку-->
-                    <template v-slot:item.deleteEntry="{item}">
-                        <v-btn
-                            icon
-                            @click.stop="destroyMy(item.id)"
-                            v-show="showUser"
-                        >
-                            <v-icon small
-                                    color="red">
-                                mdi-bucket
-                            </v-icon>
-                        </v-btn>
-                    </template>
 
                     <template v-slot:item.start_at="{ item }">
                         {{ item.start_at | date }}
@@ -233,29 +237,23 @@
                                 >
                                     <v-icon
                                         dense
-
                                     >mdi-pencil
                                     </v-icon>
                                 </v-btn>
                             </template>
                             <span>Редактировать</span>
+
                         </v-tooltip>
 
-<!--                        <v-tooltip right >-->
-<!--                            <template v-slot:activator="{ on, attrs }">-->
                                 <v-btn
                                     icon
-                                    @click.stop="openComponentLookRecord"
+                                    @click.stop="openComponentLookRecord(item.id)"
                                 >
                                     <v-icon
                                         dense
-                                    >mdi-eye
+                                    >mdi-information-outline
                                     </v-icon>
                                 </v-btn>
-<!--                            </template>-->
-<!--                            <span>Просмотреть запись</span>-->
-<!--                        </v-tooltip>-->
-
 
 
                         <v-btn icon
@@ -419,10 +417,13 @@ export default {
         /* проверка пользователя*/
         returnUser(){
             return this.$store.getters.userHasRole('admin');
+
+
         },
 
         closeExpensesCard(){
             this.getComplaints();
+
 
         },
         close() {
@@ -432,11 +433,13 @@ export default {
         openComponentEditCard(value) {
             this.dialogEdit = true;
             this.rowComplaint.id = value;
+
         },
 
-        openComponentLookRecord(){
+        openComponentLookRecord(id){     //передать id в компонент
           this.dialogRecord = true;
-
+          this.rowComplaint.id = id;
+          console.log(this.returnUser());
         },
 
         openAddFileDialog() {

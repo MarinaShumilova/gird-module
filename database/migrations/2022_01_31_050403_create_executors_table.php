@@ -15,7 +15,7 @@ class CreateExecutorsTable extends Migration
     {
         Schema::create('executors', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name');
         });
     }
 

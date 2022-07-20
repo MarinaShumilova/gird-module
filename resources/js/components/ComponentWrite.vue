@@ -19,7 +19,7 @@
                     sm="12"
                     lg="2">
                     <base-date-picker
-                        v-model="complaint.start_at"
+                        v-model="complaint.order_at"
                         dense
                         outlined
                         label="Дата приказа">
@@ -142,25 +142,38 @@
 
                 </v-col>
                 <v-col
+                sm="4">
+                        <base-date-picker
+                            v-model="complaint.unload_at"
+                            :error-messages="errors['unload_at']"
+                            dense
+                            outlined
+                            label="Дата отгрузки шасси">
+                        </base-date-picker>
+                </v-col>
+                <v-col
                     sm="4">
-                    <v-text-field
-                        item-value="id"
-                        label="Отгрузка,шасси"
-                        outlined
+
+                    <v-combobox
+                        v-model="complaint.chassises"
+                        :error-messages="errors['chassises']"
+                        label="Шасси"
+                        :items="chassises"
+                        small-chips
                         dense
-                    ></v-text-field>
+                        solo
+                        multiple
+                        hide-selected
 
-
-<!--                    <base-file-input></base-file-input>-->
-
-                    <v-text-field
-                        v-if="false"
-                    ></v-text-field>
-<!--                    <comment></comment>-->
-
+                    >
+                    </v-combobox>
 
                 </v-col>
+
+
+
             </v-row>
+
     </v-form>
 
 </template>
@@ -204,12 +217,15 @@ export default {
             required:true,
         },
 
+        chassises:{
+            type:Array,
+            required:true,
+        },
 
         contractors:{
           type:Array,
           required:true,
         },
-
 
         value: {
             type: Object,
@@ -221,7 +237,6 @@ export default {
             complaint: this.value,
             Calendar: null,
 
-            selectedExecutors:[],   //список устранений
 
         }
 
@@ -230,7 +245,8 @@ export default {
         close() {
             this.$emit('input', false);
 
-        }
+        },
+
     },
     watch:{     //следить за изменением value
         value: {

@@ -145,13 +145,18 @@ export default {
         submit() {
           api.call(endpoint('complaints.expenses.store', this.complaint_id), this.expensesData)
                 .then(response => {
-                    this.getExpenses();
+                    this.expensesData.sum = null;
+
 
                 })
               .catch(error =>{
                   this.errors = error.response.data.errors
 
               })
+            .finally(()=>{
+                this.getExpenses();
+            })
+
 
         },
         close() {

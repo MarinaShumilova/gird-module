@@ -15,17 +15,17 @@ class ComplaintPolicy
      *
      * @param  \GirdBase\Models\User  $user
      * @return mixed
+     * метод index
      */
+
+
     public function viewAny(User $user)
     {
 //        if(authProfile()->hasRole('admin')) {
 //            return true;
 //        };
-//
-//        return false;
 
         return true;
-
 
     }
 
@@ -35,6 +35,7 @@ class ComplaintPolicy
      * @param  \GirdBase\Models\User  $user
      * @param  \App\Complaint  $complaint
      * @return mixed
+     * метод show
      */
     public function view(User $user, Complaint $complaint)
     {

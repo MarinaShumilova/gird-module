@@ -18,11 +18,15 @@
                 :type_comps="type_comps"
                 :culprits="culprits"
                 :executors="executors"
+                :executor_id="executors"
                 :contractors="contractors"
                 :errors="validationErrors"
+                :chassises="chassises"
 
             >
             </component-write>
+
+
 
     </base-dialog-action>
 
@@ -33,6 +37,7 @@
 
 import ComponentWrite from "./ComponentWrite";
 import BaseDialogAction from "gird-base-front/src/components/BaseDialogAction"
+import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
 
 export default {
     name: "AddCard",
@@ -42,7 +47,7 @@ export default {
             //required: true,
         },
     },
-    components: {ComponentWrite, BaseDialogAction},
+    components: {ComponentWrite, BaseDialogAction, BaseFileInput},
     /*Загрузить данные с базы*/
     created() {
         this.showDialog = false;
@@ -70,6 +75,7 @@ export default {
             culprits:[],
             executors:[],
             contractors:[],
+            chassises:[],
 
 
             complaint: {
@@ -86,6 +92,9 @@ export default {
                 numb_order:null,
                 vehicle:null,
                 start_at: new Date().toISOString().substr(0, 10),
+                close_at: new Date().toISOString().substr(0, 10),
+                unload_at: new Date().toISOString().substr(0, 10),
+                order_at: new Date().toISOString().substr(0, 10),
 
 
             },
@@ -105,6 +114,7 @@ export default {
     methods: {
         /*Запись в базу*/
         submit() {
+
             api.call(endpoint('complaints.store'), this.complaint)
                 .then(response => {
                     this.$emit('store-complaint');
@@ -117,9 +127,10 @@ export default {
 
 
 
-
         close() {
             this.$emit('input', false);
+
+
         },
 
 

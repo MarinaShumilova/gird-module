@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TypeCompsTableSeeder::class);
         $this->call(WarrantyDecreesTableSeeder::class);
         $this->call(WarrantyTypesTableSeeder::class);
+        $this->call(ChassisTableSeeder::class);
 
         $this->call(ComplaintsTableSeeder::class);
 

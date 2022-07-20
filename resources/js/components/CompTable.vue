@@ -95,26 +95,26 @@
                                 dense
                             >
                                 <v-list-item-group>
-                                    <v-list-item @click.stop="openExpensesDialog">
+                                    <v-list-item @click.stop="openExpensesDialog"    v-show="showUser||showAccount">
                                         <v-list-item-icon>
                                             <v-icon right>mdi-card-bulleted-outline</v-icon>
                                         </v-list-item-icon>
                                         <v-list-item-title>Затраты</v-list-item-title>
-                                    </v-list-item>
-                                    <v-list-item @click.stop="openSendFileDialog">
+                                    </v-list-item >
+                                    <v-list-item  v-show="showUser" @click.stop="openSendFileDialog" >
                                         <v-list-item-icon>
                                             <v-icon right>mdi-shuffle-disabled</v-icon>
                                         </v-list-item-icon>
                                         <v-list-item-title>Перенаправить документы</v-list-item-title>
                                     </v-list-item>
-                                    <v-list-item @click.stop="openAddFileDialog">
+                                    <v-list-item v-show="showUser" @click.stop="openAddFileDialog">
                                         <v-list-item-icon>
                                             <v-icon right>mdi-card-plus-outline</v-icon>
                                         </v-list-item-icon>
                                         <v-list-item-title>Прикрепить документы</v-list-item-title>
                                     </v-list-item>
 
-                                    <v-list-item v-if="editedRow.status_id === 1"
+                                    <v-list-item v-show="showUser" v-if="editedRow.status_id === 1"
                                                  @click="exitComplaints(editedRow.id)">
                                         <v-list-item-icon>
                                             <v-icon right>mdi-close</v-icon>
@@ -136,12 +136,19 @@
 
                         <!--   затраты-->
                         <expenses-card
-                            v-show="showUser"
+                            v-show="showUser||showAccount"
                             v-if="expensesCreateDialog"
                             v-model="expensesCreateDialog"
                             @close-expenses="closeExpensesCard"
                             :complaint_id="editedRow.id"
                         ></expenses-card>
+                    <!--кооментарий к комплайну-->
+                        <component-comment
+                            v-if="commentsCreateDialog"
+                            v-model="commentsCreateDialog"
+                            :complaint_id="rowComplaint.id"
+                            @close-comments="closeCommentCard"
+                        ></component-comment>
 
                         <!--    перенаправить -->
                         <send-file
@@ -186,8 +193,6 @@
                             @expenses-created="dialogRecord= false">
 
                         </look-record>
-
-
 
 
                     </template>
@@ -246,6 +251,7 @@
                         </v-tooltip>
 
                                 <v-btn
+                                    v-show="!showUser"
                                     icon
                                     @click.stop="openComponentLookRecord(item.id)"
                                 >
@@ -255,36 +261,46 @@
                                     </v-icon>
                                 </v-btn>
 
-
                         <v-btn icon
-                               v-show="showUser"
+                               v-show="showUser||showAccount"
                                @click.stop="show(item, $event)">
                             <v-icon>mdi-menu</v-icon>
                         </v-btn>
+<!--                        комментарий-->
+                        <v-btn icon
+                               @click.stop="openComponentComment(item.id)">
+                            <v-icon>
+                                mdi-comment-processing-outline
+                            </v-icon>
+                        </v-btn>
+
+
 
 
                         <!--                        если виновна другая сторона-->
-                        <v-tooltip right>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-icon
-                                    small
-                                    color="red darken-4"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                >mdi-email-send-outline
-                                </v-icon>
-                            </template>
-                            <span>Регресс + дата</span>
-                        </v-tooltip>
+<!--                        <v-tooltip right>-->
+<!--                            <template v-slot:activator="{ on, attrs }">-->
+<!--                                <v-icon-->
+<!--                                    small-->
+<!--                                    color="red darken-4"-->
+<!--                                    v-bind="attrs"-->
+<!--                                    v-on="on"-->
+<!--                                >mdi-email-send-outline-->
+<!--                                </v-icon>-->
+<!--                            </template>-->
+<!--                            <span>Регресс + дата</span>-->
+<!--                        </v-tooltip>-->
 
                     </template>
 
-                    <template #footer.append>
+                    <template #footer.append
+                    >
                         <v-tooltip
                             top
                             color="cyan lighten-3">
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn
+                                    v-show="showUser"
                                     @click.stop="cardCreateDialog = true"
                                     color="cyan lighten-1"
                                     height="28"
@@ -321,6 +337,7 @@ import DeleteComplain from "./DeleteComplain"
 import BaseDataTable from "gird-base-front/src/components/BaseDataTable"
 import filtratable from "../mixins/filtratable"
 import LookRecord from "./LookRecord";
+import ComponentComment from "./ComponentComment";
 
 
 export default {
@@ -329,7 +346,7 @@ export default {
         AddCard, ExpensesCard, SendFile,
         AddFile, BaseMonthPicker, EditCard,
         DeleteComplain, LookRecord,
-        BaseDataTable
+        BaseDataTable,ComponentComment,
     },
 
     mixins:[
@@ -343,6 +360,7 @@ export default {
             y: 0,
 
             showUser:false,
+            showAccount:false,
 
             editedRow: null,   //вернет строку со всеми данными при вызове
 
@@ -379,6 +397,9 @@ export default {
             nameStatus: ['В работе', 'Завершен', 'Удален'],
 
             expensesCreateDialog: false, //затраты
+
+            commentsCreateDialog:false,
+
             sendFileCreateDialog: false,  //перенаправить
             addFileCreateDialog: false,   //прикрепить
             cardCreateDialog: false,      /*//запись*/
@@ -391,8 +412,11 @@ export default {
             dialogEdit: false,     /*редактировать запись*/
             dialogRecord: false,     /*редактировать запись*/
 
+
             rowComplaint: {},
             pagination:{},
+
+            statuses: [], // статуса из таблицы Статус
 
         }
     },
@@ -417,14 +441,17 @@ export default {
         /* проверка пользователя*/
         returnUser(){
             return this.$store.getters.userHasRole('admin');
-
-
         },
+        returnUserAccount(){
+            return this.$store.getters.userHasRole('account');
+        },
+
 
         closeExpensesCard(){
             this.getComplaints();
-
-
+        },
+        closeCommentCard(){
+            this.getComplaints();
         },
         close() {
             this.dialog = false;
@@ -439,7 +466,12 @@ export default {
         openComponentLookRecord(id){     //передать id в компонент
           this.dialogRecord = true;
           this.rowComplaint.id = id;
-          console.log(this.returnUser());
+
+        },
+
+        openComponentComment(id){
+          this.commentsCreateDialog = true;
+          this.rowComplaint.id = id;
         },
 
         openAddFileDialog() {
@@ -467,12 +499,8 @@ export default {
         },
 
         textStatus(status_id) {
-            switch (status_id) {
-                case 1:
-                    return 'В работе';
-                case 2:
-                    return 'Завершен';
-            }
+            return  this.statuses.find(status => status.id === status_id).name;
+
         },
 
         closeComplaint() {
@@ -488,12 +516,21 @@ export default {
                 .then(response => {
                     this.complaints = response.data.data;
                     this.makePagination(response.data);
+                    this.getStatuses();
                 })
                 .catch(error => {
                     //
                 })
 
         },
+
+        getStatuses(){
+          api.call(endpoint('statuses'))
+                .then(response =>{
+                    this.statuses = response.data
+                })
+        },
+
 
         makePagination(response){
             this.meta = {
@@ -542,6 +579,8 @@ export default {
     created() {
 
         this.showUser = this.returnUser();
+        this.showAccount = this.returnUserAccount();
+
         if(this.showUser)
             this.headers.push( {text: 'Удалить', value: 'deleteEntry'});
 

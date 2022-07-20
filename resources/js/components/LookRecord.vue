@@ -1,55 +1,76 @@
 <template>
     <v-dialog
+        v-if="showDialog"
         v-model="dialog"
         max-width="800"
         persistent
     >
+    <v-card>
 
-        <v-card>
-            <v-toolbar height="50" elevation="0">
-                <span>
-                    <v-icon>mdi-information-outline</v-icon>
-                  Информация
-                </span>
+            <v-card-title>
+                <v-icon left>mdi-information-outline</v-icon>
+                Информация
+                <v-spacer/>
+                <v-btn icon color="error" @click="close">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-card-title>
 
-                <v-spacer></v-spacer>
-                <v-toolbar-items>
-                    <v-btn icon color="error" @click="close">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                </v-toolbar-items>
-            </v-toolbar>
+                    <v-card-text>
+                        <v-row>
+                        <v-col
+                            cols="3">
+                        Приказ:<br>
+                        Дата приказа:<br>
+                        Дата заявки:<br>
+                        Контрагент:<br>
+                        Гарантийный приказ:<br>
+                        Гарантия:<br>
+                        Статус:<br>
+                        </v-col>
+                            <v-col
+                            cols="3">
+                                {{ this.complaint.numb_order}}<br>
+                                {{this.complaint.order_at | date}}<br>
+                                {{this.complaint.start_at | date}}<br>
+                                {{this.contractor_name}}<br>
+                                {{this.complaint.warranty_decree}}<br>
+                                {{this.warranty_type_name}}<br>
+                                {{this.type_comp_name}}<br>
+                            </v-col>
 
-            <v-list>
-                <template v-for="(item, index) in items">
-                    <v-list-item
-                        v-if="item.action"
-                        :key="item.title"
-                    >
-                        <v-list-item-action>
-                            <v-icon>{{ item.action }}</v-icon>
-                        </v-list-item-action>
 
-                        <v-list-item-content>
-                            <v-list-item-title>{{ item.title }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
 
-                    <v-divider
-                        v-else-if="item.divider"
-                        :key="index"
-                        :inset="inset"
-                    ></v-divider>
-                </template>
-            </v-list>
+                        <v-col
+                            cols="3">
+                        Причина гарантии:<br>
+                        Вид надстройки: <br>
+                        Виновник:<br>
+                        Устранение: <br>
+                        Дата отгрузки шасси:<br>
+                        Шасси: <br>
+                        </v-col>
+                            <v-col
+                            cols="3">
+                                {{this.reason_name}}<br>
+                                {{this.complaint.vehicle}}<br>
+                                {{this.culprit_name}}<br>
+                                {{this.executor_id}}<br>
+                                {{this.complaint.unload_at | date}}<br>
+                                {{this.complaint.chassises}} <br>
+                            </v-col>
+
+                        </v-row>
+                    </v-card-text>
+
+
+
+
+
         </v-card>
-
-
     </v-dialog>
 </template>
 <script>
-
-
 
 
 export default {
@@ -59,34 +80,47 @@ export default {
             type: Boolean,
             //required: true,
         },
-        id:{
-            type:Number,
+        id: {
+            type: Number,
             required: true
         },
     },
 
 
-
     created() {
+        this.showDialog = false;
         api.call(endpoint('complaints.show', this.id))
             .then((response) => {
-                this.complaints = response.data.data;
-                this.$emit('store-complaint');
+                this.warranty_type_name = response.data.warranty_type_name;
+                this.reason_name = response.data.reason_name;
+                this.type_comp_name = response.data.type_comp_name;
+                this.culprit_name = response.data.culprit_name;
+                this.executors = response.data.executors;
+                this.contractor_name = response.data.contractor_name;
+                this.chassises = response.data.chassises;
+                this.complaint = response.data.complaint;
+                this.executor_id = response.data.executor_id.join(', ');
+                this.showDialog = true;
+                this.complaint.chassises = this.complaint.chassises.map(function (item) {
+                    return item.number
+                }).join(', ')
 
             });
 
 
     },
-    data () {
-        return{
-            insert:true,
-            showDialog:false,
-            items:[
+    data() {
+        return {
+
+            insert: true,
+            showDialog: false,
+            items: [
                 {title: 'Приказ'},
 
             ],
-            complaint:{ },  //объект с данными
+            complaint: {},  //объект с данными
             dialog: this.value,
+
 
         }
     },
@@ -99,7 +133,6 @@ export default {
     },
     methods: {
         showComplaint(id) {
-
             api.call(endpoint('complaints.show', id))
                 .then((response) => {
                     this.complaints = response.data.data;
@@ -107,6 +140,7 @@ export default {
 
                 });
         },
+
 
 
         close() {

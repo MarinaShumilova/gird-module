@@ -18,6 +18,12 @@ const Endpoints = {
         "complaints.expenses.store":{"uri":"/complaints/{complaint}/expenses","method":"post"},
         "complaints.expenses.destroy":{"uri":"expenses/{expense}","method":"delete"},
         "complaints.expenses.update":{"uri":"expenses/{expense}","method":"put"},
+
+
+        "complaints.comment.index":{"uri":"/complaints/{complaint}/comments ","method":"get"},
+        "complaints.comment.store":{"uri":"/complaints/{complaint}/comments ","method":"post"},
+
+        "statuses":{"uri":"/statuses","method":"get"},
     },
 };
 

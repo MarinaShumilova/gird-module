@@ -21,6 +21,8 @@
            :contractors="contractors"
            :errors="validationErrors"
            :executor_id="executor_id"
+           :chassises="chassises"
+
            >
 
        </component-write>
@@ -61,9 +63,14 @@ export default {
                 this.executors = response.data.executors;
                 this.contractors = response.data.contractors;
                 //this.executor_id = response.data.complaint;
+                this.chassises = response.data.chassises;
                 this.complaint = response.data.complaint;
                 this.complaint.executor_id = response.data.executor_id;
                 this.showDialog = true;
+                this.complaint.chassises=this.complaint.chassises.map(function(item)
+                {
+                    return item.number;
+                })
 
             });
 
@@ -78,6 +85,7 @@ export default {
             executors:[],
             executor_id:[],
             contractors:[],
+            chassis:[],
             complaint:{ },  //объект с данными
 
 

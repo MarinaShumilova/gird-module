@@ -22,6 +22,12 @@ class CreateComplaintsTable extends Migration
 
             $table->string('vehicle');          //вид надстройки
             $table->string('numb_order')->comment('номер приказа');
+            $table->date('order_at')->comment('дата приказа');
+
+            $table->date('unload_at')->comment('дата отгрузки');
+
+
+
             $table->string('warranty_decree')->nullable()->comment('№ гар-го приказа');
             $table->unsignedBigInteger('warranty_type_id')->comment('гарантия');
             $table->unsignedBigInteger('reason_id')->comment('причина гар-ии');
@@ -39,6 +45,9 @@ class CreateComplaintsTable extends Migration
             $table->foreign('contractor_id')->references('id')->on('contractors');
             $table->foreign('culprit_id')->references('id')->on('culprits');
             $table->foreign('status_id')->references('id')->on('statuses');
+            ;
+
+
 
 
             $table->timestamps();

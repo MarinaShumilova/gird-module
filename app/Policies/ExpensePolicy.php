@@ -19,6 +19,8 @@ class ExpensePolicy
     public function viewAny(User $user)
     {
         //
+
+        return true;
     }
 
     /**
@@ -31,6 +33,7 @@ class ExpensePolicy
     public function view(User $user, Expense $expense)
     {
         //
+        return true;
     }
 
     /**
@@ -41,7 +44,7 @@ class ExpensePolicy
      */
     public function create(User $user)
     {
-        //
+        return  $user->role != 'user';
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\CommentComplaintController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -27,7 +28,7 @@ class Complaint extends Model
 
     protected $fillable = ['start_at','close_at','vehicle','numb_order',
        'warranty_decree', 'warranty_type_id','reason_id','type_comp_id',
-        'contractor_id','culprit_id'
+        'contractor_id','culprit_id','unload_at','order_at'
     ];
 
 
@@ -40,6 +41,18 @@ class Complaint extends Model
     {   /*один к одному(связать по id)*/
         return $this->belongsTo(Reason::class, 'reason_id','id');
     }
+
+    public function warranty_type()
+    {
+        return $this->belongsTo(WarrantyType::class, 'warranty_type_id','id');
+    }
+
+
+    public function type_comp()
+    {
+        return $this->belongsTo(TypeComp::class, 'type_comp_id','id');
+    }
+
 
     public function culprit()
     {
@@ -60,6 +73,20 @@ class Complaint extends Model
     {
         return $this->belongsToMany(Executor::class, 'complaints_executors');
     }
+
+    public function comments(){
+      return $this->hasMany(CommentComplaint::class,'complaint_id','id');
+    }
+//
+    public function chassises()
+    {
+        return $this->hasMany(Chassis::class,'complaint_id', 'id');
+    }
+
+
+//
+
+
 
 
     /*

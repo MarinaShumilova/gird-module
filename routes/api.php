@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\CommentComplaintController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\FinishComplaintController;
+use App\Http\Controllers\StatusController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExpensesController;
@@ -23,6 +25,12 @@ Route::prefix('complaints')->name('complaints.')->group(function() {
     Route::delete('{complaint}/return', [FinishComplaintController::class, 'return'])->name('return');
 
 });
+
+Route::get('statuses',[StatusController::class, 'get'])->name('statuses');
+
 Route::resource('complaints', ComplaintController::class);
 
 Route::resource('complaints.expenses', ExpensesController::class)->shallow();
+Route::resource('complaints.comments', CommentComplaintController::class)->shallow();
+
+

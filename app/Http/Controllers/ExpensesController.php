@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class ExpensesController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -16,6 +17,7 @@ class ExpensesController extends Controller
      */
     public function index(Complaint $complaint)
     {
+        $this->authorize('viewAny', Expense::class);
         return $complaint->expenses()->get();
 
 
@@ -41,6 +43,8 @@ class ExpensesController extends Controller
     public function store(StoreExpensePost $request, Complaint $complaint)
     {
         //
+        $this->authorize('create',Expense::class);
+
         $expense = new Expense($request->all());
         $expense->save();
 

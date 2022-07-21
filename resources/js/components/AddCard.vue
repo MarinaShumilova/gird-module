@@ -11,6 +11,7 @@
             Добавить запись
         </template>
 
+
             <component-write
                 v-model="complaint"
                 :warranty-types="warrantyTypes"
@@ -26,9 +27,16 @@
             >
             </component-write>
 
+        <base-file-input
+            v-model="complaint.files"
+            :extensions="extensions"
+            lable = "Прикрепить документы"
+            :max-size="maxSize"
+        ></base-file-input>
 
 
     </base-dialog-action>
+
 
 </template>
 
@@ -36,8 +44,9 @@
 //
 
 import ComponentWrite from "./ComponentWrite";
-import BaseDialogAction from "gird-base-front/src/components/BaseDialogAction"
+import BaseDialogAction from "gird-base-front/src/components/BaseDialogAction";
 import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
+
 
 export default {
     name: "AddCard",
@@ -59,6 +68,8 @@ export default {
                 this.culprits = response.data.culprits;
                 this.executors = response.data.executors;
                 this.contractors = response.data.contractors;
+                this.maxSize = response.data.attachment_rules.max_size;
+                this.extensions = response.data.attachment_rules.extensions;
                 this.showDialog = true;
 
             });
@@ -77,6 +88,11 @@ export default {
             contractors:[],
             chassises:[],
 
+            // файлы
+
+            extensions:[],
+            maxSize:'',
+
 
             complaint: {
                 warranty_type_id: 1,
@@ -86,6 +102,8 @@ export default {
                 executor_id: [],
                 contractor_id:1,
                 status_id:1,  /*статус в работе*/
+                files:[],
+                chassises:[],
 
 
                 warranty_decree:null,
@@ -95,7 +113,6 @@ export default {
                 close_at: new Date().toISOString().substr(0, 10),
                 unload_at: new Date().toISOString().substr(0, 10),
                 order_at: new Date().toISOString().substr(0, 10),
-
 
             },
             dialog: this.value,
@@ -114,8 +131,36 @@ export default {
     methods: {
         /*Запись в базу*/
         submit() {
+            let formData = new FormData();
 
-            api.call(endpoint('complaints.store'), this.complaint)
+            formData.append('vehicle', this.complaint.vehicle);
+            formData.append('start_at', this.complaint.start_at);
+            formData.append('unload_at', this.complaint.unload_at);
+            formData.append('numb_order', this.complaint.numb_order);
+            formData.append('order_at', this.complaint.order_at);
+            formData.append('contractor_id', this.complaint.contractor_id);
+            formData.append('culprit_id', this.complaint.culprit_id);
+            formData.append('reason_id', this.complaint.reason_id);
+            formData.append('warranty_type_id', this.complaint.warranty_type_id);
+            formData.append('type_comp_id', this.complaint.type_comp_id);
+
+
+            for (let i = 0; i < this.complaint.chassises.length; i++) {
+                formData.append('complaint.chassis', this.complaint.chassises[i]);
+            };
+
+            for (let i = 0; i < this.complaint.executor_id.length; i++) {
+                formData.append('complaint.executor_id', this.complaint.executor_id[i]);
+            };
+
+
+            // attachments
+            for (let i = 0; i < this.complaint.files.length; i++) {
+                formData.append('complaint.files', this.complaint.files[i]);
+            };
+
+            // api.call(endpoint('complaints.store'), this.complaint)
+            api.call(endpoint('complaints.store'), formData)
                 .then(response => {
                     this.$emit('store-complaint');
                     this.close()
@@ -123,6 +168,16 @@ export default {
                 .catch(error =>{
                     this.validationErrors = error.response.data.errors
                     })
+
+/*            api.call(endpoint('complaints.store'), this.complaint)
+                .then(response => {
+                    this.$emit('store-complaint');
+                    this.close()
+                })
+                .catch(error =>{
+                    this.validationErrors = error.response.data.errors
+                })*/
+
         },
 
 

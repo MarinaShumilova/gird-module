@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\AttachFile;
+use GirdBase\Models\Attachment;
+use GirdBase\Rules\ExtensionRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreBlogPost extends FormRequest
@@ -33,13 +36,22 @@ class StoreBlogPost extends FormRequest
 
             'chassis' => 'array|integer',
 
+            'files' =>'array',
+            'files.*'=> [
+                'file',
+                new ExtensionRule(AttachFile::extensions()),
+                'max:' . AttachFile::maxSize()
+           ],
+
+
+
             //справочники(наличие в БД)
 
             'warranty_type_id' => 'required|exists:App\Models\WarrantyType,id',
             'reason_id' => 'required|exists:App\Models\Reason,id',
             'type_comp_id' => 'required|exists:App\Models\TypeComp,id',
             'culprit_id' => 'required|exists:App\Models\Culprit,id',
-            'executor_id' => 'array|required',
+            'executor_id' => 'array',
             'executor_id.*.' =>'integer|exist:App\Models\Executor,id',
 
 

@@ -416,14 +416,14 @@ export default {
             rowComplaint: {},
             pagination:{},
 
-            statuses: [], // статуса из таблицы Статус
+            statuses: [],/* статуса из таблицы Статус*/
 
         }
     },
 
     watch: {},
     methods: {
-        /* открыть форму редактирования и загрузить данные с таблицы */
+   /*      открыть форму редактирования и загрузить данные с таблицы */
 
         show(item, e) {
 
@@ -438,7 +438,7 @@ export default {
             })
         },
 
-        /* проверка пользователя*/
+
         returnUser(){
             return this.$store.getters.userHasRole('admin');
         },
@@ -483,6 +483,7 @@ export default {
 
         openExpensesDialog() {
             this.expensesCreateDialog = true;
+
         },
 
         openCardDialog() {
@@ -495,12 +496,19 @@ export default {
                     return 'blue lighten-1';
                 case 2:
                     return 'teal lighten-1';
+
             }
+
         },
 
         textStatus(status_id) {
-            return  this.statuses.find(status => status.id === status_id).name;
-
+           // return  this.statuses.find(status => status.id === status_id).name;
+            switch (status_id) {
+                case 1:
+                    return 'В работе';
+                case 2:
+                    return 'Завершен';
+            }
         },
 
         closeComplaint() {
@@ -527,7 +535,8 @@ export default {
         getStatuses(){
           api.call(endpoint('statuses'))
                 .then(response =>{
-                    this.statuses = response.data
+                    this.statuses = response.data;
+
                 })
         },
 

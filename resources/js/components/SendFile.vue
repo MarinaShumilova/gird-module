@@ -5,7 +5,6 @@
         width="400"
         scrollable
         persistent>
-
     <v-card>
         <v-toolbar height="50" elevation="1">
                 <span>
@@ -19,8 +18,8 @@
                 </v-btn>
             </v-toolbar-items>
         </v-toolbar>
-        <v-card-title >
-            <v-row >
+        <v-card-text >
+            <v-row justify="center">
                 <v-col
                     sm="10">
                     <base-date-picker v-model="date" dense outlined label="Дата перенаправления">
@@ -28,46 +27,60 @@
                 </v-col>
                 <v-col
                     sm="8">
-                    <v-file-input
-                        chips
-                        dense
-                        multiple
-                        label="Загрузить документ"
-                    ></v-file-input>
+                    <base-file-input
+                        v-model="files"
+                        :extensions="extensions"
+                        lable = "Прикрепить документы"
+                        :max-size="maxSize"
+                    ></base-file-input>
 
                 </v-col>
                 <v-col sm="2">  <comment ></comment></v-col>
                 <v-col sm="10">
-                    <v-card-actions>
-                        <v-row>
-                            <v-col
-                                v-for="(item, i) in items"
-                                :key="i"
-                                sm="10">
-                                <v-card>
-                                    <v-card-actions>
-                                        {{ item.name }}
-                                        <v-spacer></v-spacer>
-                                        <v-btn icon align="end">
-                                            <v-icon small color="red">mdi-bucket</v-icon>
-                                        </v-btn>
-                                    </v-card-actions>
+                    <v-list>
+                        <v-list-item
+                            v-for="item in files"
+                            :key="item.id"
+                        >
+                            <v-list-item-title>{{ item.name }}
+                                <v-divider></v-divider>
+                            </v-list-item-title>
 
-                                </v-card>
-                            </v-col>
-                        </v-row>
+                            <v-btn icon
 
-                    </v-card-actions>
+                            >
+                                <v-icon small color="red">mdi-bucket</v-icon>
+                            </v-btn>
+                        </v-list-item>
+                    </v-list>
+
+                    <v-divider></v-divider>
+
                 </v-col>
             </v-row>
-        </v-card-title>
+        </v-card-text>
+        <v-card-actions>
+            <v-btn
+                :disabled="loading"
+                text
+                @click="close"
+            >
+                Отмена
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+                :loading="loading"
+                text
+                color="primary"
 
-        <comp-save-cancel></comp-save-cancel>
+            >
+                Добавить
+            </v-btn>
+        </v-card-actions>
+
 
     </v-card>
     </v-dialog>
-
-
 
 
 </template>
@@ -76,29 +89,35 @@
 
 import BaseDatePicker from "gird-base-front/src/components/BaseDatePicker";
 import Comment from "./Comment";
-import CompSaveCancel from "./CompSaveCancel";
+import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
+
 
 export default {
-    components: {BaseDatePicker, Comment,CompSaveCancel},
+    components: {BaseDatePicker, Comment,BaseFileInput},
     name: "SendFile",
     props: {
         value: {
             type: Boolean,
             required: true,
         },
+        loading: {
+            type: Boolean,
+            default: false
+        },
     },
     data() {
         return {
             Calendar: null,
             date: new Date().toISOString().substr(0, 10),
-            fileInput: 'file',
+            files:[],
+            extensions:[],
+            maxSize:'',
+
             items: [
                 {
                     name: 'name1',
-                },
-                {
-                    name: 'name2',
-                },
+                }
+
             ],
         }
     },

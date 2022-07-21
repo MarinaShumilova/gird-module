@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Http\Controllers\CommentComplaintController;
+use GirdBase\Models\Attachment;
+use GirdBase\Traits\Models\HasAttachments;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Complaint extends Model
 {
+    use HasAttachments;
 
     use SoftDeletes;
 
@@ -102,4 +105,9 @@ class Complaint extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+
+    protected function getAttachmentModel() : string
+    {
+        return AttachFile::class;
+    }
 }

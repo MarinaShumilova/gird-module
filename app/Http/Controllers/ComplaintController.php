@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBlogPost;
+use App\Models\AttachFile;
 use App\Models\Chassis;
 use App\Models\Complaint;
 use App\Models\Contractor;
 use App\Models\Culprit;
 use App\Models\Executor;
-use App\Models\Expense;
 use App\Models\Reason;
 use App\Models\TypeComp;
 use App\Models\WarrantyDecree;
 use App\Models\WarrantyType;
 use Illuminate\Http\Request;
-use function foo\func;
+
 
 
 class ComplaintController extends Controller
@@ -63,6 +63,8 @@ class ComplaintController extends Controller
             'executors' => Executor::get(),
             'contractors'=> Contractor::get(),
             'warranty_decrees'=>WarrantyDecree::get(),
+            'attachment_rules' => AttachFile::rules(),
+
         ];
     }
 
@@ -83,6 +85,13 @@ class ComplaintController extends Controller
 
         $complaint->save();
 
+//        dump($request->files);
+
+//        foreach ($request->files as $file)
+//        {
+//            $complaint->saveAttachment($file);
+//
+//        };
 
 
         foreach ($request->chassises as $chassis)
@@ -98,7 +107,7 @@ class ComplaintController extends Controller
 
         foreach ($request->executor_id as $executorId) {
             $complaint->executors()->attach($executorId);
-        }
+        };
 
 
     }

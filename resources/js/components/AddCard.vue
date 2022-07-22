@@ -91,7 +91,7 @@ export default {
             // файлы
 
             extensions:[],
-            maxSize:'',
+            maxSize:0,
 
 
             complaint: {
@@ -146,17 +146,20 @@ export default {
 
 
             for (let i = 0; i < this.complaint.chassises.length; i++) {
-                formData.append('complaint.chassis', this.complaint.chassises[i]);
+                formData.append('chassis' + '[' + i + ']', this.complaint.chassises[i]);
             };
 
+
+
             for (let i = 0; i < this.complaint.executor_id.length; i++) {
-                formData.append('complaint.executor_id', this.complaint.executor_id[i]);
-            };
+                   formData.append('executor_id' + '[' + i + ']', this.complaint.executor_id[i]);
+               };
 
 
             // attachments
             for (let i = 0; i < this.complaint.files.length; i++) {
-                formData.append('complaint.files', this.complaint.files[i]);
+                formData.append('attachments'+'[' + i + ']', this.complaint.files[i]);
+
             };
 
             // api.call(endpoint('complaints.store'), this.complaint)
@@ -168,15 +171,6 @@ export default {
                 .catch(error =>{
                     this.validationErrors = error.response.data.errors
                     })
-
-/*            api.call(endpoint('complaints.store'), this.complaint)
-                .then(response => {
-                    this.$emit('store-complaint');
-                    this.close()
-                })
-                .catch(error =>{
-                    this.validationErrors = error.response.data.errors
-                })*/
 
         },
 

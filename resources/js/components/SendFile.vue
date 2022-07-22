@@ -5,81 +5,83 @@
         width="400"
         scrollable
         persistent>
-    <v-card>
-        <v-toolbar height="50" elevation="1">
+        <v-card>
+            <v-toolbar height="50">
                 <span>
                     <v-icon>mdi-shuffle-disabled</v-icon>
                    Перенаправить доккументы
                 </span>
-            <v-spacer></v-spacer>
-            <v-toolbar-items>
+                <v-spacer></v-spacer>
                 <v-btn icon color="error" @click="close">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
-            </v-toolbar-items>
-        </v-toolbar>
-        <v-card-text >
-            <v-row justify="center">
-                <v-col
-                    sm="10">
-                    <base-date-picker v-model="date" dense outlined label="Дата перенаправления">
-                    </base-date-picker>
-                </v-col>
-                <v-col
-                    sm="8">
-                    <base-file-input
-                        v-model="files"
-                        :extensions="extensions"
-                        lable = "Прикрепить документы"
-                        :max-size="maxSize"
-                    ></base-file-input>
+            </v-toolbar>
 
-                </v-col>
-                <v-col sm="2">  <comment ></comment></v-col>
-                <v-col sm="10">
-                    <v-list>
-                        <v-list-item
-                            v-for="item in files"
-                            :key="item.id"
-                        >
-                            <v-list-item-title>{{ item.name }}
-                                <v-divider></v-divider>
-                            </v-list-item-title>
+            <v-card-text>
+                <v-row justify="center">
+                    <v-col
+                        sm="12">
+                    </v-col>
+                    <v-col  sm="10">
+                        <base-date-picker v-model="date" outlined label="Дата перенаправления">
+                        </base-date-picker>
+                    </v-col>
+                    <v-col
+                        sm="8">
+                        <base-file-input
+                            v-model="files"
+                            :extensions="extensions"
+                            lable="Прикрепить документы"
+                            :max-size="maxSize"
+                        ></base-file-input>
 
-                            <v-btn icon
-
+                    </v-col>
+                    <v-col sm="2">
+                        <comment></comment>
+                    </v-col>
+                    <v-col sm="10">
+                        <v-list>
+                            <v-list-item
+                                v-for="item in files"
+                                :key="item.id"
                             >
-                                <v-icon small color="red">mdi-bucket</v-icon>
-                            </v-btn>
-                        </v-list-item>
-                    </v-list>
+                                <v-list-item-title>{{ item.name }}
+                                    <v-divider></v-divider>
+                                </v-list-item-title>
 
-                    <v-divider></v-divider>
+                                <v-btn icon
 
-                </v-col>
-            </v-row>
-        </v-card-text>
-        <v-card-actions>
-            <v-btn
-                :disabled="loading"
-                text
-                @click="close"
-            >
-                Отмена
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-                :loading="loading"
-                text
-                color="primary"
+                                >
+                                    <v-icon small color="red">mdi-bucket</v-icon>
+                                </v-btn>
+                            </v-list-item>
+                        </v-list>
 
-            >
-                Добавить
-            </v-btn>
-        </v-card-actions>
+                        <v-divider></v-divider>
 
+                    </v-col>
+                </v-row>
+                <v-card-actions>
+                    <v-btn
+                        :disabled="loading"
+                        text
+                        @click="close"
+                    >
+                        Отмена
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        :loading="loading"
+                        text
+                        color="primary"
 
-    </v-card>
+                    >
+                        Добавить
+                    </v-btn>
+                </v-card-actions>
+            </v-card-text>
+
+        </v-card>
     </v-dialog>
 
 
@@ -93,7 +95,7 @@ import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
 
 
 export default {
-    components: {BaseDatePicker, Comment,BaseFileInput},
+    components: {BaseDatePicker, Comment, BaseFileInput},
     name: "SendFile",
     props: {
         value: {
@@ -109,9 +111,9 @@ export default {
         return {
             Calendar: null,
             date: new Date().toISOString().substr(0, 10),
-            files:[],
-            extensions:[],
-            maxSize:'',
+            files: [],
+            extensions: [],
+            maxSize: '',
 
             items: [
                 {

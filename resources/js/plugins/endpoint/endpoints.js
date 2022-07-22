@@ -23,7 +23,14 @@ const Endpoints = {
         "complaints.comment.index":{"uri":"/complaints/{complaint}/comments ","method":"get"},
         "complaints.comment.store":{"uri":"/complaints/{complaint}/comments ","method":"post"},
 
+        "complaints.attachments.index":{"uri":"/complaints/{complaint}/attachments","method":"get"},
+        "complaints.attachments.store":{"uri":"/complaints/{complaint}/attachments","method":"post"},
+        "complaints.attachments.create":{"uri":"/complaints/{complaint}/attachments/create","method":"get"},
+
+
         "statuses":{"uri":"/statuses","method":"get"},
+
+
     },
 };
 

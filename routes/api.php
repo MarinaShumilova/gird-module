@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\CommentComplaintController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\FinishComplaintController;
@@ -8,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExpensesController;
 //use App\Http\Controllers\CauseWarrantyController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -32,5 +35,7 @@ Route::resource('complaints', ComplaintController::class);
 
 Route::resource('complaints.expenses', ExpensesController::class)->shallow();
 Route::resource('complaints.comments', CommentComplaintController::class)->shallow();
+Route::resource('complaints.attachments',AttachmentController::class )->shallow();
+
 
 

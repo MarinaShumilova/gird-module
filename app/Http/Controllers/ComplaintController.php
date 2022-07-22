@@ -85,29 +85,34 @@ class ComplaintController extends Controller
 
         $complaint->save();
 
-//        dump($request->files);
+        if($request->has('attachments')){
+            foreach ($request->attachments as $file)
+            {
+                $complaint->saveAttachment($file);
 
-//        foreach ($request->files as $file)
-//        {
-//            $complaint->saveAttachment($file);
-//
-//        };
+            };
+        };
 
 
-        foreach ($request->chassises as $chassis)
-        {
-            $chassised = new Chassis();                          //создать строку в таблице
+        if($request->has('chassises')){
+            foreach ($request->chassises as $chassis)
+            {
+                $chassised = new Chassis();                          //создать строку в таблице
 
-            $chassised->number = $chassis;                      //обращаюсь к столбцу
-            $chassised->complaint_id =  $complaint->id;
-            $chassised->save();
+                $chassised->number = $chassis;                      //обращаюсь к столбцу
+                $chassised->complaint_id =  $complaint->id;
+                $chassised->save();
+            };
         };
 
 
 
-        foreach ($request->executor_id as $executorId) {
-            $complaint->executors()->attach($executorId);
-        };
+        if($request->has('executor_id')) {
+            foreach ($request->executor_id as $executorId) {
+                $complaint->executors()->attach($executorId);
+            };
+        }
+
 
 
     }
@@ -157,7 +162,10 @@ class ComplaintController extends Controller
 
     public function edit($id)
     {
+
         $complaint = Complaint::findOrFail($id);
+
+        $this->authorize('update', $complaint);
 
         $executors = $complaint->executors->pluck( 'id');       //сделать ключ, передать га фронт
         $executors->all();
@@ -168,9 +176,6 @@ class ComplaintController extends Controller
 
        $complaint->chassises = $complaint->chassises->pluck('number');
 
-
-
-        $this->authorize('update', $complaint);
 
         return [
             'executor_id'=>$executors,
@@ -244,12 +249,13 @@ class ComplaintController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Complaint $complaint)
     {
+        $this->authorize('delete', $complaint);
 
-       $complaint = Complaint::findOrFail($id);
+      // $complaint = Complaint::findOrFail($id);
 
-        $this->authorize('delete',$id);
+
         $complaint->delete();
     }
 }

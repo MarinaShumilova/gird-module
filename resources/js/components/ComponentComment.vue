@@ -124,6 +124,7 @@ export default {
             api.call(endpoint('complaints.comment.store', this.complaint_id), this.commentData)
                 .then(response => {
                     this.commentData.comments =null;
+                    console.log(this.commentData.comments);
                 })
                 .catch(error => {
                     this.errors = error.response.data.errors

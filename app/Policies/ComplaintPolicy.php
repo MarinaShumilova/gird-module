@@ -67,7 +67,7 @@ class ComplaintPolicy
     public function update(User $user, Complaint $complaint)
     {
         //
-       return true;
+        return  $this->rightsRole('admin');
     }
 
     /**
@@ -79,7 +79,8 @@ class ComplaintPolicy
      */
     public function delete(User $user, Complaint $complaint)
     {
-       return $complaint->role ==='admin';
+
+        return  $this->rightsRole('admin');
 
     }
 

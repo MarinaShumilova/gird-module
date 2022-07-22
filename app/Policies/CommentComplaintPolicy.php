@@ -91,4 +91,13 @@ class CommentComplaintPolicy
     {
         //
     }
+
+    private function rightsRole($role) : bool
+    {
+        if(authProfile()->hasRole($role)){
+            return true;
+        }
+
+        return false;
+    }
 }

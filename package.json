@@ -2,37 +2,43 @@
     "private": true,
     "scripts": {
         "dev": "npm run development",
-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "watch": "npm run development -- --watch",
-        "watch-poll": "npm run watch -- --watch-poll",
-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "development": "mix",
+        "watch": "mix watch",
+        "watch-poll": "mix watch -- --watch-options-poll=1000",
+        "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "production": "mix --production"
     },
     "devDependencies": {
         "@mdi/font": "^5.1.45",
         "axios": "^0.19",
         "cross-env": "^7.0",
+        "deepmerge": "^4.2.2",
         "laravel-echo": "^1.8.1",
-        "laravel-mix": "^5.0.1",
+        "laravel-mix": "^6.0.49",
         "lodash": "^4.17.13",
         "pusher-js": "^7.0.0",
         "resolve-url-loader": "^3.1.0",
         "sass": "^1.15.2",
-        "sass-loader": "^8.0.0",
-        "vue-template-compiler": "^2.6.11"
+        "sass-loader": "^13.0.2",
+        "vue-loader": "^15.9.8",
+        "vue-template-compiler": "^2.7.7",
+        "vuetify-loader": "^1.9.1",
+        "vuetifyjs-mix-extension": "^0.0.20",
+        "webpack": "^5.73.0",
+        "webpack-cli": "^4.10.0"
     },
     "dependencies": {
-        "gird-base-front": "git+https://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:x-oauth-basic@github.com/tarashev/gird-base-front.git",
+        "gird-base-front": "git+https://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:x-oauth-basic@github.com/tarashev/gird-base-front.git",
         "ifvisible.js": "^1.0.6",
         "moment": "^2.29.1",
         "store": "^2.0.12",
-        "vue": "^2.6.11",
+        "vue": "^2.7.7",
         "vue-i18n": "^8.22.0",
         "vue-infinite-loading": "^2.4.5",
         "vue-notification": "^1.3.20",
         "vue-router": "^3.1.6",
-        "vuetify": "^2.2.22",
+        "vuetify": "^2.6.7",
         "vuex": "^3.2.0"
     }
 }

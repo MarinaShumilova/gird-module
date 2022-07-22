@@ -163,7 +163,6 @@
                             v-show="showUser"
                             v-if="addFileCreateDialog"
                             v-model="addFileCreateDialog"
-                            @expenses-created="addFileCreateDialog = false"
                             :id="editedRow.id">
                         </add-file>
 
@@ -171,6 +170,7 @@
                             v-show="showUser"
                             v-if="cardCreateDialog"
                             v-model="cardCreateDialog"
+                            :id="rowComplaint.id"
                             @store-complaint="getComplaints"
                             @expenses-created="cardCreateDialog= false">
                         </add-card>
@@ -474,8 +474,9 @@ export default {
           this.rowComplaint.id = id;
         },
 
-        openAddFileDialog() {
+        openAddFileDialog(id) {
             this.addFileCreateDialog = true;
+            this.rowComplaint.id = id;
         },
         openSendFileDialog() {
             this.sendFileCreateDialog = true;

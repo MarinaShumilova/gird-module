@@ -1,3 +1,4 @@
+<!--Прикрепить документы-->
 <template>
     <v-dialog
         :value="value"
@@ -5,26 +6,25 @@
         scrollable
         persistent>
     <v-card>
-        <v-toolbar height="50" elevation="0">
+        <v-toolbar height="50">
                 <span>
                     <v-icon>mdi-folder-multiple-plus</v-icon>
                    Прикрепить документы
                 </span>
             <v-spacer></v-spacer>
-            <v-toolbar-items>
 
                 <v-btn icon color="error" @click="close">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
 
-            </v-toolbar-items>
         </v-toolbar>
+
         <v-card-text>
             <v-row justify="center">
                 <v-col
                     sm="10">
                     <base-file-input
-                        v-model="files"
+                        v-model="attachment.files"
                         :extensions="extensions"
                         lable = "Прикрепить документы"
                         :max-size="maxSize"
@@ -32,22 +32,21 @@
                 </v-col>
                 <v-col
                     sm="10">
-                <v-list>
+<!--                <v-list>
                     <v-list-item
-                        v-for="item in files"
+                        v-for="item in attachment.files"
                         :key="item.id"
                     >
-                        <v-list-item-title>{{ item.name }}
+                        <v-list-item-title>
                             <v-divider></v-divider>
                         </v-list-item-title>
 
                         <v-btn icon
-
                         >
                             <v-icon small color="red">mdi-bucket</v-icon>
                         </v-btn>
                     </v-list-item>
-                </v-list>
+                </v-list>-->
                     <v-divider></v-divider>
                 </v-col>
 
@@ -66,6 +65,7 @@
                     :loading="loading"
                     text
                     color="primary"
+                    @click="submit"
 
                 >
                     Добавить
@@ -83,7 +83,7 @@
 import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
 
 export default {
-    components:{BaseFileInput},
+    components: {BaseFileInput},
     name: "AddFile",
     props: {
         value: {
@@ -94,23 +94,57 @@ export default {
             type: Boolean,
             default: false
         },
+        id:{
+            type:Number,
+            required: true
+        },
     },
     data() {
         return {
-            files:[],
-            extensions:[],
-            maxSize:'',
-            items: [
-                {
-                    name: 'name1',
-                },
-            ],
+            extensions: [],
+            maxSize: 0,
+            attachment:{
+                files: [],
+            },
+
+            dialog: this.value,
+            validationErrors: {},
+
         }
     },
+    created() {             //вызвать при открытии диалога
+       api.call(endpoint('complaints.attachments.create',this.id))
+            .then((response)=>{
+                this.maxSize = response.data.attachment_rules.max_size;
+                this.extensions = response.data.attachment_rules.extensions;
+            });
+    },
     methods: {
-        close() {
-            this.$emit('input', false);
-        },
+
+        submit() {
+
+            let formData = new FormData();
+            for (let i = 0; i < this.attachment.files.length; i++) {
+                formData.append('attachments' + '[' + i + ']', this.attachment.files[i]);
+            };
+
+            api.call(endpoint('complaints.attachments.store',this.id), formData)
+                .then(response => {
+                    this.close()
+                })
+                .catch(error => {
+                    this.validationErrors = error.response.data.errors
+                })
+
+
+         },
+
+
+    close() {
+        this.$emit('input', false);
+    },
+
     }
+
 }
 </script>

@@ -12,6 +12,7 @@
                         label="Приказ"
                         :error-messages="errors['numb_order']"
                         outlined
+                        type="number"
                         dense
                     ></v-text-field>
                 </v-col>

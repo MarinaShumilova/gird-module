@@ -24,7 +24,13 @@
                   >
                     <v-col
                         sm="10">
-                        <BaseMonthPicker v-model="month" dense outlined type="month" label="Период">
+                        <BaseMonthPicker
+                            v-model="month"
+                            dense
+                            outlined
+                            :error-messages="errors['start_at']"
+                            type="month"
+                            label="Период">
                         </BaseMonthPicker>
                     </v-col>
                     <v-col sm="10"
@@ -137,6 +143,7 @@ export default {
             api.call(endpoint('complaints.expenses.index', this.complaint_id))
                 .then((response) => {
                     this.expenses = response.data;
+
 
                 });
 

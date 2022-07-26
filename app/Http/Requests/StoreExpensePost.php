@@ -24,7 +24,7 @@ class StoreExpensePost extends FormRequest
     public function rules()
     {
         return [
-           'sum' => 'required|integer',
+            'sum' => 'required|integer',
             'start_at' => 'required|date|before_or_equal:' . date("d.m.Y") ,
             'complaint_id'=>'required|exists:App\Models\Complaint,id'
 

@@ -29,7 +29,6 @@ class ComplaintController extends Controller
     {
         $this->authorize('viewAny', Complaint::class);
 
-
         return Complaint::
         with([
             'reason',

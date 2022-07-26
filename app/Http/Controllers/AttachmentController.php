@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAttachmentPost;
 use App\Http\Requests\StoreExpensePost;
 use App\Models\AttachFile;
 use App\Models\Complaint;
+use GirdBase\Rules\ExtensionRule;
 use Illuminate\Http\Request;
 
 class AttachmentController extends Controller
@@ -12,11 +14,11 @@ class AttachmentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function index()
+    public function index(Complaint $complaint)
     {
-        //
+        return  $complaint->attachments()->get();
     }
 
     /**
@@ -37,14 +39,13 @@ class AttachmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,Complaint $complaint)
+    public function store(StoreAttachmentPost $request,Complaint $complaint)
     {
 
         if($request->has('attachments')){
             foreach ($request->attachments as $file)
             {
                 $complaint->saveAttachment($file);
-
             };
         };
     }
@@ -57,7 +58,10 @@ class AttachmentController extends Controller
      */
     public function show($id)
     {
-        //
+//        $files = AttachFile::findOrFail($id);
+//
+//      dd($files);
+
     }
 
     /**
@@ -78,7 +82,7 @@ class AttachmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreAttachmentPost $request, $id)
     {
         //
     }

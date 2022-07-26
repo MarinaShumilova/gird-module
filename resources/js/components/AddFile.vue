@@ -24,7 +24,7 @@
                 <v-col
                     sm="10">
                     <base-file-input
-                        v-model="attachment.files"
+                        v-model="files"
                         :extensions="extensions"
                         lable = "Прикрепить документы"
                         :max-size="maxSize"
@@ -32,12 +32,13 @@
                 </v-col>
                 <v-col
                     sm="10">
-<!--                <v-list>
+
+               <v-list>
                     <v-list-item
-                        v-for="item in attachment.files"
+                        v-for="item in files"
                         :key="item.id"
                     >
-                        <v-list-item-title>
+                        <v-list-item-title>{{item.name}}
                             <v-divider></v-divider>
                         </v-list-item-title>
 
@@ -46,7 +47,7 @@
                             <v-icon small color="red">mdi-bucket</v-icon>
                         </v-btn>
                     </v-list-item>
-                </v-list>-->
+                </v-list>
                     <v-divider></v-divider>
                 </v-col>
 
@@ -103,37 +104,65 @@ export default {
         return {
             extensions: [],
             maxSize: 0,
-            attachment:{
-                files: [],
-            },
-
+            files: [],
             dialog: this.value,
             validationErrors: {},
+            attachments:{
+                id:this.id,
+                name:'',
+            },
 
         }
     },
     created() {             //вызвать при открытии диалога
+        this.showDialog = false;
        api.call(endpoint('complaints.attachments.create',this.id))
             .then((response)=>{
                 this.maxSize = response.data.attachment_rules.max_size;
                 this.extensions = response.data.attachment_rules.extensions;
+                this.getAttachment();
+                this.showDialog = true;
             });
+
+
     },
     methods: {
+        getAttachment() {
+            api.call(endpoint('complaints.attachments.index',this.id))
+                .then((response) => {
+                    this.files = response.data;
+
+                });
+
+        },
+
+        showAttachment() {
+            api.call(endpoint('attachments.show', this.id))
+                .then((response) => {
+                     console.log('123');
+
+
+                });
+        },
+
 
         submit() {
-
             let formData = new FormData();
-            for (let i = 0; i < this.attachment.files.length; i++) {
-                formData.append('attachments' + '[' + i + ']', this.attachment.files[i]);
+            for (let i = 0; i < this.files.length; i++) {
+                formData.append('attachments' + '[' + i + ']', this.files[i]);
             };
+
 
             api.call(endpoint('complaints.attachments.store',this.id), formData)
                 .then(response => {
-                    this.close()
+                    this.attachments.name = null;
+
                 })
                 .catch(error => {
                     this.validationErrors = error.response.data.errors
+                })
+                .finally(()=>{
+                    this.getAttachment();
                 })
 
 
@@ -142,6 +171,7 @@ export default {
 
     close() {
         this.$emit('input', false);
+        this.$emit('close-add-file', false);
     },
 
     }

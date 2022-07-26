@@ -24,6 +24,9 @@ const Endpoints = {
         "complaints.comment.store":{"uri":"/complaints/{complaint}/comments ","method":"post"},
 
         "complaints.attachments.index":{"uri":"/complaints/{complaint}/attachments","method":"get"},
+        "attachments.show":{"uri":"/attachments/{attachment}","method":"get"},
+
+
         "complaints.attachments.store":{"uri":"/complaints/{complaint}/attachments","method":"post"},
         "complaints.attachments.create":{"uri":"/complaints/{complaint}/attachments/create","method":"get"},
 

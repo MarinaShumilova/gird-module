@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use GirdBase\Models\Attachment;
+use GirdBase\Traits\Models\HasAttachments;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AttachFile extends Attachment
 {
+    protected static $URLRouteName = 'attachments.show';
+
      /*
      |--------------------------------------------------------------------------
      | GLOBAL VARIABLES

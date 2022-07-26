@@ -155,7 +155,6 @@
                             v-show="showUser"
                             v-if="sendFileCreateDialog"
                             v-model="sendFileCreateDialog"
-                            @expenses-created="sendFileCreateDialog = false"
                             :id="editedRow.id">
                         </send-file>
                         <!--   прикрепить документ-->
@@ -163,7 +162,8 @@
                             v-show="showUser"
                             v-if="addFileCreateDialog"
                             v-model="addFileCreateDialog"
-                            :id="editedRow.id">
+                            :id="editedRow.id"
+                            @close-add-file="closeAddFile()">
                         </add-file>
 
                         <add-card
@@ -453,6 +453,10 @@ export default {
         closeCommentCard(){
             this.getComplaints();
         },
+        closeAddFile(){
+            this.getComplaints();
+        },
+
         close() {
             this.dialog = false;
         },
@@ -478,8 +482,9 @@ export default {
             this.addFileCreateDialog = true;
             this.rowComplaint.id = id;
         },
-        openSendFileDialog() {
+        openSendFileDialog(id) {
             this.sendFileCreateDialog = true;
+            this.rowComplaint.id = id;
         },
 
         openExpensesDialog() {

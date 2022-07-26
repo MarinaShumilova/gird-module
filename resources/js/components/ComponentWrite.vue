@@ -3,6 +3,9 @@
     <v-form>
             <v-row dense>
                 <v-col
+                cols="12">
+                </v-col>
+                <v-col
                     sm="12"
                     lg="2"
                     class="d-flex">
@@ -21,6 +24,7 @@
                     lg="2">
                     <base-date-picker
                         v-model="complaint.order_at"
+                        :error-messages="errors['order_at']"
                         dense
                         outlined
                         label="Дата приказа">

@@ -53,7 +53,7 @@ class CommentComplaintPolicy
      */
     public function update(User $user, CommentComplaint $commentComplaint)
     {
-        //
+        return  $this->rightsRole('admin');
     }
 
     /**
@@ -65,7 +65,7 @@ class CommentComplaintPolicy
      */
     public function delete(User $user, CommentComplaint $commentComplaint)
     {
-        //
+        return  $this->rightsRole('admin');
     }
 
     /**

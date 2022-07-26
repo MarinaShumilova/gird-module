@@ -22,8 +22,11 @@
                     <v-col
                         sm="12">
                     </v-col>
-                    <v-col  sm="10">
-                        <base-date-picker v-model="date" outlined label="Дата перенаправления">
+                    <v-col sm="10">
+                        <base-date-picker
+                            v-model="date"
+                            outlined
+                            label="Дата перенаправления">
                         </base-date-picker>
                     </v-col>
                     <v-col
@@ -37,15 +40,25 @@
 
                     </v-col>
                     <v-col sm="2">
-                        <comment></comment>
+                        <comment
+                            v-if="commentsCreateDialog"
+                            v-model="commentsCreateDialog"
+                            :complaint_id="redirectFile.id"
+                        ></comment>
+                        <v-btn icon
+                               @click.stop="openComment(redirectFile.id)">
+                            <v-icon>
+                                mdi-comment-processing-outline
+                            </v-icon>
+                        </v-btn>
                     </v-col>
                     <v-col sm="10">
                         <v-list>
                             <v-list-item
-                                v-for="item in files"
+                                v-for="item in redirectFile.files"
                                 :key="item.id"
                             >
-                                <v-list-item-title>{{ item.name }}
+                                <v-list-item-title>
                                     <v-divider></v-divider>
                                 </v-list-item-title>
 
@@ -106,6 +119,10 @@ export default {
             type: Boolean,
             default: false
         },
+        id: {
+            type: Number,
+            required: true
+        },
     },
     data() {
         return {
@@ -113,20 +130,38 @@ export default {
             date: new Date().toISOString().substr(0, 10),
             files: [],
             extensions: [],
-            maxSize: '',
+
+            redirectFile: {
+                files: [],
+                start_at: new Date().toISOString().substr(0, 10),
+                id:this.complaint_id,
+            },
+            maxSize: 0,
 
             items: [
                 {
                     name: 'name1',
+
                 }
 
             ],
+            dialog: this.value,
+            validationErrors: {},
+            btnLoading: false,
+            errors: {},
+
+            commentsCreateDialog:false,
         }
     },
     methods: {
         close() {
             this.$emit('input', false);
         },
+        openComment(id){
+            this.commentsCreateDialog = true;
+            this.id = id;
+        },
+
     }
 }
 </script>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\AttachmentController;
 use App\Models\Complaint;
 use GirdBase\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -18,13 +19,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', AppController::class)->name('index');
 
-/*Route::get('/test', function() {
 
+Route::middleware('auth:sanctum')->group(function() {
 
-   dump(Complaint::find(2));
-
-   dump(Complaint::where('vehicle',  '!=','Фургон')->get());
-
-
-
-});*/
+    Route::get('attachments/{attachment}', [AttachmentController::class, 'show'])
+        ->name('attachments.show');
+});

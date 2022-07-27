@@ -1,73 +1,4 @@
 <template xmlns="http://www.w3.org/1999/html">
-    <!--    <v-card>
-            <v-card maxHeight="70"
-                    elevation="0">
-                <v-row justify="space-around">
-                    <v-col sm="2">
-                        <v-checkbox
-                            v-model="selectAll"
-                            label="Показать удаленные"
-                        ></v-checkbox>
-                    </v-col>
-                    <v-col
-                        sm="3"
-                        dense>
-                        <v-select
-                            :items="nameStatus"
-                            label="Статус"
-                            multiple
-                        ></v-select>
-                    </v-col>
-                    <v-col sm="3"
-                           dense>
-                        &lt;!&ndash;                    Период для фильтра&ndash;&gt;
-                        <v-menu
-                            ref="menu"
-                            v-model="menu"
-                            :close-on-content-click="false"
-                            :return-value.sync="date"
-                            transition="scale-transition"
-                            offset-y
-                            max-width="290px"
-                            min-width="auto">
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                    v-model="date"
-                                    label="Период"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker
-                                v-model="date"
-                                type="month"
-                                no-title
-                                scrollable
-                                multiple>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                    text
-                                    color="primary"
-                                    @click="menu = false"
-                                >
-                                    Cancel
-                                </v-btn>
-                                <v-btn
-                                    text
-                                    color="primary"
-                                    @click="$refs.menu.save(date)"
-                                >
-                                    OK
-                                </v-btn>
-                            </v-date-picker>
-                        </v-menu>
-                    </v-col>
-                </v-row>
-            </v-card>
-
-        </v-card>-->
     <v-container full-height>
         <v-row>
             <v-col>
@@ -79,6 +10,10 @@
                     :meta="meta"
                     :headers="headers"
                 >
+<!--                    <template v-slot:top>-->
+<!--                        <component-filter></component-filter>-->
+<!--                    </template>-->
+
 
                     <template #footer.prepend>
                         <!--    всплывающее меню-->
@@ -338,10 +273,12 @@ import BaseDataTable from "gird-base-front/src/components/BaseDataTable"
 import filtratable from "../mixins/filtratable"
 import LookRecord from "./LookRecord";
 import ComponentComment from "./ComponentComment";
+import ComponentFilter from "./ComponentFilter";
 
 
 export default {
     components: {
+        ComponentFilter,
 
         AddCard, ExpensesCard, SendFile,
         AddFile, BaseMonthPicker, EditCard,

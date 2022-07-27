@@ -29,7 +29,7 @@ const Endpoints = {
 
         "complaints.attachments.store":{"uri":"/complaints/{complaint}/attachments","method":"post"},
         "complaints.attachments.create":{"uri":"/complaints/{complaint}/attachments/create","method":"get"},
-
+        "attachments.destroy":{"uri":"/attachments/{attachment}","method":"delete"},
 
         "statuses":{"uri":"/statuses","method":"get"},
 

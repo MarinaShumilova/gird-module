@@ -20,6 +20,7 @@ class StoreBlogPost extends FormRequest
         return true;
     }
 
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,7 +29,7 @@ class StoreBlogPost extends FormRequest
     public function rules()
     {
         return [
-            'vehicle' => 'required|max:30',
+            'vehicle' => 'required|string',
             'warranty_decree' => 'nullable|integer',
             'start_at' => 'required|date|before_or_equal:' . date("d.m.Y") ,
             'unload_at' => 'required|date||before_or_equal:' . date("d.m.Y"),
@@ -44,7 +45,7 @@ class StoreBlogPost extends FormRequest
                 'max:' . AttachFile::maxSize()
            ],
 
-            'executor_id' => 'nullable|array',
+            'executor_id' => 'required|array',
             'executor_id.*' =>'integer|exists:App\Models\Executor,id',
 
             //справочники(наличие в БД)

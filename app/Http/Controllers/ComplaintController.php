@@ -76,6 +76,7 @@ class ComplaintController extends Controller
     public function store(StoreBlogPost $request)
     {
 
+        //dd($request->all());
         $this->authorize('create', Complaint::class);
 
 

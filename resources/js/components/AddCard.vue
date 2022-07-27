@@ -1,16 +1,18 @@
 <!--Добавить новую запись-->
 <template>
     <base-dialog-action
-        v-if="showDialog"
         v-model="dialog"
         max-width="800"
         persistent
         @confirmed="submit"
+        :loading="loading"
+
     >
+
         <template v-slot:title>
             Добавить запись
         </template>
-
+            <v-container>
 
             <component-write
                 v-model="complaint"
@@ -33,6 +35,7 @@
             lable = "Прикрепить документы"
             :max-size="maxSize"
         ></base-file-input>
+        </v-container>
 
 
     </base-dialog-action>
@@ -54,6 +57,10 @@ export default {
         value: {
             type: Boolean,
             //required: true,
+        },
+        loading: {
+            type: Boolean,
+            default: false
         },
     },
     components: {ComponentWrite, BaseDialogAction, BaseFileInput},
@@ -131,12 +138,13 @@ export default {
     methods: {
         /*Запись в базу*/
         submit() {
-            let formData = new FormData();
+            this.loading = true;
 
-            formData.append('vehicle', this.complaint.vehicle);
+            let formData = new FormData();
+            formData.append('vehicle', this.complaint.vehicle ?? ' ');
             formData.append('start_at', this.complaint.start_at);
             formData.append('unload_at', this.complaint.unload_at);
-            formData.append('numb_order', this.complaint.numb_order);
+            formData.append('numb_order', this.complaint.numb_order ?? ' ');
             formData.append('order_at', this.complaint.order_at);
             formData.append('contractor_id', this.complaint.contractor_id);
             formData.append('culprit_id', this.complaint.culprit_id);
@@ -171,6 +179,9 @@ export default {
                 .catch(error =>{
                     this.validationErrors = error.response.data.errors
                     })
+                .finally(()=>{
+                    this.loading = false;
+                })
 
         },
 
@@ -178,7 +189,6 @@ export default {
 
         close() {
             this.$emit('input', false);
-
 
         },
 

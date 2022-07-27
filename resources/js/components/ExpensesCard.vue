@@ -1,13 +1,15 @@
 <!--Затраты-->
 <template>
     <v-dialog
+        v-if="showDialog"
         :value="value"
         width="300"
         scrollable
         persistent
        >
+
         <v-card>
-            <v-toolbar height="50" elevation="1">
+            <v-toolbar height="40" elevation="1">
                 <span>
                     <v-icon>mdi-card-bulleted-outline</v-icon>
                     Затраты
@@ -19,7 +21,8 @@
                     </v-btn>
                 </v-toolbar-items>
             </v-toolbar>
-            <v-card-text>
+            <v-container>
+            <v-card-text >
                 <v-row justify="center"
                   >
                     <v-col
@@ -69,7 +72,7 @@
 
                 <v-divider></v-divider>
             </v-card-text>
-
+            </v-container>
 
             <v-card-actions>
                 <v-btn
@@ -91,6 +94,7 @@
             </v-card-actions>
 
         </v-card>
+
     </v-dialog>
 
 
@@ -130,11 +134,14 @@ export default {
 
             expenses:[],
             errors: {},
+            showDialog:false,
 
         }
     },
     created() {             //вызвать при открытии диалога
+        this.showDialog = false;
         this.getExpenses();
+        this.showDialog = true;
     },
 
     methods: {
@@ -150,6 +157,7 @@ export default {
         },
 
         submit() {
+            this.loading = true;
           api.call(endpoint('complaints.expenses.store', this.complaint_id), this.expensesData)
                 .then(response => {
                     this.expensesData.sum = null;
@@ -162,6 +170,7 @@ export default {
               })
             .finally(()=>{
                 this.getExpenses();
+                this.loading = false;
             })
 
 

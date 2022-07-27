@@ -5,12 +5,14 @@
         max-width="800"
         persistent
         @confirmed="submit"
+        :loading="loading"
 
     >
         <template v-slot:title>
             Редактировать запись
         </template>
 
+        <v-container>
        <component-write
            v-model="complaint"
            :warranty-types="warrantyTypes"
@@ -26,6 +28,7 @@
            >
 
        </component-write>
+        </v-container>
 
     </base-dialog-action>
 </template>
@@ -45,6 +48,10 @@ export default {
         id:{
             type:Number,
             required: true
+        },
+        loading: {
+            type: Boolean,
+            default: false
         },
 
 
@@ -66,11 +73,12 @@ export default {
                 this.chassises = response.data.chassises;
                 this.complaint = response.data.complaint;
                 this.complaint.executor_id = response.data.executor_id;
-                this.showDialog = true;
                 this.complaint.chassises=this.complaint.chassises.map(function(item)
                 {
                     return item.number;
                 })
+
+                this.showDialog = true;
 
             });
 
@@ -109,6 +117,8 @@ export default {
     methods: {
         /*Обновление базы, передаем id и сам объект с данными*/
         submit() {
+            this.loading = true;
+
             api.call(endpoint('complaints.update', this.id), this.complaint)
                 .then(response => {
                     this.vehicle = response.data.complaint;
@@ -121,6 +131,9 @@ export default {
                 .catch(error =>{
                     this.validationErrors = error.response.data.errors
                     console.log(error)})
+                .finally(()=>{
+                    this.loading = false;
+                })
 
         },
 

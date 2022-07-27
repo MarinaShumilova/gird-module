@@ -130,9 +130,8 @@ export default {
                     this.errors = error.response.data.errors
                 })
                 .finally(() => {
-                    this.btnLoading = false;
                     this.getComments();
-
+                    this.btnLoading = false;
                 })
 
         },

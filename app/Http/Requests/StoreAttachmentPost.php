@@ -27,7 +27,7 @@ class StoreAttachmentPost extends FormRequest
     {
         return [
 
-            'files' =>'nullable|array',
+            'files' =>'required|array',
             'files.*'=> [
                 'file',
                 new ExtensionRule(AttachFile::extensions()),

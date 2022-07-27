@@ -8,6 +8,7 @@ use App\Models\AttachFile;
 use App\Models\Complaint;
 use GirdBase\Rules\ExtensionRule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AttachmentController extends Controller
 {
@@ -41,7 +42,6 @@ class AttachmentController extends Controller
      */
     public function store(StoreAttachmentPost $request,Complaint $complaint)
     {
-
         if($request->has('attachments')){
             foreach ($request->attachments as $file)
             {
@@ -54,14 +54,14 @@ class AttachmentController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public function show($id)
+    public function show(Request $request, AttachFile $attachment)
     {
-//        $files = AttachFile::findOrFail($id);
-//
-//      dd($files);
+        if(!$request->hasValidSignature())
+            abort(403);
 
+            return $attachment->response();
     }
 
     /**
@@ -93,8 +93,8 @@ class AttachmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(AttachFile $attachment)
     {
-        //
+        $attachment->delete();
     }
 }

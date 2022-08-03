@@ -34,6 +34,8 @@
             :extensions="extensions"
             lable = "Прикрепить документы"
             :max-size="maxSize"
+            :error-messages="validationErrors['attachments']"
+
         ></base-file-input>
         </v-container>
 
@@ -124,7 +126,7 @@ export default {
             },
             dialog: this.value,
             validationErrors: { },
-
+            errors: {},
             showDialog:false,   /*загружает данные до отображения*/
 
         }
@@ -189,7 +191,6 @@ export default {
 
         close() {
             this.$emit('input', false);
-
         },
 
 

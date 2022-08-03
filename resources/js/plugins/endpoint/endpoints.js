@@ -23,13 +23,21 @@ const Endpoints = {
         "complaints.comment.index":{"uri":"/complaints/{complaint}/comments ","method":"get"},
         "complaints.comment.store":{"uri":"/complaints/{complaint}/comments ","method":"post"},
 
-        "complaints.attachments.index":{"uri":"/complaints/{complaint}/attachments","method":"get"},
-        "attachments.show":{"uri":"/attachments/{attachment}","method":"get"},
 
+        "complaints.attachments.index":{"uri":"/complaints/{complaint}/attachments","method":"get"},
+
+        "attachments.show":{"uri":"/attachments/{attachment}","method":"get"},
 
         "complaints.attachments.store":{"uri":"/complaints/{complaint}/attachments","method":"post"},
         "complaints.attachments.create":{"uri":"/complaints/{complaint}/attachments/create","method":"get"},
-        "attachments.destroy":{"uri":"/attachments/{attachment}","method":"delete"},
+        "complaints.attachments.destroy":{"uri":"/complaints/{complaint}/attachments/{attachment}","method":"delete"},
+
+
+
+        "complaints.transfer.store":{"uri":"/complaints/{complaint}/transfer","method":"post"},
+        "complaints.transfer.index":{"uri":"/complaints/{complaint}/transfer","method":"get"},
+        "complaints.transfer.create":{"uri":"/complaints/{complaint}/transfer/create","method":"get"},
+        "complaints.transfer.destroy":{"uri":"/complaints/{complaint}/transfer/{transfer}","method":"delete"},
 
         "statuses":{"uri":"/statuses","method":"get"},
 

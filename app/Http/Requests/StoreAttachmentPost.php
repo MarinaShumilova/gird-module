@@ -15,7 +15,7 @@ class StoreAttachmentPost extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -27,8 +27,8 @@ class StoreAttachmentPost extends FormRequest
     {
         return [
 
-            'files' =>'required|array',
-            'files.*'=> [
+            'attachments' =>'required|array',
+            'attachments.*'=> [
                 'file',
                 new ExtensionRule(AttachFile::extensions()),
                 'max:' . AttachFile::maxSize()

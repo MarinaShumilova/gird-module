@@ -6,7 +6,9 @@
         scrollable
         persistent>
     <v-card>
-        <v-toolbar height="50">
+        <v-toolbar
+            height="50"
+            elevation="1">
                 <span>
                     <v-icon>mdi-folder-multiple-plus</v-icon>
                    Прикрепить документы
@@ -28,6 +30,7 @@
                         :extensions="extensions"
                         lable = "Прикрепить документы"
                         :max-size="maxSize"
+                        :error-messages="validationErrors['attachments']"
                     ></base-file-input>
                 </v-col>
                 <v-col
@@ -97,11 +100,7 @@ export default {
             type: Boolean,
             required: true,
         },
-        loading: {
-            type: Boolean,
-            default: false
-        },
-        id:{
+        compId:{
             type:Number,
             required: true
         },
@@ -114,12 +113,14 @@ export default {
             dialog: this.value,
             validationErrors: {},
             attachments:[],
+            loading:false,
+            errors: {},
 
         }
     },
     created() {             //вызвать при открытии диалога
         this.showDialog = false;
-       api.call(endpoint('complaints.attachments.create',this.id))
+       api.call(endpoint('complaints.attachments.create',this.compId))
             .then((response)=>{
                 this.maxSize = response.data.attachment_rules.max_size;
                 this.extensions = response.data.attachment_rules.extensions;
@@ -132,9 +133,10 @@ export default {
     },
     methods: {
         getAttachment() {
-            api.call(endpoint('complaints.attachments.index',this.id))
+            api.call(endpoint('complaints.attachments.index',this.compId))
                 .then((response) => {
                     this.files = response.data;
+
 
                 });
 
@@ -147,7 +149,6 @@ export default {
                 });
         },
 
-
         submit() {
             this.loading = true;
             let formData = new FormData();
@@ -156,7 +157,7 @@ export default {
             };
 
 
-            api.call(endpoint('complaints.attachments.store',this.id), formData)
+            api.call(endpoint('complaints.attachments.store',this.compId), formData)
                 .then(response => {
                      this.files = null;
 
@@ -180,8 +181,8 @@ export default {
 
        },
 
-        destroyFile(){
-            api.call(endpoint('attachments.destroy',id))
+        destroyFile(id){
+            api.call(endpoint('complaints.attachments.destroy', [this.compId, id]))
             .then(response=> {
                 this.getAttachment();
             })

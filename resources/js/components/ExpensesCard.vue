@@ -9,7 +9,7 @@
        >
 
         <v-card>
-            <v-toolbar height="40" elevation="1">
+            <v-toolbar height="50" elevation="1">
                 <span>
                     <v-icon>mdi-card-bulleted-outline</v-icon>
                     Затраты
@@ -111,10 +111,7 @@ export default {
             type: Boolean,
             required: true,
         },
-        loading: {
-            type: Boolean,
-            default: false
-        },
+
         complaint_id:{
             type:Number,
             required: true
@@ -135,6 +132,7 @@ export default {
             expenses:[],
             errors: {},
             showDialog:false,
+            loading:false,
 
         }
     },

@@ -90,14 +90,14 @@
                             v-show="showUser"
                             v-if="sendFileCreateDialog"
                             v-model="sendFileCreateDialog"
-                            :id="editedRow.id">
+                            :compId="editedRow.id">
                         </send-file>
                         <!--   прикрепить документ-->
                         <add-file
                             v-show="showUser"
                             v-if="addFileCreateDialog"
                             v-model="addFileCreateDialog"
-                            :id="editedRow.id"
+                            :comp-id="editedRow.id"
                             @close-add-file="closeAddFile()">
                         </add-file>
 
@@ -268,7 +268,6 @@ import AddFile from "./AddFile";
 import AddCard from "./AddCard";
 import BaseMonthPicker from "./BaseMonthPicker";
 import EditCard from "./EditCard";
-import DeleteComplain from "./DeleteComplain"
 import BaseDataTable from "gird-base-front/src/components/BaseDataTable"
 import filtratable from "../mixins/filtratable"
 import LookRecord from "./LookRecord";

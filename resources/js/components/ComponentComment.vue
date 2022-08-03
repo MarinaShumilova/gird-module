@@ -31,7 +31,7 @@
                         sm="2">
                         <v-btn icon
                                v-show="showUser"
-                               :loading="btnLoading"
+                               :loading="loading"
                                color="cyan lighten-1"
                                @click="submit"
                         >
@@ -72,10 +72,6 @@ export default {
             type: Boolean,
             //required: true,
         },
-        loading: {
-            type: Boolean,
-            default: false
-        },
         complaint_id: {
             type: Number,
             required: true
@@ -93,7 +89,7 @@ export default {
                 comments: '',
             },
             comments: [],
-            btnLoading: false,
+            loading: false,
             errors: {},
 
         }
@@ -120,18 +116,17 @@ export default {
 
         },
         submit() {
-            this.btnLoading = true;
+            // this.loading = true;
             api.call(endpoint('complaints.comment.store', this.complaint_id), this.commentData)
                 .then(response => {
                     this.commentData.comments =null;
-                    console.log(this.commentData.comments);
                 })
                 .catch(error => {
                     this.errors = error.response.data.errors
                 })
                 .finally(() => {
                     this.getComments();
-                    this.btnLoading = false;
+                    // this.loading = false;
                 })
 
         },

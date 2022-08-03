@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreBlogPost;
+use App\Http\Requests\StoreComplaintPost;
 use App\Models\AttachFile;
 use App\Models\Chassis;
 use App\Models\Complaint;
@@ -73,7 +73,7 @@ class ComplaintController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreBlogPost $request)
+    public function store(StoreComplaintPost $request)
     {
 
         //dd($request->all());
@@ -198,7 +198,7 @@ class ComplaintController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreBlogPost $request, $id)
+    public function update(StoreComplaintPost $request, $id)
     {
         // обращаемся в объект за id
         $complaint = Complaint::findOrFail($id);

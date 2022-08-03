@@ -20,9 +20,9 @@
                         <v-col
                             cols="10">
                             <v-textarea
-                                v-model="commentData.comments"
+                                v-model="textComment"
                                 v-show="showUser"
-                                :error-messages="errors['comment']"
+                                :error-messages="errors['comments']"
                                 dense
                                 rows="1">
                             </v-textarea>
@@ -33,7 +33,8 @@
                                    v-show="showUser"
                                    :loading="btnLoading"
                                    color="cyan lighten-1"
-                                   @click="submit"
+                                   @click="submitComment"
+
                             >
                                 <v-icon>
                                     mdi-plus
@@ -45,10 +46,10 @@
                             sm="10">
                             <v-list>
                                 <v-list-item
-                                    v-for="item in comments"
+                                    v-for="item in comment"
                                     :key="item.id"
                                 >
-                                    <v-list-item-title>{{item.comment}}
+                                    <v-list-item-title>{{item}}
 
                                         <v-divider></v-divider>
                                     </v-list-item-title>
@@ -60,6 +61,7 @@
                     </v-row>
                 </v-card-text>
             </v-card>
+
         </v-dialog>
     </div>
 </template>
@@ -68,6 +70,10 @@
 export default {
     name: "Comment",
     props: {
+        errors: {
+            type:Object,
+            required:false
+        },
         value: {
             type: Boolean,
             //required: true,
@@ -76,11 +82,10 @@ export default {
             type: Boolean,
             default: false
         },
-        complaint_id: {
-            type: Number,
-            required: true
+        comment: {
+          type: Array,
+          required: true
         },
-
     },
     data () {
         return {
@@ -88,17 +93,20 @@ export default {
             showUser:false,
             dialog: this.value,
             commentData: {
-                complaint_id: this.complaint_id,
                 comments: '',
             },
-            comments: [],
+
+            // comments: [],
+            textComment: '',
+
             btnLoading: false,
             errors: {},
+            redirectFile:this.value,
         }
     },
     created() {             //вызвать при открытии диалога
 
-        this.getComments();
+        // this.getComments();
         this.showUser = this.returnUser();     //роль
 
     },
@@ -106,41 +114,20 @@ export default {
         dialog(value) {
             this.$emit('input', value);
         },
+
     },
     methods: {
-        getComments() {
-            api.call(endpoint('complaints.comment.index', this.complaint_id))
-                .then((response) => {
-                    this.comments = response.data;
-
-                });
-
-        },
-        submit() {
-            this.btnLoading = true;
-            api.call(endpoint('complaints.comment.store', this.complaint_id), this.commentData)
-                .then(response => {
-                    this.commentData.comments =null;
-                    console.log(this.commentData.comments);
-                })
-                .catch(error => {
-                    this.errors = error.response.data.errors
-                })
-                .finally(() => {
-                    this.btnLoading = false;
-                    this.getComments();
-
-                })
-
-        },
-
         returnUser(){
             return this.$store.getters.userHasRole('admin');
         },
 
-
         close() {
             this.$emit('input', false);
+        },
+
+        submitComment(){
+            this.$emit('comments',this.textComment);
+
         },
 
 

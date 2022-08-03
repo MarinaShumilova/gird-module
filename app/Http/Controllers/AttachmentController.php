@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAttachmentPost;
 use App\Http\Requests\StoreExpensePost;
 use App\Models\AttachFile;
+use App\Models\Attachment;
 use App\Models\Complaint;
 use GirdBase\Rules\ExtensionRule;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ class AttachmentController extends Controller
      */
     public function index(Complaint $complaint)
     {
+
         return  $complaint->attachments()->get();
     }
 
@@ -93,8 +95,9 @@ class AttachmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AttachFile $attachment)
+    public function destroy(Complaint $complaint, AttachFile $attachment)
     {
+        $complaint->attachments()->detach($attachment);
         $attachment->delete();
     }
 }

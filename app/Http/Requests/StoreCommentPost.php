@@ -25,7 +25,7 @@ class StoreCommentPost extends FormRequest
     public function rules()
     {
         return [
-            'comment' => 'max:65000|required',
+            'comments' => 'required|max:65000',
             'complaint_id'=>'required|exists:App\Models\Complaint,id'
         ];
     }

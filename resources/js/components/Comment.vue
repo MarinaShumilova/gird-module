@@ -1,69 +1,52 @@
 <template>
-    <div >
-        <v-dialog
-            v-model="dialog"
-            width="500"
-            persistent
-        >
-            <v-card>
-                <v-card-title>
-                    <v-icon left>mdi-comment-multiple-outline</v-icon>
-                    Комментарий
-                    <v-spacer/>
-                    <v-btn
-                        icon color="error" @click="close">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                </v-card-title>
-                <v-card-text>
-                    <v-row>
-                        <v-col
-                            cols="10">
-                            <v-textarea
-                                v-model="textComment"
-                                v-show="showUser"
-                                :error-messages="errors['comments']"
-                                dense
-                                rows="1">
-                            </v-textarea>
-                        </v-col>
-                        <v-col
-                            sm="2">
-                            <v-btn icon
-                                   v-show="showUser"
-                                   :loading="btnLoading"
-                                   color="cyan lighten-1"
-                                   @click="submitComment"
+    <v-form>
+                <v-row>
+                    <v-col
+                        cols="10">
+                        <v-textarea
+                            v-model="textComment"
+                            v-show="showUser"
+                            :error-messages="errors['comments']"
+                            dense
+                            auto-grow
+                            rows="2">
+                        </v-textarea>
+                    </v-col>
+                    <v-col
+                        sm="2">
+                        <v-btn icon
+                               v-show="showUser"
+                               :loading="btnLoading"
+                               color="cyan lighten-1"
+                               @click="submitComment"
 
+                        >
+                            <v-icon>
+                                mdi-plus
+                            </v-icon>
+                        </v-btn>
+                    </v-col>
+
+                    <v-col
+                        sm="10">
+                        <v-list>
+                            <v-list-item
+                                v-for="item in comment"
+                                :key="item.id"
                             >
-                                <v-icon>
-                                    mdi-plus
-                                </v-icon>
-                            </v-btn>
-                        </v-col>
+                                <v-list-item-title>{{ item }}
 
-                        <v-col
-                            sm="10">
-                            <v-list>
-                                <v-list-item
-                                    v-for="item in comment"
-                                    :key="item.id"
-                                >
-                                    <v-list-item-title>{{item}}
+                                    <v-divider></v-divider>
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
 
-                                        <v-divider></v-divider>
-                                    </v-list-item-title>
-                                </v-list-item>
-                            </v-list>
+                    </v-col>
 
-                        </v-col>
+                </v-row>
 
-                    </v-row>
-                </v-card-text>
-            </v-card>
 
-        </v-dialog>
-    </div>
+    </v-form>
 </template>
 
 <script>
@@ -71,8 +54,8 @@ export default {
     name: "Comment",
     props: {
         errors: {
-            type:Object,
-            required:false
+            type: Object,
+            required: false
         },
         value: {
             type: Boolean,
@@ -83,14 +66,14 @@ export default {
             default: false
         },
         comment: {
-          type: Array,
-          required: true
+            type: Array,
+            required: true
         },
     },
-    data () {
+    data() {
         return {
             showDialog: false,
-            showUser:false,
+            showUser: false,
             dialog: this.value,
             commentData: {
                 comments: '',
@@ -101,7 +84,7 @@ export default {
 
             btnLoading: false,
             errors: {},
-            redirectFile:this.value,
+            redirectFile: this.value,
         }
     },
     created() {             //вызвать при открытии диалога
@@ -117,7 +100,7 @@ export default {
 
     },
     methods: {
-        returnUser(){
+        returnUser() {
             return this.$store.getters.userHasRole('admin');
         },
 
@@ -125,8 +108,8 @@ export default {
             this.$emit('input', false);
         },
 
-        submitComment(){
-            this.$emit('comments',this.textComment);
+        submitComment() {
+            this.$emit('comments', this.textComment);
 
         },
 

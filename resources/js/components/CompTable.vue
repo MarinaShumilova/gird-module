@@ -9,10 +9,17 @@
                     :loading="loading"
                     :meta="meta"
                     :headers="headers"
+                    disable-sort
                 >
-<!--                    <template v-slot:top>-->
-<!--                        <component-filter></component-filter>-->
-<!--                    </template>-->
+                    <template v-slot:top>
+                        <component-filter
+                            :status="statuses"
+                            :type_comps="type_comps"
+                            @change="getFilterComplaint"
+                        >
+
+                        </component-filter>
+                    </template>
 
 
                     <template #footer.prepend>
@@ -30,13 +37,13 @@
                                 dense
                             >
                                 <v-list-item-group>
-                                    <v-list-item @click.stop="openExpensesDialog"    v-show="showUser||showAccount">
+                                    <v-list-item @click.stop="openExpensesDialog" v-show="showUser||showAccount">
                                         <v-list-item-icon>
                                             <v-icon right>mdi-card-bulleted-outline</v-icon>
                                         </v-list-item-icon>
                                         <v-list-item-title>Затраты</v-list-item-title>
-                                    </v-list-item >
-                                    <v-list-item  v-show="showUser" @click.stop="openSendFileDialog" >
+                                    </v-list-item>
+                                    <v-list-item v-show="showUser" @click.stop="openSendFileDialog">
                                         <v-list-item-icon>
                                             <v-icon right>mdi-shuffle-disabled</v-icon>
                                         </v-list-item-icon>
@@ -48,6 +55,13 @@
                                         </v-list-item-icon>
                                         <v-list-item-title>Прикрепить документы</v-list-item-title>
                                     </v-list-item>
+                                    <v-list-item v-show="showUser" @click.stop="openRedressDialog">
+                                        <v-list-item-icon>
+                                            <v-icon right>mdi-cash-multiple</v-icon>
+                                        </v-list-item-icon>
+                                        <v-list-item-title>Компенсация</v-list-item-title>
+                                    </v-list-item>
+
 
                                     <v-list-item v-show="showUser" v-if="editedRow.status_id === 1"
                                                  @click="exitComplaints(editedRow.id)">
@@ -77,7 +91,7 @@
                             @close-expenses="closeExpensesCard"
                             :complaint_id="editedRow.id"
                         ></expenses-card>
-                    <!--кооментарий к комплайну-->
+                        <!--кооментарий к комплайну-->
                         <component-comment
                             v-if="commentsCreateDialog"
                             v-model="commentsCreateDialog"
@@ -126,22 +140,30 @@
                             :id="rowComplaint.id"
                             @store-complaint="getComplaints"
                             @expenses-created="dialogRecord= false">
-
                         </look-record>
+
+                        <component-redress
+                            v-show="showUser"
+                            v-if="redressCreateDialog"
+                            v-model="redressCreateDialog"
+                            :compId="editedRow.id"
+                        >
+
+                        </component-redress>
 
 
                     </template>
                     <template v-slot:item.deleteEntry="{item}">
-                    <v-btn
-                        icon
-                        @click.stop="destroyMy(item.id)"
-                        v-show="showUser"
-                    >
-                        <v-icon small
-                                color="red">
-                            mdi-bucket
-                        </v-icon>
-                    </v-btn>
+                        <v-btn
+                            icon
+                            @click.stop="destroyMy(item.id)"
+                            v-show="showUser"
+                        >
+                            <v-icon small
+                                    color="red">
+                                mdi-bucket
+                            </v-icon>
+                        </v-btn>
                     </template>
 
 
@@ -165,10 +187,10 @@
                                 >mdi-octagon
                                 </v-icon>
                             </template>
-                            <span>{{textStatus(item.status_id)}}</span>
+                            <span>{{ textStatus(item.status_id) }}</span>
                         </v-tooltip>
 
-                        <v-tooltip right >
+                        <v-tooltip right>
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn
                                     icon
@@ -185,23 +207,23 @@
 
                         </v-tooltip>
 
-                                <v-btn
-                                    v-show="!showUser"
-                                    icon
-                                    @click.stop="openComponentLookRecord(item.id)"
-                                >
-                                    <v-icon
-                                        dense
-                                    >mdi-information-outline
-                                    </v-icon>
-                                </v-btn>
+                        <v-btn
+                            v-show="!showUser"
+                            icon
+                            @click.stop="openComponentLookRecord(item.id)"
+                        >
+                            <v-icon
+                                dense
+                            >mdi-information-outline
+                            </v-icon>
+                        </v-btn>
 
                         <v-btn icon
                                v-show="showUser||showAccount"
                                @click.stop="show(item, $event)">
                             <v-icon>mdi-menu</v-icon>
                         </v-btn>
-<!--                        комментарий-->
+                        <!--                        комментарий-->
                         <v-btn icon
                                @click.stop="openComponentComment(item.id)">
                             <v-icon>
@@ -210,21 +232,19 @@
                         </v-btn>
 
 
-
-
                         <!--                        если виновна другая сторона-->
-<!--                        <v-tooltip right>-->
-<!--                            <template v-slot:activator="{ on, attrs }">-->
-<!--                                <v-icon-->
-<!--                                    small-->
-<!--                                    color="red darken-4"-->
-<!--                                    v-bind="attrs"-->
-<!--                                    v-on="on"-->
-<!--                                >mdi-email-send-outline-->
-<!--                                </v-icon>-->
-<!--                            </template>-->
-<!--                            <span>Регресс + дата</span>-->
-<!--                        </v-tooltip>-->
+                        <!--                        <v-tooltip right>-->
+                        <!--                            <template v-slot:activator="{ on, attrs }">-->
+                        <!--                                <v-icon-->
+                        <!--                                    small-->
+                        <!--                                    color="red darken-4"-->
+                        <!--                                    v-bind="attrs"-->
+                        <!--                                    v-on="on"-->
+                        <!--                                >mdi-email-send-outline-->
+                        <!--                                </v-icon>-->
+                        <!--                            </template>-->
+                        <!--                            <span>Регресс + дата</span>-->
+                        <!--                        </v-tooltip>-->
 
                     </template>
 
@@ -254,7 +274,6 @@
                     </template>
 
 
-
                 </base-data-table>
             </v-col>
         </v-row>
@@ -273,21 +292,22 @@ import filtratable from "../mixins/filtratable"
 import LookRecord from "./LookRecord";
 import ComponentComment from "./ComponentComment";
 import ComponentFilter from "./ComponentFilter";
+import ComponentRedress from "./ComponentRedress";
 
 
 export default {
     components: {
         ComponentFilter,
-
         AddCard, ExpensesCard, SendFile,
-        AddFile, BaseMonthPicker, EditCard,
-        DeleteComplain, LookRecord,
-        BaseDataTable,ComponentComment,
+        AddFile, BaseMonthPicker, EditCard, LookRecord,
+        BaseDataTable, ComponentComment, ComponentRedress,
     },
 
-    mixins:[
+
+    mixins: [
         filtratable
     ],
+
 
     data() {
         return {
@@ -295,8 +315,9 @@ export default {
             x: 0,
             y: 0,
 
-            showUser:false,
-            showAccount:false,
+            showUser: false,
+            showAccount: false,
+
 
             editedRow: null,   //вернет строку со всеми данными при вызове
 
@@ -312,7 +333,7 @@ export default {
                     sortable: false,
                     value: 'action',
                 },
-                {text: 'Дата создания', value: 'start_at' },
+                {text: 'Дата создания', value: 'start_at'},
                 {text: 'Дата закрытия', value: 'close_at'},
                 {text: 'Приказ', value: 'numb_order'},
                 {text: 'Гарантийный приказ', value: 'warranty_decree'},
@@ -330,15 +351,17 @@ export default {
                 {title: 'Прикрепить документы', icon: "mdi-folder-multiple-plus"},
             ],
 
+
             nameStatus: ['В работе', 'Завершен', 'Удален'],
 
             expensesCreateDialog: false, //затраты
 
-            commentsCreateDialog:false,
+            commentsCreateDialog: false,
 
             sendFileCreateDialog: false,  //перенаправить
             addFileCreateDialog: false,   //прикрепить
             cardCreateDialog: false,      /*//запись*/
+            redressCreateDialog: false,
 
 
             date: new Date().toISOString().substr(0, 7),
@@ -350,16 +373,17 @@ export default {
 
 
             rowComplaint: {},
-            pagination:{},
+            pagination: {},
 
             statuses: [],/* статуса из таблицы Статус*/
+            type_comps: [],
 
         }
     },
 
     watch: {},
     methods: {
-   /*      открыть форму редактирования и загрузить данные с таблицы */
+        /*      открыть форму редактирования и загрузить данные с таблицы */
 
         show(item, e) {
 
@@ -375,21 +399,22 @@ export default {
         },
 
 
-        returnUser(){
+        returnUser() {
             return this.$store.getters.userHasRole('admin');
         },
-        returnUserAccount(){
+        returnUserAccount() {
             return this.$store.getters.userHasRole('account');
         },
 
 
-        closeExpensesCard(){
+        closeExpensesCard() {
             this.getComplaints();
         },
-        closeCommentCard(){
+
+        closeCommentCard() {
             this.getComplaints();
         },
-        closeAddFile(){
+        closeAddFile() {
             this.getComplaints();
         },
 
@@ -403,15 +428,15 @@ export default {
 
         },
 
-        openComponentLookRecord(id){     //передать id в компонент
-          this.dialogRecord = true;
-          this.rowComplaint.id = id;
+        openComponentLookRecord(id) {     //передать id в компонент
+            this.dialogRecord = true;
+            this.rowComplaint.id = id;
 
         },
 
-        openComponentComment(id){
-          this.commentsCreateDialog = true;
-          this.rowComplaint.id = id;
+        openComponentComment(id) {
+            this.commentsCreateDialog = true;
+            this.rowComplaint.id = id;
         },
 
         openAddFileDialog(id) {
@@ -420,6 +445,10 @@ export default {
         },
         openSendFileDialog(id) {
             this.sendFileCreateDialog = true;
+            this.rowComplaint.id = id;
+        },
+        openRedressDialog(id) {
+            this.redressCreateDialog = true;
             this.rowComplaint.id = id;
         },
 
@@ -443,13 +472,19 @@ export default {
 
         },
 
+        getFilterComplaint(value){
+            if(value !== undefined) {
+                this.getComplaints(value);
+            }
+        },
+
         textStatus(status_id) {
-           // return  this.statuses.find(status => status.id === status_id).name;
+            // return  this.statuses.find(status => status.id === status_id).name;
             switch (status_id) {
                 case 1:
                     return 'В работе';
                 case 2:
-                    return 'Завершен';
+                    return 'Завершена';
             }
         },
 
@@ -460,13 +495,18 @@ export default {
         /**
          * In a real application this would be a call to fetch() or axios.get()
          */
+
         /*  Получить данные*/
-        getComplaints() {
-            api.call(endpoint('complaints.index', this.params))
+        getComplaints(input) {
+            api.call(endpoint('complaints.index', input))
                 .then(response => {
                     this.complaints = response.data.data;
+                    //  this.complaints.warrantyTypes = response.data.warrantyTypes;
+
                     this.makePagination(response.data);
                     this.getStatuses();
+
+
                 })
                 .catch(error => {
                     //
@@ -474,16 +514,15 @@ export default {
 
         },
 
-        getStatuses(){
-          api.call(endpoint('statuses'))
-                .then(response =>{
+        getStatuses() {
+            api.call(endpoint('statuses'))
+                .then(response => {
                     this.statuses = response.data;
 
                 })
         },
 
-
-        makePagination(response){
+        makePagination(response) {
             this.meta = {
                 current_page: response.current_page,
                 last_page: response.last_page,
@@ -528,12 +567,17 @@ export default {
     },
 
     created() {
+        api.call(endpoint('complaints.create'))
+            .then((response) => {
+                this.type_comps = response.data.type_comps;
+            });
+
 
         this.showUser = this.returnUser();
         this.showAccount = this.returnUserAccount();
 
-        if(this.showUser)
-            this.headers.push( {text: 'Удалить', value: 'deleteEntry'});
+        if (this.showUser)
+            this.headers.push({text: 'Удалить', value: 'deleteEntry'});
 
         this.setDebounce(this.getComplaints);
 

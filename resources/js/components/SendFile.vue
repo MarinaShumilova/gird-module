@@ -2,7 +2,7 @@
 <template>
     <v-dialog
         :value="value"
-        width="400"
+        :width=getParamForm().widthForm
         scrollable
         persistent>
         <v-card>
@@ -11,7 +11,7 @@
                 height="50">
                 <span>
                     <v-icon>mdi-shuffle-disabled</v-icon>
-                   Перенаправить доккументы
+                   {{this.paramForm.name}}
                 </span>
                 <v-spacer></v-spacer>
                 <v-btn icon color="error" @click="close">
@@ -21,38 +21,35 @@
             <v-container>
                 <v-card-text>
                     <v-row>
-                        <v-col sm="9">
+                        <v-col sm="4"     v-show="showUser">
                             <base-date-picker
                                 v-model="redirectFile.transfer_at"
                                 :error-messages="validationErrors['transfer_at']"
                                 outlined
                                 dense
                                 label="Дата перенаправления">
+
                             </base-date-picker>
                         </v-col>
 
-                        <v-col sm="3">
-                            <comment
-                                v-if="commentsCreateDialog"
-                                v-model="commentsCreateDialog"
-                                @comments="updateComment"
-                                :comment="comment"
-                                :errors="validationErrors"
-                            ></comment>
+                        <v-col :sm=getParamForm().smCol>
+                            <v-textarea
+                                v-model="redirectFile.comment"
+                                :error-messages="validationErrors['comments']"
+                                dense
+                                label="Комментарии"
+                                outlined
+                                auto-grow
+                                :disabled="!showUser"
+                                rows="2">
+                            </v-textarea>
 
-                            <v-btn icon
-                                   @click.stop="openComment">
-                                <v-icon
-                                    large
-                                    color="blue">
-                                    mdi-comment-processing-outline
-                                </v-icon>
-                            </v-btn>
                         </v-col>
 
                         <v-col
                             sm="12">
                             <base-file-input
+                                v-show="showUser"
                                 v-model="attachments"
                                 :extensions="extensions"
                                 lable="Прикрепить документы"
@@ -60,6 +57,13 @@
                                 :error-messages="validationErrors['attachments']"
                             ></base-file-input>
                         </v-col>
+<!--                        <comment-->
+<!--                            v-if="commentsCreateDialog"-->
+<!--                            v-model="commentsCreateDialog"-->
+<!--                            @comments="updateComment"-->
+<!--                            :comment="comment"-->
+
+<!--                        ></comment>-->
 
                         <v-col sm="12">
                             <v-list>
@@ -88,7 +92,7 @@
 
                         </v-col>
                     </v-row>
-                    <v-card-actions>
+                    <v-card-actions  v-show="showUser">
                         <v-btn
                             :disabled="loading"
                             text
@@ -103,7 +107,7 @@
                             color="primary"
                             @click="submit"
                         >
-                            Добавить
+                            Сохранить
                         </v-btn>
                     </v-card-actions>
                 </v-card-text>
@@ -139,12 +143,13 @@ export default {
         return {
             showUser:false,
             Calendar: null,
-            transfer_at: new Date().toISOString().substr(0, 10),
+           // transfer_at: new Date().toISOString().substr(0, 10),
             extensions: [],
-            comment: [],
-
+            comment:'',
             attachments: [],
             files:[],
+            idTransfer: 0,
+
 
 
             redirectFile: {
@@ -157,6 +162,12 @@ export default {
 
             dialog: this.value,
             loading: false,
+            paramForm:{
+                name:'Перенаправить доккументы',
+                widthForm:'600',
+                smCol:'8',
+            },
+
 
             validationErrors: { },
             commentsCreateDialog: false,
@@ -174,6 +185,8 @@ export default {
                 this.showDialog = true;
 
             });
+        this.showUser = this.returnUser();
+        this.getParamForm(this.showUser);
     },
 
     methods: {
@@ -188,18 +201,21 @@ export default {
         getTransfer() {
             api.call(endpoint('complaints.transfer.index', this.compId))
                 .then((response) => {
-                   this.redirectFile.transfer_at = response.data.transfer_at;
+                   //this.redirectFile.transfer_at = response.data.transfer_at;
+
+                   this.redirectFile.comment = response.data.comment;
                    this.files = response.data.attachments;
-                   this.idTransferFile = response.data.id;
+                   this.idTransfer = response.data.id;
+
 
                 });
         },
 
         // событие с дочернего компонента
-        updateComment(textComment) {
-            this.comment.push(textComment);
-            this.redirectFile.comment = textComment;
-        },
+        // updateComment(textComment) {
+        //     this.comment.push(textComment);
+        //     this.redirectFile.comment = textComment;
+        // },
 
 
         submit() {
@@ -211,11 +227,8 @@ export default {
             // attachments
             for (let i = 0; i < this.attachments.length; i++) {
                 formData.append('attachments' + '[' + i + ']', this.attachments[i]);
-            }
-            ;
+            };
 
-
-            // api.call(endpoint('complaints.transfer.store', this.id), this.redirectFile)
             api.call(endpoint('complaints.transfer.store', this.compId), formData)
                 .then(response => {
                 })
@@ -226,15 +239,31 @@ export default {
                 .finally(() => {
                     this.getTransfer();
                     this.loading = false;
+
                 })
         },
 
         destroyFile(id){
-            api.call(endpoint('complaints.transfer.destroy', [this.idTransferFile, id]))
+            api.call(endpoint('transfers.attachments.delete',[this.idTransfer, id]))
                 .then(response=> {
                     this.getTransfer();
+
                 })
-        }
+        },
+        returnUser(){
+            return this.$store.getters.userHasRole('admin');
+        },
+        getParamForm(){
+            if(!this.showUser){
+                this.paramForm.name ='Перенаправленные документы';
+                this.paramForm.widthForm = '400';
+                this.paramForm.smCol = '12';
+
+            }
+
+
+            return this.paramForm;
+        },
 
     }
 }

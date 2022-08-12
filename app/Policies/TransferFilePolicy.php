@@ -18,7 +18,7 @@ class TransferFilePolicy
      */
     public function viewAny(User $user)
     {
-
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class TransferFilePolicy
      */
     public function view(User $user, TransferFile $transferFile)
     {
-
+        return true;
     }
 
     /**
@@ -41,7 +41,7 @@ class TransferFilePolicy
      */
     public function create(User $user)
     {
-
+        return  true;
     }
 
     /**
@@ -53,7 +53,7 @@ class TransferFilePolicy
      */
     public function update(User $user, TransferFile $transferFile)
     {
-
+        return  $this->rightsRole('admin');
     }
 
     /**
@@ -65,7 +65,7 @@ class TransferFilePolicy
      */
     public function delete(User $user, TransferFile $transferFile)
     {
-
+        return  $this->rightsRole('admin');
     }
 
     /**
@@ -89,7 +89,7 @@ class TransferFilePolicy
      */
     public function forceDelete(User $user, TransferFile $transferFile)
     {
-
+        return  $this->rightsRole('admin');
     }
 
     private function rightsRole($role) : bool

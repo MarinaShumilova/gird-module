@@ -26,14 +26,14 @@ class StoreTransferFilePost extends FormRequest
     public function rules()
     {
         return [
-            'attachments' =>'required|array',
+            'attachments' =>'array',
                         'attachments.*'=> [
                             'file',
                             new ExtensionRule(AttachFile::extensions()),
                             'max:' . AttachFile::maxSize()
 
                         ],
-            'transfer_at'=>'date||before_or_equal:' . date("d.m.Y"),
+            'transfer_at'=>'date|before_or_equal:'. date("d.m.Y"),
             'comments' => 'string|max:65000',
             'complaint_id'=>'required|exists:App\Models\Complaint,id'
 

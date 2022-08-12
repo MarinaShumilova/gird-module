@@ -41,7 +41,7 @@ class AttachmentPolicy
      */
     public function create(User $user)
     {
-        return  $this->rightsRole('admin');
+        return true;
     }
 
     /**

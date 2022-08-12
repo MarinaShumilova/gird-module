@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTransferFilePost;
 use App\Models\AttachFile;
+use App\Models\Attachment;
 use App\Models\Complaint;
 use App\Models\TransferFile;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class TransferFileController extends Controller
      */
     public function index(Complaint $complaint)
     {
-
+        $this->authorize('viewAny', TransferFile::class);
 
        return $complaint
            ->transfer()
@@ -33,6 +34,8 @@ class TransferFileController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', TransferFile::class);
+
         return [
             'attachment_rules' => AttachFile::rules(),
 
@@ -45,10 +48,25 @@ class TransferFileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTransferFilePost $request,Complaint $complaint)
+    public function store(StoreTransferFilePost $request, Complaint $complaint)
     {
-        $transfer = new TransferFile($request->all());
-        $transfer->save();
+        $this->authorize('create', TransferFile::class);
+
+       $transfer = $complaint->transfer;
+
+
+
+        if(!$transfer){
+            $transfer = new TransferFile($request->all());
+            $transfer->save();
+        }
+        else
+        {
+
+            $transfer->update($request->only('comment'));
+
+        }
+
 
         if($request->has('attachments')){
             foreach ($request->attachments as $file)
@@ -69,6 +87,8 @@ class TransferFileController extends Controller
      */
     public function show(Request $request, AttachFile $attachment)
     {
+        $this->authorize('view', TransferFile::class);
+
         if(!$request->hasValidSignature())
             abort(403);
 
@@ -104,9 +124,19 @@ class TransferFileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TransferFile $transfer, AttachFile $attachment)
+    public function destroy(Complaint $complaint, TransferFile $transfer)
     {
+
+    }
+
+    public function delete(TransferFile $transfer, AttachFile $attachment)
+    {
+        $this->authorize('delete', TransferFile::class);
+
         $transfer->attachments()->detach($attachment);
-        $transfer->delete();
+        $attachment->delete();
+
+        return response('Deleted');
+
     }
 }

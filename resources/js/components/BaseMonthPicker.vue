@@ -37,7 +37,7 @@
 
 <script>
 export default {
-    name: "BaseDatePicker",
+    name: "BaseMonthPicker",
     props: {
         value: {
             type: String,

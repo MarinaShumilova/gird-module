@@ -28,6 +28,10 @@ class TransferFile extends Model
     */
 
 
+    public function complaint()
+    {
+        return $this->belongsTo(Complaint::class);
+    }
 
     /*
     |--------------------------------------------------------------------------

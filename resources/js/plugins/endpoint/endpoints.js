@@ -20,6 +20,12 @@ const Endpoints = {
         "complaints.expenses.update":{"uri":"expenses/{expense}","method":"put"},
 
 
+        // "complaints.redress.index":{"uri":"/complaints/{complaint}/redress","method":"get"},
+        // "complaints.redress.store":{"uri":"/complaints/{complaint}/redress","method":"post"},
+        // "complaints.redress.destroy":{"uri":"redress/{redress}","method":"delete"},
+        // "complaints.redress.update":{"uri":"redress/{redress}","method":"put"},
+
+
         "complaints.comment.index":{"uri":"/complaints/{complaint}/comments ","method":"get"},
         "complaints.comment.store":{"uri":"/complaints/{complaint}/comments ","method":"post"},
 
@@ -37,7 +43,8 @@ const Endpoints = {
         "complaints.transfer.store":{"uri":"/complaints/{complaint}/transfer","method":"post"},
         "complaints.transfer.index":{"uri":"/complaints/{complaint}/transfer","method":"get"},
         "complaints.transfer.create":{"uri":"/complaints/{complaint}/transfer/create","method":"get"},
-        "complaints.transfer.destroy":{"uri":"/complaints/{complaint}/transfer/{transfer}","method":"delete"},
+
+        "transfers.attachments.delete":{"uri":"/transfers/{transfer}/attachments/{attachment}","method":"delete"},
 
         "statuses":{"uri":"/statuses","method":"get"},
 

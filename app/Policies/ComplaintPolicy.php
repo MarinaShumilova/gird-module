@@ -40,7 +40,7 @@ class ComplaintPolicy
     public function view(User $user, Complaint $complaint)
     {
 //        //
-        return true;
+        return  true;
     }
 
     /**

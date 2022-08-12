@@ -27,14 +27,47 @@
                   >
                     <v-col
                         sm="10">
-                        <BaseMonthPicker
-                            v-model="month"
-                            dense
-                            outlined
-                            :error-messages="errors['start_at']"
-                            type="month"
-                            label="Период">
-                        </BaseMonthPicker>
+<!--                        <BaseMonthPicker-->
+<!--                            v-model="expensesData.start_at"-->
+<!--                            dense-->
+<!--                            outlined-->
+<!--                            :error-messages="errors['start_at']"-->
+<!--                            type="month"-->
+<!--                            label="Период">-->
+<!--                        </BaseMonthPicker>-->
+
+
+                        <v-menu
+                            ref="menu"
+                            v-model="menu"
+                            :close-on-content-click="false"
+                            :return-value.sync="date"
+                            transition="fade-transition"
+                            offset-y
+                            max-width="290px"
+                            min-width="auto">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                    v-model="expensesData.start_at"
+                                    label="Период затрат"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                    dense
+                                    v-bind="attrs"
+                                    v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker
+                                color="teal lighten-2"
+                                v-model="expensesData.start_at"
+
+                                type="month"
+                                flat
+                            >
+                            </v-date-picker>
+                        </v-menu>
+
+
                     </v-col>
                     <v-col sm="10"
                            align="center">
@@ -124,7 +157,7 @@ export default {
             expensesData:{
                 complaint_id: this.complaint_id,
                 sum: null,
-                start_at: new Date().toISOString().substr(0, 10),
+                start_at:'',
             },
 
             month: new Date().toISOString().substr(0, 7),
@@ -133,6 +166,8 @@ export default {
             errors: {},
             showDialog:false,
             loading:false,
+            menu: false,
+            date: ' ',
 
         }
     },
@@ -150,15 +185,23 @@ export default {
                     this.expenses = response.data;
 
 
+
                 });
 
         },
 
         submit() {
             this.loading = true;
+
+            this.expensesData.start_at = this.expensesData.start_at + '-01';
+
           api.call(endpoint('complaints.expenses.store', this.complaint_id), this.expensesData)
                 .then(response => {
-                    this.expensesData.sum = null;
+                    this.expensesData = {
+                        complaint_id: this.complaint_id,
+                        sum: null,
+                        start_at:'',
+                    };
 
 
                 })
@@ -176,6 +219,7 @@ export default {
         close() {
             this.$emit('input', false);
             this.$emit('close-expenses', false);
+            console.log(this.expensesData.start_at)
         },
 
         destroyExpense(id) {

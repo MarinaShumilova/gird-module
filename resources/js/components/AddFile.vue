@@ -11,7 +11,7 @@
             elevation="1">
                 <span>
                     <v-icon>mdi-folder-multiple-plus</v-icon>
-                   Прикрепить документы
+                  {{this.nameForm}}
                 </span>
             <v-spacer></v-spacer>
 
@@ -27,6 +27,7 @@
                     sm="10">
                     <base-file-input
                         v-model="attachments"
+                        v-show="showUser"
                         :extensions="extensions"
                         lable = "Прикрепить документы"
                         :max-size="maxSize"
@@ -50,6 +51,7 @@
                             <v-icon small color="blue">mdi-file-download-outline</v-icon>
                         </v-btn>
                         <v-btn
+                            v-show="showUser"
                             icon
                             @click.stop="destroyFile(item.id)"
                             >
@@ -62,7 +64,8 @@
 
             </v-row>
 
-            <v-card-actions>
+            <v-card-actions
+            v-show="showUser">
                 <v-btn
                     :disabled="loading"
                     text
@@ -107,6 +110,7 @@ export default {
     },
     data() {
         return {
+            showUser:false,
             extensions: [],
             maxSize: 0,
             files: [],
@@ -115,6 +119,7 @@ export default {
             attachments:[],
             loading:false,
             errors: {},
+            nameForm:'Прикрепить документы',
 
         }
     },
@@ -127,7 +132,11 @@ export default {
                 this.getAttachment();
                 this.showDialog = true;
 
+
             });
+
+        this.showUser = this.returnUser();
+        this.getNameForm();
 
 
     },
@@ -186,7 +195,17 @@ export default {
             .then(response=> {
                 this.getAttachment();
             })
-        }
+        },
+
+        returnUser(){
+            return this.$store.getters.userHasRole('admin');
+        },
+
+        getNameForm(){
+            if(!this.showUser)
+               return this.nameForm ='Прикрепленные документы'
+
+        },
 
     }
 

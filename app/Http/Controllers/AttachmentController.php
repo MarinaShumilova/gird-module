@@ -20,8 +20,10 @@ class AttachmentController extends Controller
      */
     public function index(Complaint $complaint)
     {
+        $this->authorize('viewAny', Attachment::class);
 
         return  $complaint->attachments()->get();
+
     }
 
     /**
@@ -31,6 +33,7 @@ class AttachmentController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Attachment::class);
         return [
             'attachment_rules' => AttachFile::rules(),
         ];
@@ -44,6 +47,8 @@ class AttachmentController extends Controller
      */
     public function store(StoreAttachmentPost $request,Complaint $complaint)
     {
+        $this->authorize('create', Attachment::class);
+
         if($request->has('attachments')){
             foreach ($request->attachments as $file)
             {
@@ -60,6 +65,8 @@ class AttachmentController extends Controller
      */
     public function show(Request $request, AttachFile $attachment)
     {
+       // $this->authorize('view', Attachment::class);
+
         if(!$request->hasValidSignature())
             abort(403);
 
@@ -97,6 +104,8 @@ class AttachmentController extends Controller
      */
     public function destroy(Complaint $complaint, AttachFile $attachment)
     {
+        $this->authorize('delete', Attachment::class);
+
         $complaint->attachments()->detach($attachment);
         $attachment->delete();
     }

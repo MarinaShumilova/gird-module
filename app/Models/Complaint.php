@@ -89,7 +89,7 @@ class Complaint extends Model
 
     public function transfer()
     {
-        return $this->hasOne(TransferFile::class,'complaint_id','id');
+        return $this->hasOne(TransferFile::class);
     }
 
 

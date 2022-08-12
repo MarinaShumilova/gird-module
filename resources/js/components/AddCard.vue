@@ -60,10 +60,7 @@ export default {
             type: Boolean,
             //required: true,
         },
-        loading: {
-            type: Boolean,
-            default: false
-        },
+
     },
     components: {ComponentWrite, BaseDialogAction, BaseFileInput},
     /*Загрузить данные с базы*/
@@ -128,6 +125,8 @@ export default {
             validationErrors: { },
             errors: {},
             showDialog:false,   /*загружает данные до отображения*/
+            loading: false,
+
 
         }
     },

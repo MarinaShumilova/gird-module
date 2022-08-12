@@ -9,12 +9,13 @@ use App\Models\Complaint;
 use App\Models\Contractor;
 use App\Models\Culprit;
 use App\Models\Executor;
+use App\Models\Expense;
 use App\Models\Reason;
 use App\Models\TypeComp;
 use App\Models\WarrantyDecree;
 use App\Models\WarrantyType;
 use Illuminate\Http\Request;
-
+use PhpParser\Builder;
 
 
 class ComplaintController extends Controller
@@ -29,17 +30,44 @@ class ComplaintController extends Controller
     {
         $this->authorize('viewAny', Complaint::class);
 
-        return Complaint::
-        with([
-            'reason',
-            'culprit',
-            'contractor',
+
+        return response(
+            Complaint::
+            when($request->input('data_expenses'), function ($q) use ($request) {
+                $q->whereHas('expenses', function ($q) use ($request) {
+                    if ($request->has(['data_expenses'])) {
+                        if (!empty($resultExp)) {
+                            $resultExp = array_map(function ($date) {
+                                return $date . '-01';
+                            }, $request->input('data_expenses'));
+
+                            $q->whereIn('start_at', $resultExp);
+                        }
+                    }
+
+                });
+
+            })->
+
+            when($request->input('status_filter'), function ($q) use ($request) {
+                $q->where('status_id', $request->input('status_filter'));
+            })->
+
+            when($request->input('type_comps_filter'), function ($q) use ($request) {
+                $q->where('type_comp_id', $request->input('type_comps_filter'));
+            })->
+
+            with([
+                'reason',
+                'culprit',
+                'contractor',
             ])
-            ->withCount([
-                'expenses AS expense_sum' => function($query) {
-                    $query->select(\DB::raw('sum(sum)'));
-                }
-            ])->orderBy('created_at', 'desc')->paginate($request->itemsPerPage);
+                ->withCount([
+                    'expenses AS expense_sum' => function ($query) {
+                        $query->select(\DB::raw('sum(sum)'));
+                    }
+                ])->orderBy('created_at', 'desc')->paginate($request->itemsPerPage)
+        );
 
 
     }
@@ -51,7 +79,7 @@ class ComplaintController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Complaint::class);
+        // $this->authorize('create', Complaint::class);
 
         //считать данные
         return [
@@ -60,9 +88,10 @@ class ComplaintController extends Controller
             'type_comps' => TypeComp::get(),
             'culprits' => Culprit::get(),
             'executors' => Executor::get(),
-            'contractors'=> Contractor::get(),
-            'warranty_decrees'=>WarrantyDecree::get(),
+            'contractors' => Contractor::get(),
+            'warranty_decrees' => WarrantyDecree::get(),
             'attachment_rules' => AttachFile::rules(),
+            'expenses' => Expense::get(),
 
         ];
     }
@@ -85,34 +114,30 @@ class ComplaintController extends Controller
 
         $complaint->save();
 
-        if($request->has('attachments')){
-            foreach ($request->attachments as $file)
-            {
+        if ($request->has('attachments')) {
+            foreach ($request->attachments as $file) {
                 $complaint->saveAttachment($file);
 
             };
         };
 
 
-        if($request->has('chassises')){
-            foreach ($request->chassises as $chassis)
-            {
+        if ($request->has('chassises')) {
+            foreach ($request->chassises as $chassis) {
                 $chassised = new Chassis();                          //создать строку в таблице
 
                 $chassised->number = $chassis;                      //обращаюсь к столбцу
-                $chassised->complaint_id =  $complaint->id;
+                $chassised->complaint_id = $complaint->id;
                 $chassised->save();
             };
         };
 
 
-
-        if($request->has('executor_id')) {
+        if ($request->has('executor_id')) {
             foreach ($request->executor_id as $executorId) {
                 $complaint->executors()->attach($executorId);
             };
         }
-
 
 
     }
@@ -129,8 +154,9 @@ class ComplaintController extends Controller
 
         $complaint = Complaint::findOrFail($id);
 
-        $executors = $complaint->executors->pluck('name')->toArray();
+        $this->authorize('view', $complaint);
 
+        $executors = $complaint->executors->pluck('name')->toArray();
 
 
         $arrChassis = $complaint->chassises->pluck('number')->toArray();
@@ -142,19 +168,16 @@ class ComplaintController extends Controller
         $culprit_name = $complaint->culprit->name;
 
 
-
-
         return [
-            'complaint' =>$complaint,
-            'chassises' =>$arrChassis,
-            'executor_id'=>$executors,
-            'contractor_name'=>$contractor_name,
-            'reason_name'=>$reason_name,
-            'warranty_type_name'=>$warranty_type_name,
-            'type_comp_name'=>$type_comp_name,
-            'culprit_name'=>$culprit_name,
+            'complaint' => $complaint,
+            'chassises' => $arrChassis,
+            'executor_id' => $executors,
+            'contractor_name' => $contractor_name,
+            'reason_name' => $reason_name,
+            'warranty_type_name' => $warranty_type_name,
+            'type_comp_name' => $type_comp_name,
+            'culprit_name' => $culprit_name,
         ];
-
 
 
     }
@@ -167,26 +190,25 @@ class ComplaintController extends Controller
 
         $this->authorize('update', $complaint);
 
-        $executors = $complaint->executors->pluck( 'id');       //сделать ключ, передать га фронт
+        $executors = $complaint->executors->pluck('id');       //сделать ключ, передать га фронт
         $executors->all();
 
         $arrChassis = $complaint->chassises->pluck('number')->toArray();
 
 
-
-       $complaint->chassises = $complaint->chassises->pluck('number');
+        $complaint->chassises = $complaint->chassises->pluck('number');
 
 
         return [
-            'executor_id'=>$executors,
+            'executor_id' => $executors,
             'warranty_types' => WarrantyType::get(),
             'reason' => Reason::get(),
             'type_comps' => TypeComp::get(),
             'culprits' => Culprit::get(),
             'executors' => Executor::get(),
-            'chassises'=>$arrChassis ,
-            'contractors'=> Contractor::get(),
-            'warranty_decrees'=>WarrantyDecree::get(),
+            'chassises' => $arrChassis,
+            'contractors' => Contractor::get(),
+            'warranty_decrees' => WarrantyDecree::get(),
             'complaint' => $complaint
         ];
     }
@@ -204,33 +226,27 @@ class ComplaintController extends Controller
         $complaint = Complaint::findOrFail($id);
 
 
-
         $complaint->executors()->sync($request->executor_id);
-
 
 
         $arrOldChassis = $complaint->chassises->pluck('number')->toArray();
 
 
-        $chassis= (array) $request->chassises;
+        $chassis = (array)$request->chassises;
 
-        foreach ($arrOldChassis as $chassisNumber)
-        {
+        foreach ($arrOldChassis as $chassisNumber) {
             $chassis = Chassis::where('number', $chassisNumber)->first();
-            if ($chassis)
-            {
+            if ($chassis) {
                 $chassis->delete();
             }
 
         };
-        foreach ($request->chassises as $chassisNumber)
-        {
+        foreach ($request->chassises as $chassisNumber) {
             $chassis = Chassis::where('number', $chassisNumber)->first();
-            if (!$chassis)
-            {
+            if (!$chassis) {
                 Chassis::create([
-                    'number'=> $chassisNumber,
-                    'complaint_id'=> $complaint->id
+                    'number' => $chassisNumber,
+                    'complaint_id' => $complaint->id
                 ]);
 
             }
@@ -253,7 +269,7 @@ class ComplaintController extends Controller
     {
         $this->authorize('delete', $complaint);
 
-      // $complaint = Complaint::findOrFail($id);
+        // $complaint = Complaint::findOrFail($id);
 
 
         $complaint->delete();

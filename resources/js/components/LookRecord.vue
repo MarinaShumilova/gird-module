@@ -40,7 +40,6 @@
                             </v-col>
 
 
-
                         <v-col
                             cols="3">
                         Причина гарантии:<br>
@@ -60,7 +59,30 @@
                                 {{this.complaint.chassises}} <br>
                             </v-col>
 
-                        </v-row>
+                            <v-col
+                                sm="2"
+                           >
+                                <v-btn
+                                icon
+                                @click.stop="openAddFileDialog">
+                                    <v-icon>
+                                        mdi-folder-information-outline
+                                    </v-icon>
+                                </v-btn>
+                            </v-col>
+                            <v-col
+                                sm="2"
+                            >
+                                <v-btn
+                                    icon
+                                    @click.stop="openSendFileDialog">
+                                    <v-icon>
+                                        mdi-folder-move-outline
+                                    </v-icon>
+                                </v-btn>
+                            </v-col>
+
+                       </v-row>
                     </v-card-text>
 
 
@@ -68,12 +90,27 @@
 
 
         </v-card>
+
+        <add-file
+            v-if="addFileCreateDialog"
+            v-model="addFileCreateDialog"
+            :comp-id="id">
+        </add-file>
+        <send-file
+            v-if="sendFileCreateDialog"
+            v-model="sendFileCreateDialog"
+            :compId="id">
+        </send-file>
+
     </v-dialog>
 </template>
 <script>
 
+import AddFile from "./AddFile";
+import SendFile from "./SendFile";
 
 export default {
+    components:{AddFile,SendFile},
     name: "LookRecord",
     props: {
         value: {
@@ -105,6 +142,8 @@ export default {
                     return item.number
                 }).join(', ')
 
+
+
             });
 
 
@@ -120,6 +159,10 @@ export default {
             ],
             complaint: {},  //объект с данными
             dialog: this.value,
+
+
+            addFileCreateDialog: false,   //прикрепить
+            sendFileCreateDialog: false,
 
 
         }
@@ -140,6 +183,26 @@ export default {
 
                 });
         },
+
+        getTransfer() {
+            api.call(endpoint('complaints.transfer.index', this.id))
+                .then((response) => {
+                    this.redirectFile.comment = response.data.comment;
+                    this.files = response.data.attachments;
+                    this.idTransfer = response.data.id;
+
+
+                });
+        },
+
+        openAddFileDialog() {
+            this.addFileCreateDialog = true;
+
+        },
+        openSendFileDialog() {
+            this.sendFileCreateDialog = true;
+        },
+
 
 
 

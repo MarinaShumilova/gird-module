@@ -35,7 +35,7 @@
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
                                         v-show="showUser||showAccount"
-                                        v-model="monthDate"
+                                        v-model="redress.redress_at"
                                         label="Период компенсации"
                                         prepend-icon="mdi-calendar"
                                         readonly
@@ -86,8 +86,8 @@
                                     </v-btn>
                                 </v-list-item>
                             </v-list>
-
                         </v-col>
+
                         <v-col sm="12">
                             <v-textarea
                                 :disabled="!showUser"
@@ -174,6 +174,8 @@ export default {
                 comment: '',
                 expenses_redress: null,
             },
+
+
         }
     },
     created() {
@@ -204,6 +206,9 @@ export default {
         submit() {
             this.loading = true;
             this.redress.redress_at = this.redress.redress_at + '-01';
+            this.monthRedress = new Date(this.redress.redress_at);
+
+            this.monthName = this.getMonth(this.monthRedress);
 
             api.call(endpoint('complaints.redress.store', this.compId), this.redress)
                 .then(response => {
@@ -240,6 +245,17 @@ export default {
         capitalize(value) {
             return value[0].toUpperCase() + value.slice(1);
         },
+
+        getMonth(monthRedress) {
+            let DataFormat = new Intl.DateTimeFormat("ru", {
+                month: "long",
+
+            });
+
+            return this.capitalize(DataFormat.format(monthRedress));
+
+        },
+
 
         returnUser() {
             return this.$store.getters.userHasRole('admin');

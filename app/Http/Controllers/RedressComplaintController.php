@@ -39,7 +39,7 @@ class RedressComplaintController extends Controller
      */
     public function store(StoreRedressPost $request, Complaint $complaint)
     {
-        $this->authorize('create',RedressComplaint::class);$this->authorize('create',Expense::class);
+        $this->authorize('create',RedressComplaint::class);
 
         $redress = new RedressComplaint($request->all());
         $redress->save();

@@ -26,7 +26,7 @@ class StoreRedressPost extends FormRequest
         return [
             'redress_at'=>'required',
             'complaint_id'=>'required|exists:App\Models\Complaint,id',
-            'comment'=>'string|max:65000',
+            'comment'=>'nullable|string|max:65000',
             'expenses_redress'=> 'required|integer',
         ];
     }

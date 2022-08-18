@@ -24,20 +24,20 @@
                 <v-card-text>
                     <v-row justify="center"
                     >
-                        <v-col  v-show="showUser"
+                        <v-col
                             sm="10">
                             <v-menu
                                 ref="menu"
                                 v-model="menu"
-                                :close-on-content-click="false"
                                 :return-value.sync="date"
+                                :close-on-content-click="false"
                                 transition="fade-transition"
                                 offset-y
                                 max-width="290px"
                                 min-width="auto">
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
-                                        v-model="monthDate"
+                                        v-model="expensesData.start_at"
                                         label="Период затрат"
                                         prepend-icon="mdi-calendar"
                                         readonly
@@ -45,6 +45,7 @@
                                         v-bind="attrs"
                                         v-on="on"
                                     ></v-text-field>
+
                                 </template>
                                 <v-date-picker
                                     color="teal lighten-2"
@@ -59,7 +60,6 @@
 
                         </v-col>
                         <v-col sm="10"
-                               v-show="showUser"
                                align="center">
                             <v-text-field
                                 v-model="expensesData.sum"
@@ -86,7 +86,7 @@
                                 <v-divider></v-divider>
                             </v-list-item-title>
 
-                            <v-btn icon  v-show="showUser"
+                            <v-btn icon
                                    @click.stop="destroyExpense(item.id)"
                             >
                                 <v-icon small color="red">mdi-bucket</v-icon>
@@ -112,7 +112,6 @@
                     text
                     color="primary"
                     @click="submit"
-                    v-show="showUser"
                 >
                     Добавить
                 </v-btn>
@@ -152,8 +151,8 @@ export default {
                 start_at: '',
             },
 
-            month: new Date().toISOString().substr(0, 10),
-            monthDate:'',
+            month: new Date().toISOString().substr(0, 7),
+
             expenses: [],
             errors: {},
             showDialog: false,
@@ -163,11 +162,9 @@ export default {
 
             monthExpenses: '',
             monthName: '',
-            formater:'',
 
-            showUser:false,
-            showAccount: false,
 
+            monthStr:'',
 
 
 
@@ -178,10 +175,6 @@ export default {
         this.getExpenses();
         this.showDialog = true;
 
-        this.formater = (new Intl.DateTimeFormat('ru', {month:'long'}));
-        this.monthDate = this.capitalize(this.formater.format(new Date()));
-
-        this.showUser = this.returnUser();
     },
 
     methods: {
@@ -190,7 +183,6 @@ export default {
             api.call(endpoint('complaints.expenses.index', this.complaint_id))
                 .then((response) => {
                     this.expenses = response.data;
-                   // this.month = this.getMonth(this.month);
 
                 });
 
@@ -198,10 +190,13 @@ export default {
 
         submit() {
             this.loading = true;
+
             this.expensesData.start_at = this.expensesData.start_at + '-01';
             this.monthExpenses = new Date(this.expensesData.start_at);
 
-            this.monthName = this.getMonth(this.monthExpenses);
+            this.monthStr = this.getMonth(this.monthExpenses);
+
+
 
 
             api.call(endpoint('complaints.expenses.store', this.complaint_id), this.expensesData)
@@ -219,6 +214,8 @@ export default {
 
                 })
                 .finally(() => {
+                    this.expensesData.start_at = this.expensesData.start_at.slice(0,-3);
+
                     this.getExpenses();
                     this.loading = false;
                 })
@@ -239,7 +236,13 @@ export default {
 
         },
 
+        getNameMonth(){
+            this.expensesData.start_at = this.expensesData.start_at + '-01';
+            this.monthExpenses = new Date(this.expensesData.start_at);
 
+            this.monthStr = this.getMonth(this.monthExpenses);
+
+        },
 
         getMonth(monthExpenses) {
             let DataFormat = new Intl.DateTimeFormat("ru", {
@@ -247,7 +250,9 @@ export default {
 
             });
 
-            return this.capitalize(DataFormat.format(monthExpenses));
+            this.monthName = DataFormat.format(monthExpenses)
+
+            return this.capitalize(this.monthName);
 
         },
 
@@ -255,16 +260,7 @@ export default {
             return value[0].toUpperCase() + value.slice(1);
         },
 
-
-        returnUser() {
-            return this.$store.getters.userHasRole('admin');
-        },
-        returnUserAccount() {
-            return this.$store.getters.userHasRole('account');
-        },
-
-
-}
+    }
 }
 
 </script>

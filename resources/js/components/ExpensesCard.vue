@@ -37,7 +37,7 @@
                                 min-width="auto">
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
-                                        v-model="expensesData.start_at"
+                                        :value="computedDateFormat"
                                         label="Период затрат"
                                         prepend-icon="mdi-calendar"
                                         readonly
@@ -127,6 +127,7 @@
 import BaseMonthPicker from "./BaseMonthPicker";
 
 
+
 export default {
     components: {BaseMonthPicker},
     name: "ExpensesCard",
@@ -148,7 +149,7 @@ export default {
             expensesData: {
                 complaint_id: this.complaint_id,
                 sum: null,
-                start_at: '',
+                start_at:null,
             },
 
             month: new Date().toISOString().substr(0, 7),
@@ -158,7 +159,7 @@ export default {
             showDialog: false,
             loading: false,
             menu: false,
-            date: ' ',
+            date: '',
 
             monthExpenses: '',
             monthName: '',
@@ -169,6 +170,22 @@ export default {
 
 
         }
+    },
+
+    computed:{
+      computedDateFormat(){
+
+          if (this.expensesData.start_at != null){
+              this.expensesData.start_at = this.expensesData.start_at + '-01';
+              this.monthExpenses = new Date(this.expensesData.start_at);
+              this.monthStr = this.getMonth(this.monthExpenses);
+
+             return this.monthStr=this.monthStr;
+          }
+
+      }
+
+
     },
     created() {             //вызвать при открытии диалога
         this.showDialog = false;
@@ -191,20 +208,14 @@ export default {
         submit() {
             this.loading = true;
 
-            this.expensesData.start_at = this.expensesData.start_at + '-01';
-            this.monthExpenses = new Date(this.expensesData.start_at);
-
-            this.monthStr = this.getMonth(this.monthExpenses);
-
-
-
 
             api.call(endpoint('complaints.expenses.store', this.complaint_id), this.expensesData)
                 .then(response => {
                     this.expensesData = {
+
                         complaint_id: this.complaint_id,
                         sum: null,
-                        start_at: '',
+
                     };
 
 
@@ -214,7 +225,7 @@ export default {
 
                 })
                 .finally(() => {
-                    this.expensesData.start_at = this.expensesData.start_at.slice(0,-3);
+                   /// this.expensesData.start_at = this.expensesData.start_at.slice(0,-3);
 
                     this.getExpenses();
                     this.loading = false;
@@ -236,13 +247,6 @@ export default {
 
         },
 
-        getNameMonth(){
-            this.expensesData.start_at = this.expensesData.start_at + '-01';
-            this.monthExpenses = new Date(this.expensesData.start_at);
-
-            this.monthStr = this.getMonth(this.monthExpenses);
-
-        },
 
         getMonth(monthExpenses) {
             let DataFormat = new Intl.DateTimeFormat("ru", {

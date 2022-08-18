@@ -35,7 +35,7 @@
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
                                         v-show="showUser||showAccount"
-                                        v-model="redress.redress_at"
+                                        :value="computedDateFormat"
                                         label="Период компенсации"
                                         prepend-icon="mdi-calendar"
                                         readonly
@@ -69,6 +69,34 @@
                                 suffix="₽">
                             </v-text-field>
                         </v-col>
+                        <v-col sm="12">
+                            <v-textarea
+                                :disabled="!showUser"
+                                v-model="redress.comment"
+                                :error-messages="errors['comment']"
+                                dense
+                                label="Комментарии"
+                                outlined
+                                auto-grow
+                                rows="2">
+                            </v-textarea>
+                        </v-col>
+
+                        <v-col sm="12"
+                               align="center">
+                            <v-list>
+                                <v-list-item
+                                    v-for="item in expenses_list"
+                                    :key="item.id"
+                                    v-if="item.comment"
+                                >
+                                    <v-list-item-title>{{ item.comment}}
+                                        <v-divider></v-divider>
+                                    </v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-col>
+
                         <v-col sm="12"
                                align="center">
                             <v-list>
@@ -88,20 +116,6 @@
                             </v-list>
                         </v-col>
 
-                        <v-col sm="12">
-                            <v-textarea
-                                :disabled="!showUser"
-                                v-model="redress.comment"
-                                :error-messages="errors['comment']"
-                                dense
-                                label="Комментарии"
-                                outlined
-                                auto-grow
-
-                                rows="2">
-                            </v-textarea>
-
-                        </v-col>
 
                     </v-row>
 
@@ -166,10 +180,12 @@ export default {
             formater:'',
             monthDate:'',
             month: new Date().toISOString().substr(0, 10),
-
+            monthStr:'',
+            monthExpenses: '',
+            monthName: '',
 
             redress: {
-                redress_at:'',
+                redress_at:null,
                 complaint_id: this.compId,
                 comment: '',
                 expenses_redress: null,
@@ -178,6 +194,23 @@ export default {
 
         }
     },
+
+    computed:{
+        computedDateFormat(){
+
+            if (this.redress.redress_at != null){
+                this.redress.redress_at = this.redress.redress_at + '-01';
+                this.monthExpenses = new Date(this.redress.redress_at);
+                this.monthStr = this.getMonth(this.monthExpenses);
+
+                return this.monthStr=this.monthStr;
+            }
+
+        }
+
+
+    },
+
     created() {
         this.showDialog = false;
         this.getRedress();
@@ -197,6 +230,7 @@ export default {
             api.call(endpoint('complaints.redress.index', this.compId))
                 .then((response) => {
                      this.expenses_list = response.data;
+                    console.log(this.expenses_list)
 
 
                 });
@@ -205,17 +239,11 @@ export default {
 
         submit() {
             this.loading = true;
-            this.redress.redress_at = this.redress.redress_at + '-01';
-            this.monthRedress = new Date(this.redress.redress_at);
-
-            this.monthName = this.getMonth(this.monthRedress);
 
             api.call(endpoint('complaints.redress.store', this.compId), this.redress)
                 .then(response => {
                     this.redress = {
-                        redress_at: '',
                         complaint_id: this.compId,
-                        comment: '',
                         expenses_redress: null,
                     };
 
@@ -251,6 +279,7 @@ export default {
                 month: "long",
 
             });
+
 
             return this.capitalize(DataFormat.format(monthRedress));
 

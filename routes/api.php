@@ -7,6 +7,7 @@ use App\Http\Controllers\FinishComplaintController;
 use App\Http\Controllers\RedressComplaintController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TransferFileController;
+use App\Models\Complaint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExpensesController;
@@ -33,15 +34,23 @@ Route::prefix('complaints')->name('complaints.')->group(function() {
 
 Route::get('statuses',[StatusController::class, 'get'])->name('statuses');
 
+
+Route::get('complaints/excel',[ComplaintController::class, 'excel'])->name('excel.get');
+Route::get('complaints/contractors',[ComplaintController::class, 'contractors']);
+
 Route::resource('complaints', ComplaintController::class);
+
+
 
 Route::resource('complaints.expenses', ExpensesController::class)->shallow();
 Route::resource('complaints.comments', CommentComplaintController::class)->shallow();
 Route::resource('complaints.attachments',AttachmentController::class);
 Route::resource('complaints.transfer',TransferFileController::class);
-Route::resource('complaints.redress', RedressComplaintController::class);
+Route::resource('complaints.redress', RedressComplaintController::class)->shallow();
 
 Route::delete('transfers/{transfer}/attachments/{attachment}', [TransferFileController::class, 'delete']);
+
+
 
 
 

@@ -95,6 +95,8 @@
 
 import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
 
+
+
 export default {
     components: {BaseFileInput},
     name: "AddFile",

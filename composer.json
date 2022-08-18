@@ -19,6 +19,7 @@
         "laravel/sanctum": "^2.1",
         "laravel/telescope": "^3.2",
         "laravel/tinker": "^2.0",
+        "phpoffice/phpspreadsheet": "^1.24",
         "pusher/pusher-php-server": "^4.1",
         "santigarcor/laratrust": "^6.0"
     },
@@ -35,7 +36,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "github-oauth": {
-            "github.com": "64efbe58a56c5477cfe9e8f7eaadb45c11872b2e"
+
         }
     },
     "extra": {

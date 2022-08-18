@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Http\Requests\StoreComplaintPost;
 use App\Models\AttachFile;
 use App\Models\Chassis;
@@ -61,6 +63,7 @@ class ComplaintController extends Controller
                 'reason',
                 'culprit',
                 'contractor',
+                'transfer'
             ])
                 ->withCount([
                     'expenses AS expense_sum' => function ($query) {
@@ -267,11 +270,116 @@ class ComplaintController extends Controller
      */
     public function destroy(Complaint $complaint)
     {
+
         $this->authorize('delete', $complaint);
 
         // $complaint = Complaint::findOrFail($id);
 
-
         $complaint->delete();
+    }
+
+    public function contractors(Request $request)
+    {
+        return Contractor::select(['id', 'inn', 'name'])
+            ->where('name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('inn', 'LIKE', $request->search . '%')
+            ->get();
+    }
+
+
+    public function excel(Request $request)
+    {
+
+        $complaints = Complaint::
+        whereYear('start_at', $request->input('year'))
+            ->
+            with([
+                'reason',
+                'culprit',
+                'contractor',
+            ])->withCount([
+                'expenses AS expense_sum' => function ($query) {
+                    $query->select(\DB::raw('sum(sum)'));
+                }
+            ])->get();
+
+
+        $this->saveToExcel($complaints);
+
+
+    }
+
+    private function saveToExcel($complaints)
+    {
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $styleArray = [
+            'font' => [
+                'name' => 'Arial',
+                'italic' => false,
+                'strikethrough' => false,
+            ],
+            'alignment' => [
+                'wrapText' => true,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'Black'],
+                ],
+            ],
+
+        ];
+
+
+        $sheet->setCellValue('B1', 'Дата начала')->getColumnDimension('B')->setWidth(20);
+        $sheet->setCellValue('C1', 'Дата окончания')->getColumnDimension('C')->setWidth(20);
+        $sheet->setCellValue('D1', 'Приказ');
+
+        $sheet->setCellValue('E1', 'Гарантийный приказ')->getColumnDimension('E')->setWidth(20);
+        $sheet->setCellValue('F1', 'Контрагент')->getColumnDimension('F')->setWidth(20);
+        $sheet->setCellValue('G1', 'Причина ГС')->getColumnDimension('G')->setWidth(30);
+        $sheet->setCellValue('H1', 'Виновная сторона')->getColumnDimension('H')->setWidth(20);
+        $sheet->setCellValue('I1', 'Затраты');
+
+        $sheet->getStyle('A1:I1')->applyFromArray($styleArray);
+
+        for ($i = 0; $i < $complaints->count(); $i++) {
+
+            $start_at = strtotime($complaints[$i]->start_at);
+            $start_date = date('d.m.Y', $start_at);
+
+            $close_at = strtotime($complaints[$i]->close_at);
+            $close_date = date('d.m.Y', $close_at);
+
+
+            $sheet->setCellValue('A' . ($i + 2), $complaints[$i]->id)->getColumnDimension('A');
+            $sheet->setCellValue('B' . ($i + 2), $start_date)->getColumnDimension('B');
+            $sheet->setCellValue('C' . ($i + 2), $close_date)->getColumnDimension('C');
+            $sheet->setCellValue('D' . ($i + 2), $complaints[$i]->numb_order)->getColumnDimension('D');
+            $sheet->setCellValue('E' . ($i + 2), $complaints[$i]->warranty_decree)->getColumnDimension('E');
+            $sheet->setCellValue('F' . ($i + 2), $complaints[$i]->contractor->name)->getColumnDimension('F');
+            $sheet->setCellValue('G' . ($i + 2), $complaints[$i]->reason->name)->getColumnDimension('G');
+            $sheet->setCellValue('H' . ($i + 2), $complaints[$i]->culprit->name)->getColumnDimension('H');
+            $sheet->setCellValue('I' . ($i + 2), $complaints[$i]->expense_sum)->getColumnDimension('I');
+
+
+        }
+
+
+
+
+        $writer = new Xlsx($spreadsheet);
+        //$writer->save('Отчет.xlsx');
+
+        ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: inline; filename="export.xlsx"');
+
+        $writer->save('php://output');
+        exit();
+
+
     }
 }

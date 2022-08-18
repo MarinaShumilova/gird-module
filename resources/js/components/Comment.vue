@@ -9,6 +9,7 @@
                             :error-messages="errors['comments']"
                             dense
                             auto-grow
+                            :disabled="!showUser"
                             rows="2">
                         </v-textarea>
                     </v-col>

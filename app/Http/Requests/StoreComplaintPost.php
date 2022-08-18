@@ -32,10 +32,11 @@ class StoreComplaintPost extends FormRequest
             'vehicle' => 'required|string',
             'warranty_decree' => 'nullable|integer',
             'start_at' => 'required|date|before_or_equal:' . date("d.m.Y") ,
-            'unload_at' => 'required|date||before_or_equal:' . date("d.m.Y"),
+            'unload_at' => 'required|date|before_or_equal:' . date("d.m.Y"),
             'numb_order' => 'required|max:5',
             'order_at'=>'required|date||before_or_equal:' . date("d.m.Y"),
             'chassis' => 'nullable|array',
+
 
 
             'files' =>'nullable|array',

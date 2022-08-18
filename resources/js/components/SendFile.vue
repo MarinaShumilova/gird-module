@@ -28,7 +28,6 @@
                                 outlined
                                 dense
                                 label="Дата перенаправления">
-
                             </base-date-picker>
                         </v-col>
 
@@ -45,7 +44,6 @@
                             </v-textarea>
 
                         </v-col>
-
                         <v-col
                             sm="12">
                             <base-file-input
@@ -57,13 +55,15 @@
                                 :error-messages="validationErrors['attachments']"
                             ></base-file-input>
                         </v-col>
-<!--                        <comment-->
-<!--                            v-if="commentsCreateDialog"-->
-<!--                            v-model="commentsCreateDialog"-->
-<!--                            @comments="updateComment"-->
-<!--                            :comment="comment"-->
-
-<!--                        ></comment>-->
+<!--                        <v-col sm="2">-->
+<!--                            <v-btn-->
+<!--                                @click.stop = "destroyTransfer()"-->
+<!--                                small-->
+<!--                                text-->
+<!--                                color="primary">-->
+<!--                                Отменить перенаправление-->
+<!--                            </v-btn>-->
+<!--                        </v-col>-->
 
                         <v-col sm="12">
                             <v-list>
@@ -149,6 +149,8 @@ export default {
             attachments: [],
             files:[],
             idTransfer: 0,
+            idComponent:0,
+
 
 
 
@@ -184,6 +186,7 @@ export default {
                 this.getTransfer();
                 this.showDialog = true;
 
+
             });
         this.showUser = this.returnUser();
         this.getParamForm(this.showUser);
@@ -193,6 +196,8 @@ export default {
 
         close() {
             this.$emit('input', false);
+            this.$emit('close-send', false);
+
         },
         openComment() {
             this.commentsCreateDialog = true;
@@ -206,7 +211,6 @@ export default {
                    this.redirectFile.comment = response.data.comment;
                    this.files = response.data.attachments;
                    this.idTransfer = response.data.id;
-
 
                 });
         },
@@ -233,7 +237,6 @@ export default {
                 .then(response => {
                 })
                 .catch(error => {
-
                     this.validationErrors = error.response.data.errors
                 })
                 .finally(() => {
@@ -246,10 +249,18 @@ export default {
         destroyFile(id){
             api.call(endpoint('transfers.attachments.delete',[this.idTransfer, id]))
                 .then(response=> {
+                    this.idComponent = id;
+
                     this.getTransfer();
 
                 })
         },
+        // destroyTransfer(){
+        //     api.call(endpoint('complaints.transfer.destroy',[this.compId,this.idComponent]))
+        //         .then(response=> {
+        //         })
+        // },
+
         returnUser(){
             return this.$store.getters.userHasRole('admin');
         },

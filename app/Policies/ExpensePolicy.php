@@ -66,9 +66,9 @@ class ExpensePolicy
      * @param  \App\Expense  $expense
      * @return mixed
      */
-    public function delete(User $user, Expense $expense)
+    public function delete(User $user)
     {
-        //
+        return  $user->role != 'user';
     }
 
     /**

@@ -106,7 +106,7 @@ export default {
                 type_comp_id:1,
                 culprit_id:1,
                 executor_id: [],
-                contractor_id:1,
+                contractor_id: null,
                 status_id:1,  /*статус в работе*/
                 files:[],
                 chassises:[],

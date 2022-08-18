@@ -17,7 +17,7 @@ class Contractor extends Model
      |--------------------------------------------------------------------------
      */
 
-    protected $fillable = ['inn','name'];
+//    protected $fillable = ['inn','name'];
 
 
     /*
@@ -41,4 +41,15 @@ class Contractor extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+
+    protected $appends = [
+        'name_with_inn'
+    ];
+
+    public function getNameWithInnAttribute()
+    {
+        $nameWithInn = "$this->name ($this->inn)";
+
+        return  $nameWithInn;
+    }
 }

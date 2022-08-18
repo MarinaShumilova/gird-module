@@ -4,6 +4,7 @@ namespace App\Models;
 
 use GirdBase\Traits\Models\HasAttachments;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * This is the model class for table "{{%table}}
@@ -13,6 +14,11 @@ use Illuminate\Database\Eloquent\Model;
 class TransferFile extends Model
 {
     use HasAttachments;
+
+    use SoftDeletes;
+
+
+    protected $dates = ['deleted_at'];
      /*
      |--------------------------------------------------------------------------
      | GLOBAL VARIABLES

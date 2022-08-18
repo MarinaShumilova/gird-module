@@ -93,6 +93,8 @@ class ExpensesController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete',Expense::class);
+
         $expense = Expense::findOrFail($id);
         $expense->delete();
     }

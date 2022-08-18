@@ -10,6 +10,9 @@ const Endpoints = {
         "complaints.destroy":{"uri":"/complaints/{complaint}","method": "delete"},
         "complaints.show":{"uri":"/complaints/{complaint}","method": "get"},
 
+        "complaints.contractors":{"uri":"/complaints/contractors", "method": "get"},
+        "complaints.excel":{"uri":"/complaints/excel","method": "get"},
+
 
         "complaints.finish":{"uri":"/complaints/{complaint}/finish","method":"patch"},
         "complaints.return":{"uri":"/complaints/{complaint}/return", "method":"delete"},
@@ -20,10 +23,10 @@ const Endpoints = {
         "complaints.expenses.update":{"uri":"expenses/{expense}","method":"put"},
 
 
-        // "complaints.redress.index":{"uri":"/complaints/{complaint}/redress","method":"get"},
-        // "complaints.redress.store":{"uri":"/complaints/{complaint}/redress","method":"post"},
-        // "complaints.redress.destroy":{"uri":"redress/{redress}","method":"delete"},
-        // "complaints.redress.update":{"uri":"redress/{redress}","method":"put"},
+        "complaints.redress.index":{"uri":"/complaints/{complaint}/redress","method":"get"},
+        "complaints.redress.store":{"uri":"/complaints/{complaint}/redress","method":"post"},
+        "complaints.redress.destroy":{"uri":"/redress/{redress}","method":"delete"},
+        "complaints.redress.update":{"uri":"/redress/{redress} ","method":"put"},
 
 
         "complaints.comment.index":{"uri":"/complaints/{complaint}/comments ","method":"get"},
@@ -43,6 +46,7 @@ const Endpoints = {
         "complaints.transfer.store":{"uri":"/complaints/{complaint}/transfer","method":"post"},
         "complaints.transfer.index":{"uri":"/complaints/{complaint}/transfer","method":"get"},
         "complaints.transfer.create":{"uri":"/complaints/{complaint}/transfer/create","method":"get"},
+        "complaints.transfer.destroy":{"uri":"/complaints/{complaint}/transfer/{transfer}","method":"delete"},
 
         "transfers.attachments.delete":{"uri":"/transfers/{transfer}/attachments/{attachment}","method":"delete"},
 

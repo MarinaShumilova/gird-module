@@ -5,7 +5,7 @@
         max-width="800"
         persistent
     >
-    <v-card>
+        <v-card>
 
             <v-card-title>
                 <v-icon left>mdi-information-outline</v-icon>
@@ -16,10 +16,10 @@
                 </v-btn>
             </v-card-title>
 
-                    <v-card-text>
-                        <v-row>
-                        <v-col
-                            cols="3">
+            <v-card-text>
+                <v-row>
+                    <v-col
+                        cols="3">
                         Приказ:<br>
                         Дата приказа:<br>
                         Дата заявки:<br>
@@ -27,66 +27,123 @@
                         Гарантийный приказ:<br>
                         Гарантия:<br>
                         Статус:<br>
-                        </v-col>
-                            <v-col
-                            cols="3">
-                                {{ this.complaint.numb_order}}<br>
-                                {{this.complaint.order_at | date}}<br>
-                                {{this.complaint.start_at | date}}<br>
-                                {{this.contractor_name}}<br>
-                                {{this.complaint.warranty_decree}}<br>
-                                {{this.warranty_type_name}}<br>
-                                {{this.type_comp_name}}<br>
-                            </v-col>
+                    </v-col>
+                    <v-col
+                        cols="3">
+                        {{ this.complaint.numb_order}}<br>
+                        {{this.complaint.order_at | date}}<br>
+                        {{this.complaint.start_at | date}}<br>
+                        {{this.contractor_name}}<br>
+                        {{this.complaint.warranty_decree}}<br>
+                        {{this.warranty_type_name}}<br>
+                        {{this.type_comp_name}}<br>
+                    </v-col>
 
 
-                        <v-col
-                            cols="3">
+                    <v-col
+                        cols="3">
                         Причина гарантии:<br>
                         Вид надстройки: <br>
                         Виновник:<br>
                         Устранение: <br>
                         Дата отгрузки шасси:<br>
                         Шасси: <br>
-                        </v-col>
-                            <v-col
-                            cols="3">
-                                {{this.reason_name}}<br>
-                                {{this.complaint.vehicle}}<br>
-                                {{this.culprit_name}}<br>
-                                {{this.executor_id}}<br>
-                                {{this.complaint.unload_at | date}}<br>
-                                {{this.complaint.chassises}} <br>
-                            </v-col>
+                    </v-col>
+                    <v-col
+                        cols="3">
+                        {{this.reason_name}}<br>
+                        {{this.complaint.vehicle}}<br>
+                        {{this.culprit_name}}<br>
+                        {{this.executor_id}}<br>
+                        {{this.complaint.unload_at | date}}<br>
+                        {{this.complaint.chassises}} <br>
+                    </v-col>
 
-                            <v-col
-                                sm="2"
-                           >
+                    <v-col
+                        sm="2"
+                    >
+                        <v-tooltip
+                            color="light-blue darken-4"
+                            top>
+                            <template v-slot:activator="{ on, attrs }">
                                 <v-btn
-                                icon
-                                @click.stop="openAddFileDialog">
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    icon
+                                    @click.stop="openAddFileDialog">
                                     <v-icon>
                                         mdi-folder-information-outline
                                     </v-icon>
                                 </v-btn>
-                            </v-col>
-                            <v-col
-                                sm="2"
-                            >
+                            </template>
+                            <span>Прикрепленные документы</span>
+                        </v-tooltip>
+                    </v-col>
+                    <v-col
+                        sm="2"
+                    >
+                        <v-tooltip
+                            color="light-blue darken-4"
+                            top>
+                            <template v-slot:activator="{ on, attrs }">
                                 <v-btn
                                     icon
+                                    v-bind="attrs"
+                                    v-on="on"
                                     @click.stop="openSendFileDialog">
                                     <v-icon>
                                         mdi-folder-move-outline
                                     </v-icon>
                                 </v-btn>
-                            </v-col>
+                            </template>
+                            <span>Перенаправленные документы</span>
+                        </v-tooltip>
+                    </v-col>
+                    <v-col
+                        sm="2"
+                    >
+                        <v-tooltip
+                            color="light-blue darken-4"
+                            top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    icon
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    @click.stop="openExpensesDialog">
+                                    <v-icon>
+                                        mdi-card-bulleted-outline
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Затраты</span>
+                        </v-tooltip>
 
-                       </v-row>
-                    </v-card-text>
+                    </v-col>
+                    <v-col
+                        sm="2"
+                    >
+                        <v-tooltip
+                            color="light-blue darken-4"
+                            top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    icon
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    @click.stop="openRedressDialog">
+                                    <v-icon>
+                                        mdi-cash-multiple
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Компенсация</span>
+                        </v-tooltip>
 
+                    </v-col>
 
-
+                </v-row>
+            </v-card-text>
 
 
         </v-card>
@@ -101,6 +158,21 @@
             v-model="sendFileCreateDialog"
             :compId="id">
         </send-file>
+        <!--   затраты-->
+        <expenses-card
+            v-if="expensesCreateDialog"
+            v-model="expensesCreateDialog"
+            :complaint_id="id"
+        ></expenses-card>
+
+        <component-redress
+            v-if="redressCreateDialog"
+            v-model="redressCreateDialog"
+            :compId="id"
+        >
+
+        </component-redress>
+
 
     </v-dialog>
 </template>
@@ -108,9 +180,11 @@
 
 import AddFile from "./AddFile";
 import SendFile from "./SendFile";
+import ExpensesCard from "./ExpensesCard";
+import ComponentRedress from "./ComponentRedress";
 
 export default {
-    components:{AddFile,SendFile},
+    components: {AddFile, SendFile,ExpensesCard,ComponentRedress},
     name: "LookRecord",
     props: {
         value: {
@@ -143,7 +217,6 @@ export default {
                 }).join(', ')
 
 
-
             });
 
 
@@ -163,7 +236,8 @@ export default {
 
             addFileCreateDialog: false,   //прикрепить
             sendFileCreateDialog: false,
-
+            expensesCreateDialog: false, //затраты
+            redressCreateDialog: false,
 
         }
     },
@@ -202,7 +276,14 @@ export default {
         openSendFileDialog() {
             this.sendFileCreateDialog = true;
         },
+        openExpensesDialog() {
+            this.expensesCreateDialog = true;
 
+        },
+
+        openRedressDialog() {
+            this.redressCreateDialog = true;
+        },
 
 
 

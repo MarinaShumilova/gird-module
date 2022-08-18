@@ -55,13 +55,12 @@
                                         </v-list-item-icon>
                                         <v-list-item-title>Прикрепить документы</v-list-item-title>
                                     </v-list-item>
-                                    <v-list-item v-show="showUser" @click.stop="openRedressDialog">
+                                    <v-list-item v-show="showUser||showAccount" @click.stop="openRedressDialog">
                                         <v-list-item-icon>
                                             <v-icon right>mdi-cash-multiple</v-icon>
                                         </v-list-item-icon>
                                         <v-list-item-title>Компенсация</v-list-item-title>
                                     </v-list-item>
-
 
                                     <v-list-item v-show="showUser" v-if="editedRow.status_id === 1"
                                                  @click="exitComplaints(editedRow.id)">
@@ -78,6 +77,8 @@
                                         </v-list-item-icon>
                                         <v-list-item-title left>Восстанавить</v-list-item-title>
                                     </v-list-item>
+
+
 
                                 </v-list-item-group>
                             </v-list>
@@ -104,7 +105,8 @@
                             v-show="showUser"
                             v-if="sendFileCreateDialog"
                             v-model="sendFileCreateDialog"
-                            :compId="editedRow.id">
+                            :compId="editedRow.id"
+                            @close-send="closeSendFile">
                         </send-file>
                         <!--   прикрепить документ-->
                         <add-file
@@ -143,7 +145,7 @@
                         </look-record>
 
                         <component-redress
-                            v-show="showUser"
+                            v-show="showUser||showAccount"
                             v-if="redressCreateDialog"
                             v-model="redressCreateDialog"
                             :compId="editedRow.id"
@@ -232,19 +234,19 @@
                         </v-btn>
 
 
-                        <!--                        если виновна другая сторона-->
-                        <!--                        <v-tooltip right>-->
-                        <!--                            <template v-slot:activator="{ on, attrs }">-->
-                        <!--                                <v-icon-->
-                        <!--                                    small-->
-                        <!--                                    color="red darken-4"-->
-                        <!--                                    v-bind="attrs"-->
-                        <!--                                    v-on="on"-->
-                        <!--                                >mdi-email-send-outline-->
-                        <!--                                </v-icon>-->
-                        <!--                            </template>-->
-                        <!--                            <span>Регресс + дата</span>-->
-                        <!--                        </v-tooltip>-->
+                        <!--                                                если виновна другая сторона-->
+                        <v-tooltip right v-if="item.transfer">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-icon
+                                    small
+                                    color="red darken-4"
+                                    v-bind="attrs"
+                                    v-on="on"
+                                >mdi-email-send-outline
+                                </v-icon>
+                            </template>
+                            <span>Регресс {{item.transfer.transfer_at}}</span>
+                        </v-tooltip>
 
                     </template>
 
@@ -411,6 +413,10 @@ export default {
             this.getComplaints();
         },
 
+        closeSendFile(){
+          this.getComplaints();
+        },
+
         closeCommentCard() {
             this.getComplaints();
         },
@@ -472,10 +478,12 @@ export default {
 
         },
 
-        getFilterComplaint(value){
-            if(value !== undefined) {
+        getFilterComplaint(value) {
+            if (value !== undefined) {
                 this.getComplaints(value);
             }
+
+
         },
 
         textStatus(status_id) {
@@ -505,6 +513,7 @@ export default {
 
                     this.makePagination(response.data);
                     this.getStatuses();
+
 
 
                 })

@@ -17,6 +17,7 @@ class CreateTransferFilesTable extends Migration
             $table->id();
             $table->date('transfer_at');
             $table->text('comment')->nullable();
+            $table->softDeletes();
             $table->unsignedBigInteger('complaint_id');
 
             $table->foreign('complaint_id')->references('id')->on('complaints');

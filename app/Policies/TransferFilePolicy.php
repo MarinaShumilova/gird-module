@@ -63,7 +63,7 @@ class TransferFilePolicy
      * @param  \App\Models\TransferFile  $transferFile
      * @return mixed
      */
-    public function delete(User $user, TransferFile $transferFile)
+    public function delete(User $user)
     {
         return  $this->rightsRole('admin');
     }
@@ -87,7 +87,7 @@ class TransferFilePolicy
      * @param  \App\Models\TransferFile  $transferFile
      * @return mixed
      */
-    public function forceDelete(User $user, TransferFile $transferFile)
+    public function forceDelete(User $user)
     {
         return  $this->rightsRole('admin');
     }

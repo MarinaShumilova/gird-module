@@ -87,7 +87,7 @@ class AttachmentPolicy
      * @param  \App\Models\Attachment  $attachment
      * @return mixed
      */
-    public function forceDelete(User $user, Attachment $attachment)
+    public function forceDelete(User $user)
     {
         return  $this->rightsRole('admin');
     }

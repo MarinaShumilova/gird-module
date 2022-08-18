@@ -17,6 +17,7 @@
                         outlined
                         type="number"
                         dense
+                        hide-spin-buttons
                     ></v-text-field>
                 </v-col>
                 <v-col
@@ -42,6 +43,7 @@
                         outlined
                         type="number"
                         dense
+                        hide-spin-buttons
                     ></v-text-field>
                 </v-col>
 
@@ -107,16 +109,14 @@
                 </v-col>
                 <v-col
                     sm="4">
-                    <v-select
+                    <contractor-select
                         v-model="complaint.contractor_id"
-                        item-value="id"
-                        item-text="name"
-                        dense
                         :items="contractors"
+                        dense
                         outlined
-                        label="Заказчик"
-                        rows="1"
-                    ></v-select>
+                    >
+                    </contractor-select>
+
                 </v-col>
                 <v-col
                     sm="4">
@@ -170,6 +170,8 @@
                         solo
                         multiple
                         hide-selected
+                        hide-spin-buttons
+                        type="number"
 
                     >
                     </v-combobox>
@@ -180,6 +182,7 @@
 
             </v-row>
 
+
     </v-form>
 
 </template>
@@ -187,11 +190,11 @@
 
 import BaseDatePicker from "gird-base-front/src/components/BaseDatePicker";
 import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
+import ContractorSelect from "./ContractorSelect";
 
 export default {
     name: "ComponentWrite",
-
-    components: {BaseDatePicker, BaseFileInput},
+    components: {BaseDatePicker, BaseFileInput,ContractorSelect},
     props: {
         errors: {
           type:Object,
@@ -242,6 +245,7 @@ export default {
         return {
             complaint: this.value,
             Calendar: null,
+            contractorSelect: false,
 
 
         }
@@ -252,6 +256,10 @@ export default {
             this.$emit('input', false);
 
         },
+
+        getContractors(){
+            this.contractorSelect = true;
+        }
 
     },
     watch:{     //следить за изменением value

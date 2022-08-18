@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\ComplaintController;
 use App\Models\Complaint;
 use GirdBase\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -25,3 +26,5 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('attachments/{attachment}', [AttachmentController::class, 'show'])
         ->name('attachments.show');
 });
+
+Route::get('complaints/excel',[ComplaintController::class, 'excel']);

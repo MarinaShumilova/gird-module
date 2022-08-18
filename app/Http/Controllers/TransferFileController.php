@@ -139,4 +139,15 @@ class TransferFileController extends Controller
         return response('Deleted');
 
     }
+
+    public function deleteTransfer(Complaint $complaint,TransferFile $transfer)
+    {
+
+
+        $this->authorize('delete', TransferFile::class);
+
+        $transfer = Complaint::findOrFail($complaint);
+        $transfer->delete();
+
+    }
 }

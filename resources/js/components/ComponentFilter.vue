@@ -23,7 +23,7 @@
                 :items="type_comps"
                 dense
                 label="Статус гарантии"
-
+                clearable
             ></v-select>
         </v-col>
         <v-col sm="3">
@@ -55,9 +55,32 @@
                     flat
                 >
                 </v-date-picker>
+
             </v-menu>
         </v-col>
+
+        <v-col sm="1">
+            <v-btn
+                icon
+                 @click.stop="openExcelDialog">
+                <v-icon color="blue">
+                    mdi-microsoft-excel
+                </v-icon>
+
+            </v-btn>
+
+
+        </v-col>
     </v-row>
+
+        <component-excel
+            v-if="dialogExcel"
+            v-model="dialogExcel">
+
+        </component-excel>
+
+
+
     </v-container>
 
 </template>
@@ -66,9 +89,10 @@
 <script>
 
 import BaseMonthPicker from "./BaseMonthPicker";
+import ComponentExcel from "./ComponentExcel"
 
 export default {
-    components: {BaseMonthPicker},
+    components: {BaseMonthPicker,ComponentExcel},
     name: "ComponentFilter",
     props: {
         status: {
@@ -93,6 +117,10 @@ export default {
             menu: false,
             date: ' ',
 
+            dialogExcel:false,
+            dialog: this.value,
+            loading:false,
+
 
         }
     },
@@ -114,7 +142,13 @@ export default {
     methods:{
         close() {
             this.$emit('input', false);
+
         },
+        openExcelDialog(){
+          this.dialogExcel = true;
+        },
+
+
     },
 
 }

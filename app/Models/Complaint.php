@@ -72,10 +72,19 @@ class Complaint extends Model
         return $this->hasMany(Expense::class, 'complaint_id','id');
     }
 
+    public function redress()
+    {
+        return $this->hasMany(RedressComplaint::class, 'complaint_id','id');
+    }
+
+
+
+
     public function executors()
     {
         return $this->belongsToMany(Executor::class, 'complaints_executors');
     }
+
 
     public function comments(){
       return $this->hasMany(CommentComplaint::class,'complaint_id','id');

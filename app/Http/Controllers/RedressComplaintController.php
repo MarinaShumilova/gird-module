@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRedressPost;
+use App\Models\Complaint;
+use App\Models\RedressComplaint;
 use Illuminate\Http\Request;
 
 class RedressComplaintController extends Controller
@@ -11,9 +14,11 @@ class RedressComplaintController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Complaint $complaint)
     {
-        //
+        $this->authorize('viewAny', RedressComplaint::class);
+
+        return response($complaint->redress()->get());
     }
 
     /**
@@ -32,9 +37,12 @@ class RedressComplaintController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRedressPost $request, Complaint $complaint)
     {
-        //
+        $this->authorize('create',RedressComplaint::class);$this->authorize('create',Expense::class);
+
+        $redress = new RedressComplaint($request->all());
+        $redress->save();
     }
 
     /**
@@ -79,6 +87,9 @@ class RedressComplaintController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->authorize('delete',RedressComplaint::class);
+
+        $redress = RedressComplaint::findOrFail($id);
+        $redress->delete();
     }
 }

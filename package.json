@@ -29,7 +29,7 @@
         "webpack-cli": "^4.10.0"
     },
     "dependencies": {
-        "gird-base-front": "git+https://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:x-oauth-basic@github.com/tarashev/gird-base-front.git",
+        "gird-base-front": "git+https://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:x-oauth-basic@github.com/tarashev/gird-base-front.git",
         "ifvisible.js": "^1.0.6",
         "moment": "^2.29.1",
         "store": "^2.0.12",

@@ -3,7 +3,7 @@
     <v-dialog
         v-if="showDialog"
         :value="value"
-        width="400"
+        width="500"
         scrollable
         persistent>
         <v-card>
@@ -19,10 +19,11 @@
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-toolbar>
-            <v-container>
+            <v-container >
                 <v-card-text>
-                    <v-row>
-                        <v-col sm="5" v-show="showUser">
+                    <v-row justify="center">
+                        <v-col sm="6"
+                               v-show="showUser||showAccount">
                             <v-menu
                                 ref="menu"
                                 v-model="menu"
@@ -44,18 +45,18 @@
                                         v-on="on"
                                     ></v-text-field>
                                 </template>
-                                    <v-date-picker
-                                        color="teal lighten-2"
-                                        v-model="redress.redress_at"
-                                        :error-messages="errors['redress_at']"
-                                        type="month"
-                                        flat
-                                    >
-                                    </v-date-picker>
+                                <v-date-picker
+                                    color="teal lighten-2"
+                                    v-model="redress.redress_at"
+                                    :error-messages="errors['redress_at']"
+                                    type="month"
+                                    flat
+                                >
+                                </v-date-picker>
                             </v-menu>
                         </v-col>
-                        <v-col sm="7"
-                               align="right">
+                        <v-col  sm="6"
+                          >
                             <v-text-field
                                 v-show="showUser||showAccount"
                                 v-model="redress.expenses_redress"
@@ -71,7 +72,8 @@
                         </v-col>
                         <v-col sm="12">
                             <v-textarea
-                                :disabled="!showUser"
+                                v-show="showUser||showAccount"
+                                :disabled="redress.expenses_redress == null"
                                 v-model="redress.comment"
                                 :error-messages="errors['comment']"
                                 dense
@@ -82,30 +84,37 @@
                             </v-textarea>
                         </v-col>
 
-                        <v-col sm="12"
-                               align="center">
-                            <v-list>
-                                <v-list-item
-                                    v-for="item in expenses_list"
-                                    :key="item.id"
-                                    v-if="item.comment"
-                                >
-                                    <v-list-item-title>{{ item.comment}}
-                                        <v-divider></v-divider>
-                                    </v-list-item-title>
-                                </v-list-item>
-                            </v-list>
+
+                        <v-col sm="12">
+
+                            <li v-for="item in expenses_list"
+                                :key="item.id"
+                                v-if="item.comment != null">
+
+                                {{item.comment}}
+
+                            </li>
                         </v-col>
 
-                        <v-col sm="12"
-                               align="center">
-                            <v-list>
+                        <v-col  sm="8">
+                            <v-list     class="pa-2"
+                                       >
                                 <v-list-item
                                     v-for="item in expenses_list"
                                     :key="item.id"
                                 >
-                                    <v-list-item-title>{{ item.expenses_redress}}
+                                    <v-list-item-title dense>
+                                        <v-row class="justify-space-around">
+                                            <v-col sm="5">
+                                                <span>{{ item.redress_at }}</span>
+                                            </v-col>
+
+                                            <v-col sm="5">
+                                                <span >{{ item.expenses_redress }}</span>
+                                            </v-col>
+                                        </v-row>
                                         <v-divider></v-divider>
+
                                     </v-list-item-title>
                                     <v-btn icon
                                            @click.stop="destroyRedress(item.id)"
@@ -119,7 +128,8 @@
 
                     </v-row>
 
-                    <v-card-actions>
+                    <v-card-actions
+                        v-show="showUser||showAccount">
                         <v-btn
                             :disabled="loading"
                             text
@@ -129,7 +139,6 @@
                         </v-btn>
                         <v-spacer></v-spacer>
                         <v-btn
-                            v-show="showUser"
                             :loading="loading"
                             text
                             color="primary"
@@ -166,7 +175,7 @@ export default {
         return {
             showDialog: false,
 
-            showUser:false,
+            showUser: false,
             showAccount: false,
 
             menu: false,
@@ -176,34 +185,36 @@ export default {
             dialog: this.value,
             loading: false,
             expenses_list: [],
-            date:' ',
-            formater:'',
-            monthDate:'',
+            date: ' ',
+            formater: '',
+            monthDate: '',
             month: new Date().toISOString().substr(0, 10),
-            monthStr:'',
+            monthStr: '',
             monthExpenses: '',
             monthName: '',
 
             redress: {
-                redress_at:null,
+                redress_at: null,
                 complaint_id: this.compId,
-                comment: '',
+                comment: null,
                 expenses_redress: null,
             },
+
+            arrResult: [],
 
 
         }
     },
 
-    computed:{
-        computedDateFormat(){
+    computed: {
+        computedDateFormat() {
 
-            if (this.redress.redress_at != null){
+            if (this.redress.redress_at != null) {
                 this.redress.redress_at = this.redress.redress_at + '-01';
                 this.monthExpenses = new Date(this.redress.redress_at);
                 this.monthStr = this.getMonth(this.monthExpenses);
 
-                return this.monthStr=this.monthStr;
+                return this.monthStr;
             }
 
         }
@@ -218,10 +229,10 @@ export default {
         this.showAccount = this.returnUserAccount();
 
 
-        this.formater = (new Intl.DateTimeFormat('ru', {month:'long'}));
+        this.formater = (new Intl.DateTimeFormat('ru', {month: 'long'}));
         this.monthDate = this.capitalize(this.formater.format(new Date()));
 
-        this.showUser = this.returnUser();
+        // this.showUser = this.returnUser();
         this.showDialog = true;
 
     },
@@ -229,8 +240,24 @@ export default {
         getRedress() {
             api.call(endpoint('complaints.redress.index', this.compId))
                 .then((response) => {
-                     this.expenses_list = response.data;
-                    console.log(this.expenses_list)
+                    this.expenses_list = response.data;
+
+                    this.arrResult = this.expenses_list.map(function (item) {
+                        let str = item.redress_at;
+                        let mnt = '';
+                        mnt = new Date(str);
+
+                        let DataFormat = new Intl.DateTimeFormat("ru", {
+                            month: "long",
+
+                        });
+                        let res = '';
+                        res = DataFormat.format(mnt);
+                        let result = res[0].toUpperCase() + res.slice(1);
+
+                        item.redress_at = result;
+                        return item;
+                    })
 
 
                 });
@@ -248,10 +275,10 @@ export default {
                     };
 
                 })
-                .catch(error =>{
+                .catch(error => {
                     this.errors = error.response.data.errors
                 })
-                .finally(()=>{
+                .finally(() => {
                     this.getRedress();
                     this.loading = false;
                 })
@@ -263,11 +290,11 @@ export default {
             this.$emit('input', false);
         },
 
-        destroyRedress(id){
-            api.call(endpoint('complaints.redress.destroy',id))
-            .then(response=>{
-                this.getRedress();
-            })
+        destroyRedress(id) {
+            api.call(endpoint('complaints.redress.destroy', id))
+                .then(response => {
+                    this.getRedress();
+                })
         },
 
         capitalize(value) {

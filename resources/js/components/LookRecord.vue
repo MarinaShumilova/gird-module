@@ -2,7 +2,7 @@
     <v-dialog
         v-if="showDialog"
         v-model="dialog"
-        max-width="800"
+        max-width="1000"
         persistent
     >
         <v-card>
@@ -18,6 +18,98 @@
 
             <v-card-text>
                 <v-row>
+                    <v-col cols="1">
+                        <v-tooltip
+                            color="light-blue darken-4"
+                            top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    icon
+                                    @click.stop="openAddFileDialog">
+                                    <v-icon
+                                        @mouseenter="iconColor.d4='light-blue darken'"
+                                        @mouseleave="iconColor.d4=''"
+                                        :color="iconColor.d4"
+                                    >
+                                        mdi-folder-information-outline
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Прикрепленные документы</span>
+                        </v-tooltip>
+                        <br>
+
+                        <v-tooltip
+                            color="light-blue darken-4"
+                            top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    icon
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    @click.stop="openSendFileDialog">
+                                    <v-icon  @mouseenter="iconColor.d3='red darken'"
+                                             @mouseleave="iconColor.d3=''"
+                                             :color="iconColor.d3">
+                                        mdi-folder-move-outline
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Перенаправленные документы</span>
+                        </v-tooltip>
+                        <br>
+
+                        <v-tooltip
+                            color="light-blue darken-4"
+                            top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    icon
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    @click.stop="openExpensesDialog">
+                                    <v-icon
+                                        @mouseenter="iconColor.d1='teal lighten'"
+                                        @mouseleave="iconColor.d1=''"
+                                        :color="iconColor.d1"
+                                    >
+                                        mdi-card-bulleted-outline
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Затраты</span>
+                        </v-tooltip>
+                        <br>
+
+                        <v-tooltip
+                            color="light-blue darken-4"
+                            top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    icon
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    @click.stop="openRedressDialog">
+                                    <v-icon
+                                        @mouseenter="iconColor.d2='teal lighten'"
+                                        @mouseleave="iconColor.d2=''"
+                                        :color="iconColor.d2">
+                                        mdi-cash-multiple
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Компенсации</span>
+                        </v-tooltip>
+
+
+
+                    </v-col>
+                    <v-divider
+                        vertical>
+
+                    </v-divider>
                     <v-col
                         cols="3">
                         Приказ:<br>
@@ -41,7 +133,7 @@
 
 
                     <v-col
-                        cols="3">
+                        cols="2">
                         Причина гарантии:<br>
                         Вид надстройки: <br>
                         Виновник:<br>
@@ -59,88 +151,6 @@
                         {{this.complaint.chassises}} <br>
                     </v-col>
 
-                    <v-col
-                        sm="2"
-                    >
-                        <v-tooltip
-                            color="light-blue darken-4"
-                            top>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    icon
-                                    @click.stop="openAddFileDialog">
-                                    <v-icon>
-                                        mdi-folder-information-outline
-                                    </v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Прикрепленные документы</span>
-                        </v-tooltip>
-                    </v-col>
-                    <v-col
-                        sm="2"
-                    >
-                        <v-tooltip
-                            color="light-blue darken-4"
-                            top>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    icon
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    @click.stop="openSendFileDialog">
-                                    <v-icon>
-                                        mdi-folder-move-outline
-                                    </v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Перенаправленные документы</span>
-                        </v-tooltip>
-                    </v-col>
-                    <v-col
-                        sm="2"
-                    >
-                        <v-tooltip
-                            color="light-blue darken-4"
-                            top>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    icon
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    @click.stop="openExpensesDialog">
-                                    <v-icon>
-                                        mdi-card-bulleted-outline
-                                    </v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Затраты</span>
-                        </v-tooltip>
-
-                    </v-col>
-                    <v-col
-                        sm="2"
-                    >
-                        <v-tooltip
-                            color="light-blue darken-4"
-                            top>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    icon
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    @click.stop="openRedressDialog">
-                                    <v-icon>
-                                        mdi-cash-multiple
-                                    </v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Компенсация</span>
-                        </v-tooltip>
-
-                    </v-col>
 
                 </v-row>
             </v-card-text>
@@ -223,6 +233,12 @@ export default {
     },
     data() {
         return {
+            iconColor: {
+                d1:'',
+                d2:'',
+                d3:'',
+                d4:'',
+            },
 
             insert: true,
             showDialog: false,
@@ -284,6 +300,10 @@ export default {
         openRedressDialog() {
             this.redressCreateDialog = true;
         },
+
+        // getColor(){
+        //
+        // },
 
 
 

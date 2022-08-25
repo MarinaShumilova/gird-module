@@ -43,12 +43,14 @@ class ExpensesController extends Controller
     public function store(StoreExpensePost $request, Complaint $complaint)
     {
         //
+//        dd($request);
+
         $this->authorize('create',Expense::class);
 
         $expense = new Expense($request->all());
         $expense->save();
 
-
+//        return response(1);
     }
 
     /**

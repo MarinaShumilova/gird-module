@@ -25,6 +25,7 @@
                     <v-row justify="center"
                     >
                         <v-col
+                            v-show="showUser||showAccount"
                             sm="10">
                             <v-menu
                                 ref="menu"
@@ -62,6 +63,7 @@
                         <v-col sm="10"
                                align="center">
                             <v-text-field
+                                v-show="showUser||showAccount"
                                 v-model="expensesData.sum"
                                 :error-messages="errors['sum']"
                                 type="number"
@@ -82,8 +84,10 @@
                             v-for="item in expenses"
                             :key="item.id"
                         >
-                            <v-list-item-title>{{ item.sum }}
+                            <v-list-item-title>
+                                <span class="text-caption">{{ item.start_at }}</span>
                                 <v-divider></v-divider>
+                                {{ item.sum }}
                             </v-list-item-title>
 
                             <v-btn icon
@@ -98,7 +102,7 @@
                 </v-card-text>
             </v-container>
 
-            <v-card-actions>
+            <v-card-actions  v-show="showUser||showAccount">
                 <v-btn
                     :disabled="loading"
                     text
@@ -127,7 +131,6 @@
 import BaseMonthPicker from "./BaseMonthPicker";
 
 
-
 export default {
     components: {BaseMonthPicker},
     name: "ExpensesCard",
@@ -146,10 +149,13 @@ export default {
     data() {
         return {
             dialog: this.value,
+
+            startExpenses: [],   //массив месяце
+
             expensesData: {
                 complaint_id: this.complaint_id,
                 sum: null,
-                start_at:null,
+                start_at: null,
             },
 
             month: new Date().toISOString().substr(0, 7),
@@ -165,32 +171,40 @@ export default {
             monthName: '',
 
 
-            monthStr:'',
+            monthStr: '',
 
+            nameMonth: [],
+
+
+            showUser: false,
+            showAccount: false,
 
 
         }
     },
 
-    computed:{
-      computedDateFormat(){
+    computed: {
+        computedDateFormat() {
 
-          if (this.expensesData.start_at != null){
-              this.expensesData.start_at = this.expensesData.start_at + '-01';
-              this.monthExpenses = new Date(this.expensesData.start_at);
-              this.monthStr = this.getMonth(this.monthExpenses);
+            if (this.expensesData.start_at != null) {
+                this.expensesData.start_at = this.expensesData.start_at + '-01';
+                this.monthExpenses = new Date(this.expensesData.start_at);
+                this.monthStr = this.getMonth(this.monthExpenses);
 
-             return this.monthStr=this.monthStr;
-          }
+                return  this.monthStr;
+            }
 
-      }
+        }
 
 
     },
     created() {             //вызвать при открытии диалога
         this.showDialog = false;
         this.getExpenses();
+        this.showUser = this.returnUser();
+        this.showAccount = this.returnUserAccount();
         this.showDialog = true;
+
 
     },
 
@@ -201,14 +215,30 @@ export default {
                 .then((response) => {
                     this.expenses = response.data;
 
+                    this.expenses = this.expenses.map(function (item) {
+                        let str = item.start_at;
+                        let mnt = '';
+                        mnt = new Date(str);
+
+                        let DataFormat = new Intl.DateTimeFormat("ru", {
+                            month: "long",
+
+                        });
+                        let res = '';
+                        res = DataFormat.format(mnt);
+                        let result = res[0].toUpperCase() + res.slice(1);
+
+                        item.start_at = result;
+                        return item;
+
+                    });
+
                 });
 
         },
 
         submit() {
             this.loading = true;
-
-
             api.call(endpoint('complaints.expenses.store', this.complaint_id), this.expensesData)
                 .then(response => {
                     this.expensesData = {
@@ -225,7 +255,7 @@ export default {
 
                 })
                 .finally(() => {
-                   /// this.expensesData.start_at = this.expensesData.start_at.slice(0,-3);
+                    /// this.expensesData.start_at = this.expensesData.start_at.slice(0,-3);
 
                     this.getExpenses();
                     this.loading = false;
@@ -236,6 +266,8 @@ export default {
         close() {
             this.$emit('input', false);
             this.$emit('close-expenses', false);
+
+
 
         },
 
@@ -262,6 +294,13 @@ export default {
 
         capitalize(value) {
             return value[0].toUpperCase() + value.slice(1);
+        },
+
+        returnUser() {
+            return this.$store.getters.userHasRole('admin');
+        },
+        returnUserAccount() {
+            return this.$store.getters.userHasRole('account');
         },
 
     }

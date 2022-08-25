@@ -49,11 +49,6 @@ export default {
             type:Number,
             required: true
         },
-        loading: {
-            type: Boolean,
-            default: false
-        },
-
 
     },
     components: {ComponentWrite, BaseDialogAction},
@@ -100,6 +95,7 @@ export default {
             dialog: this.value,
             showDialog:false,
             validationErrors: { },
+            loading: false,
 
         }
 

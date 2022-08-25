@@ -38,13 +38,13 @@ class ComplaintController extends Controller
             when($request->input('data_expenses'), function ($q) use ($request) {
                 $q->whereHas('expenses', function ($q) use ($request) {
                     if ($request->has(['data_expenses'])) {
-                        if (!empty($resultExp)) {
+//                        if (!empty($resultExp)) {
                             $resultExp = array_map(function ($date) {
                                 return $date . '-01';
                             }, $request->input('data_expenses'));
 
                             $q->whereIn('start_at', $resultExp);
-                        }
+//                        }
                     }
 
                 });
@@ -366,8 +366,6 @@ class ComplaintController extends Controller
 
 
         }
-
-
 
 
         $writer = new Xlsx($spreadsheet);

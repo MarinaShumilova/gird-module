@@ -8,7 +8,7 @@
         <v-card>
             <v-card-title>
                 <v-icon left>mdi-comment-multiple-outline</v-icon>
-                Комментарий
+                Контакты
                 <v-spacer/>
                 <v-btn
                     icon color="error" @click="close">

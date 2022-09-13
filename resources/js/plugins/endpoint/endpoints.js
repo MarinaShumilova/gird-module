@@ -29,9 +29,11 @@ const Endpoints = {
         "complaints.redress.update":{"uri":"/redress/{redress} ","method":"put"},
 
 
-        "complaints.comment.index":{"uri":"/complaints/{complaint}/comments ","method":"get"},
+        "complaints.comment.index":{"uri":"/complaints/{complaint}/comments","method":"get"},
         "complaints.comment.store":{"uri":"/complaints/{complaint}/comments ","method":"post"},
 
+        "complaints.events.index":{"uri":"/complaints/{complaint}/events","method":"get"},
+        "complaints.events.store":{"uri":"/complaints/{complaint}/events","method":"post"},
 
         "complaints.attachments.index":{"uri":"/complaints/{complaint}/attachments","method":"get"},
 

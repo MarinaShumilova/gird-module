@@ -1,5 +1,5 @@
-<template xmlns="http://www.w3.org/1999/html">
-    <v-container full-height>
+<template>
+    <v-container>
         <v-row>
             <v-col>
                 <base-data-table
@@ -12,14 +12,32 @@
                     disable-sort
                 >
                     <template v-slot:top>
-                        <component-filter
-                            :status="statuses"
-                            :type_comps="type_comps"
-                            @change="getFilterComplaint"
-                        >
+                        <v-row class="filters">
+                            <component-filter
+                                :status="statuses"
+                                :type_comps="type_comps"
+                                @change="getFilterComplaint"
+                            >
 
-                        </component-filter>
+                            </component-filter>
+
+                        </v-row>
+
                     </template>
+
+                    <template v-slot:item.culprits="{ item }">
+                        <span v-for="culprit in item.culprits">
+                            {{ culprit.name }}
+                        </span>
+                    </template>
+
+                    <template v-slot:item.reasons="{ item }">
+                        <span v-for="reason in item.reasons">
+                            {{ reason.name }}
+                        </span>
+                    </template>
+
+
 
 
                     <template #footer.prepend>
@@ -59,8 +77,16 @@
                                         <v-list-item-icon>
                                             <v-icon right>mdi-cash-multiple</v-icon>
                                         </v-list-item-icon>
-                                        <v-list-item-title>Компенсация</v-list-item-title>
+                                        <v-list-item-title>Компенсации</v-list-item-title>
                                     </v-list-item>
+
+                                    <v-list-item v-show="showUser||showAccount" @click.stop="openEventsDialog">
+                                        <v-list-item-icon>
+                                            <v-icon right>mdi-inbox-full-outline</v-icon>
+                                        </v-list-item-icon>
+                                        <v-list-item-title>Мероприятия</v-list-item-title>
+                                    </v-list-item>
+
 
                                     <v-list-item v-show="showUser" v-if="editedRow.status_id === 1"
                                                  @click="exitComplaints(editedRow.id)">
@@ -117,6 +143,15 @@
                             @close-add-file="closeAddFile()">
                         </add-file>
 
+                        <component-event
+                            v-show="showUser"
+                            v-if="eventsCreateDialog"
+                            v-model="eventsCreateDialog"
+                            :complaint_id="editedRow.id"
+                            @close-comments="closeCommentCard">
+
+                        </component-event>
+
                         <add-card
                             v-show="showUser"
                             v-if="cardCreateDialog"
@@ -152,6 +187,7 @@
                         >
 
                         </component-redress>
+
 
 
                     </template>
@@ -229,7 +265,7 @@
                         <v-btn icon
                                @click.stop="openComponentComment(item.id)">
                             <v-icon>
-                                mdi-comment-processing-outline
+                                mdi-card-account-details-outline
                             </v-icon>
                         </v-btn>
 
@@ -295,6 +331,7 @@ import LookRecord from "./LookRecord";
 import ComponentComment from "./ComponentComment";
 import ComponentFilter from "./ComponentFilter";
 import ComponentRedress from "./ComponentRedress";
+import ComponentEvent from "./ComponentEvent";
 
 
 export default {
@@ -302,7 +339,7 @@ export default {
         ComponentFilter,
         AddCard, ExpensesCard, SendFile,
         AddFile, BaseMonthPicker, EditCard, LookRecord,
-        BaseDataTable, ComponentComment, ComponentRedress,
+        BaseDataTable, ComponentComment, ComponentRedress,ComponentEvent,
     },
 
 
@@ -328,6 +365,9 @@ export default {
             search: '',         /*Поиск*/
             complaints: [],      /*таблица*/
             loading: false,      /*загрузка таблицы*/
+            arrCulprits:[],
+
+
             headers: [          /*столбцы таблицы*/
                 {
                     text: 'Действия',
@@ -340,8 +380,8 @@ export default {
                 {text: 'Приказ', value: 'numb_order'},
                 {text: 'Гарантийный приказ', value: 'warranty_decree'},
                 {text: 'Контрагент', value: 'contractor.name'},
-                {text: 'Причина ГС', value: 'reason.name'},
-                {text: 'Виновная сторона', value: 'culprit.name'},
+                {text: 'Причина ГС', value: 'reasons'},
+                {text: 'Виновная сторона', value: 'culprits'},
                 {text: 'Затраты', value: 'expense_sum'},
 
 
@@ -357,6 +397,8 @@ export default {
             nameStatus: ['В работе', 'Завершен', 'Удален'],
 
             expensesCreateDialog: false, //затраты
+
+            eventsCreateDialog: false,
 
             commentsCreateDialog: false,
 
@@ -458,9 +500,15 @@ export default {
             this.rowComplaint.id = id;
         },
 
-        openExpensesDialog() {
+        openExpensesDialog(id) {
             this.expensesCreateDialog = true;
+            this.rowComplaint.id = id;
 
+        },
+
+        openEventsDialog(id){
+           this.eventsCreateDialog = true;
+           this.rowComplaint.id = id;
         },
 
         openCardDialog() {
@@ -509,12 +557,9 @@ export default {
             api.call(endpoint('complaints.index', input))
                 .then(response => {
                     this.complaints = response.data.data;
-                    //  this.complaints.warrantyTypes = response.data.warrantyTypes;
 
                     this.makePagination(response.data);
                     this.getStatuses();
-
-
 
                 })
                 .catch(error => {

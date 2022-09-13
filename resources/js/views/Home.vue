@@ -1,6 +1,9 @@
 <template>
+
     <comp-table></comp-table>
-<!--    <my-home></my-home>-->
+
+
+    <!--    <my-home></my-home>-->
 </template>
 
 <script>
@@ -9,9 +12,9 @@ import axios from "axios";
 /*import MyHome from "../components/MyHome";*/
 
 export default {
-   /* components: {MyHome}*/
+    /* components: {MyHome}*/
 
-      components: {CompTable}
+    components: {CompTable}
 
     // constructor () {
     //     this.axios = axios.create();

@@ -30,8 +30,13 @@ class StoreComplaintPost extends FormRequest
     {
         return [
             'vehicle' => 'required|string',
-            'warranty_decree' => 'nullable|integer',
+            'warranty_decree' => 'nullable',
+            'numb_pretension' => 'nullable',
+
+
             'start_at' => 'required|date|before_or_equal:' . date("d.m.Y") ,
+            'pretension_at' => 'required|date|before_or_equal:' . date("d.m.Y") ,
+
             'unload_at' => 'required|date|before_or_equal:' . date("d.m.Y"),
             'numb_order' => 'required|max:5',
             'order_at'=>'required|date||before_or_equal:' . date("d.m.Y"),
@@ -49,15 +54,22 @@ class StoreComplaintPost extends FormRequest
             'executor_id' => 'required|array',
             'executor_id.*' =>'integer|exists:App\Models\Executor,id',
 
+            'reason_id' => 'required|array',
+            'reason_id.*' => 'integer|exists:App\Models\Reason,id',
+
+            'culprit_id' => 'required|array',
+            'culprit_id.*' => 'integer|exists:App\Models\Culprit,id',
+
             //справочники(наличие в БД)
 
             'warranty_type_id' => 'required|exists:App\Models\WarrantyType,id',
-            'reason_id' => 'required|exists:App\Models\Reason,id',
+           // 'reason_id' => 'required|exists:App\Models\Reason,id',
             'type_comp_id' => 'required|exists:App\Models\TypeComp,id',
-            'culprit_id' => 'required|exists:App\Models\Culprit,id',
+           // 'culprit_id' => 'required|exists:App\Models\Culprit,id',
 
 
             'contractor_id'=>'required|exists:App\Models\Contractor,id',
+            'provider_id'=>'nullable'
 
         ];
 

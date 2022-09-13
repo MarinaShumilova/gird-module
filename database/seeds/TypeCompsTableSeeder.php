@@ -19,6 +19,7 @@ class TypeCompsTableSeeder extends Seeder
         $compType = [
             'Гарантийный',
             'Не гарантийный',
+            'Перенаправить',
         ];
 
         foreach ($compType as $c) {

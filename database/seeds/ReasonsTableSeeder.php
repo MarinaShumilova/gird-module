@@ -14,7 +14,6 @@ class ReasonsTableSeeder extends Seeder
     public function run()
     {
         $reason=[
-            'Поставщик',
             'Фургон',
             'Металлоконструкция',
             'ЛКП',

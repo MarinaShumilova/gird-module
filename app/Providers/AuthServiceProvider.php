@@ -5,12 +5,14 @@ namespace App\Providers;
 use App\Models\Attachment;
 use App\Models\CommentComplaint;
 use App\Models\Complaint;
+use App\Models\EventComplaint;
 use App\Models\Expense;
 use App\Models\RedressComplaint;
 use App\Models\TransferFile;
 use App\Policies\AttachmentPolicy;
 use App\Policies\CommentComplaintPolicy;
 use App\Policies\ComplaintPolicy;
+use App\Policies\EventPolicy;
 use App\Policies\ExpensePolicy;
 use App\Policies\RedressPolicy;
 use App\Policies\TransferFilePolicy;
@@ -30,6 +32,7 @@ class AuthServiceProvider extends ServiceProvider
         Attachment::class=>AttachmentPolicy::class,
         TransferFile::class=>TransferFilePolicy::class,
         RedressComplaint::class=>RedressPolicy::class,
+        EventComplaint::class=>EventPolicy::class,
     ];
 
     /**

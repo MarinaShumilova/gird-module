@@ -25,6 +25,10 @@ class Reason extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function complaints()
+    {
+        return $this->belongsToMany( Complaint::class, 'complaint_reasons_tables');
+    }
 
 
 

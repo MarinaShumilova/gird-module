@@ -21,9 +21,13 @@
            :culprits="culprits"
            :executors="executors"
            :contractors="contractors"
+           :providers="providers"
            :errors="validationErrors"
            :executor_id="executor_id"
            :chassises="chassises"
+           :reason_id="reason_id"
+           :culprit_id="culprit_id"
+           :providerCulprit="providerCulprit"
 
            >
 
@@ -64,10 +68,14 @@ export default {
                 this.culprits = response.data.culprits;
                 this.executors = response.data.executors;
                 this.contractors = response.data.contractors;
+                this.providers = response.data.providers;
                 //this.executor_id = response.data.complaint;
                 this.chassises = response.data.chassises;
                 this.complaint = response.data.complaint;
                 this.complaint.executor_id = response.data.executor_id;
+                this.complaint.reason_id = response.data.reason_id;
+                this.complaint.culprit_id = response.data.culprit_id;
+                this.getCulprits();
                 this.complaint.chassises=this.complaint.chassises.map(function(item)
                 {
                     return item.number;
@@ -83,12 +91,16 @@ export default {
         return {
             warrantyTypes: [],
             reasons:[],
+            reason_id:[],
+            culprit_id:[],
             type_comps:[],
             culprits:[],
             executors:[],
             executor_id:[],
             contractors:[],
+            providers:[],
             chassis:[],
+
             complaint:{ },  //объект с данными
 
 
@@ -96,6 +108,8 @@ export default {
             showDialog:false,
             validationErrors: { },
             loading: false,
+
+            providerCulprit:false,
 
         }
 
@@ -115,6 +129,7 @@ export default {
         submit() {
             this.loading = true;
 
+
             api.call(endpoint('complaints.update', this.id), this.complaint)
                 .then(response => {
                     this.vehicle = response.data.complaint;
@@ -130,6 +145,15 @@ export default {
                 .finally(()=>{
                     this.loading = false;
                 })
+
+        },
+
+        getCulprits(){
+            let arrCulprits = this.complaint.culprit_id.map(function (item) {
+                return item
+            }).join(', ')
+
+            this.providerCulprit = arrCulprits.includes('1');
 
         },
 

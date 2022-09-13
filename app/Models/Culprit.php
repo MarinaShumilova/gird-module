@@ -29,6 +29,10 @@ class Culprit extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function complaints()
+    {
+        return $this->belongsToMany( Complaint::class, 'complaint_culprits_tables');
+    }
 
 
     /*

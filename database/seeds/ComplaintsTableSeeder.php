@@ -28,6 +28,7 @@ class ComplaintsTableSeeder extends Seeder
                   'status_id' => 1,
                   'warranty_decree'=>1,
                   'unload_at' => '25.06.10',
+                  'provider_id'=>1,
 
               ],
           [
@@ -45,6 +46,7 @@ class ComplaintsTableSeeder extends Seeder
               'unload_at' => '05.06.02',
 
 
+
           ],
           [
               'start_at' => '21-08-09',
@@ -59,6 +61,7 @@ class ComplaintsTableSeeder extends Seeder
               'status_id' => 1,
               'warranty_decree'=>1,
               'unload_at' => '15.02.08',
+
 
           ]
 

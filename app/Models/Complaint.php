@@ -30,8 +30,9 @@ class Complaint extends Model
 
 
     protected $fillable = ['start_at','close_at','vehicle','numb_order',
-       'warranty_decree', 'warranty_type_id','reason_id','type_comp_id',
-        'contractor_id','culprit_id','unload_at','order_at'
+       'warranty_decree', 'warranty_type_id','type_comp_id',
+        'contractor_id','unload_at','order_at','numb_pretension','pretension_at',
+        'provider_id'
     ];
 
 
@@ -40,10 +41,7 @@ class Complaint extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function reason()
-    {   /*один к одному(связать по id)*/
-        return $this->belongsTo(Reason::class, 'reason_id','id');
-    }
+
 
     public function warranty_type()
     {
@@ -67,16 +65,34 @@ class Complaint extends Model
         return $this->belongsTo(Contractor::class, 'contractor_id','id');
     }
 
+    public function providers()
+    {
+        return $this->belongsTo(ProviderComplaint::class, 'provider_id','id');
+    }
+
+
     public function expenses()
     {
         return $this->hasMany(Expense::class, 'complaint_id','id');
     }
+
+
+
 
     public function redress()
     {
         return $this->hasMany(RedressComplaint::class, 'complaint_id','id');
     }
 
+    public function reasons()
+    {
+        return $this->belongsToMany(Reason::class, 'complaint_reasons_tables');
+    }
+
+    public function culprits()
+    {
+        return $this->belongsToMany(Culprit::class, 'complaint_culprits_tables');
+    }
 
 
 
@@ -88,6 +104,11 @@ class Complaint extends Model
 
     public function comments(){
       return $this->hasMany(CommentComplaint::class,'complaint_id','id');
+    }
+
+    public function events(){
+       return $this->hasMany(EventComplaint::class,'complaint_id', 'id');
+
     }
 //
     public function chassises()

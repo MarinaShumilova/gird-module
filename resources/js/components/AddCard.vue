@@ -22,7 +22,10 @@
                 :culprits="culprits"
                 :executors="executors"
                 :executor_id="executors"
+                :reason_id="reasons"
+                :culprit_id="culprits"
                 :contractors="contractors"
+                :providers="providers"
                 :errors="validationErrors"
                 :chassises="chassises"
 
@@ -74,6 +77,7 @@ export default {
                 this.culprits = response.data.culprits;
                 this.executors = response.data.executors;
                 this.contractors = response.data.contractors;
+                this.providers = response.data.providers;
                 this.maxSize = response.data.attachment_rules.max_size;
                 this.extensions = response.data.attachment_rules.extensions;
                 this.showDialog = true;
@@ -93,6 +97,7 @@ export default {
             executors:[],
             contractors:[],
             chassises:[],
+            providers:[],
 
             // файлы
 
@@ -102,14 +107,18 @@ export default {
 
             complaint: {
                 warranty_type_id: 1,
-                reason_id:1,
+                reason_id: [],
                 type_comp_id:1,
-                culprit_id:1,
+                culprit_id:[],
                 executor_id: [],
                 contractor_id: null,
+                provider_id: null,
                 status_id:1,  /*статус в работе*/
                 files:[],
                 chassises:[],
+
+                numb_pretension:null,    //№ ретензии
+                pretension_at:new Date().toISOString().substr(0, 10),  //дата претензии
 
 
                 warranty_decree:null,
@@ -126,6 +135,8 @@ export default {
             errors: {},
             showDialog:false,   /*загружает данные до отображения*/
             loading: false,
+
+            provider:false,
 
 
         }
@@ -148,10 +159,19 @@ export default {
             formData.append('numb_order', this.complaint.numb_order ?? ' ');
             formData.append('order_at', this.complaint.order_at);
             formData.append('contractor_id', this.complaint.contractor_id);
-            formData.append('culprit_id', this.complaint.culprit_id);
-            formData.append('reason_id', this.complaint.reason_id);
+
+            if (this.complaint.provider_id)
+                formData.append('provider_id', this.complaint.provider_id);
+            // formData.append('culprit_id', this.complaint.culprit_id);
+            // formData.append('reason_id', this.complaint.reason_id);
             formData.append('warranty_type_id', this.complaint.warranty_type_id);
             formData.append('type_comp_id', this.complaint.type_comp_id);
+
+            formData.append('warranty_decree', this.complaint.warranty_decree);
+            formData.append('numb_pretension', this.complaint.numb_pretension);
+            formData.append('pretension_at', this.complaint.pretension_at);
+
+
 
 
             for (let i = 0; i < this.complaint.chassises.length; i++) {
@@ -163,6 +183,14 @@ export default {
             for (let i = 0; i < this.complaint.executor_id.length; i++) {
                    formData.append('executor_id' + '[' + i + ']', this.complaint.executor_id[i]);
                };
+
+            for (let i = 0; i < this.complaint.reason_id.length; i++) {
+                formData.append('reason_id' + '[' + i + ']', this.complaint.reason_id[i]);
+            };
+
+            for (let i = 0; i < this.complaint.culprit_id.length; i++) {
+                formData.append('culprit_id' + '[' + i + ']', this.complaint.culprit_id[i]);
+            };
 
 
             // attachments
@@ -186,11 +214,23 @@ export default {
 
         },
 
+        // getCulprits(){
+        //     let arrCulprits = this.complaint.culprit_id.map(function (item) {
+        //         return item
+        //     }).join(', ')
+        //
+        //     provider = arrCulprits.includes('1');
+        //
+        // },
+
 
 
         close() {
             this.$emit('input', false);
+
+
         },
+
 
 
     }

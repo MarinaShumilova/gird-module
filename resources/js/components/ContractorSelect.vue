@@ -8,7 +8,6 @@
             v-model="selected"
             v-bind="$attrs"
             placeholder="Введите ИНН или название"
-            label="Заказчик"
             :search-input.sync="search"
             :items="contractors"
             item-value="id"

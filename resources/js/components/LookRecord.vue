@@ -3,9 +3,11 @@
         v-if="showDialog"
         v-model="dialog"
         max-width="1000"
+
         persistent
     >
-        <v-card>
+        <v-card
+            min-width="600">
 
             <v-card-title>
                 <v-icon left>mdi-information-outline</v-icon>
@@ -102,6 +104,27 @@
                             </template>
                             <span>Компенсации</span>
                         </v-tooltip>
+                        <br>
+                        <v-tooltip
+                            color="light-blue darken-4"
+                            top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    icon
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    @click.stop="openEventDialog">
+                                    <v-icon
+                                        @mouseenter="iconColor.d4='light-blue darken'"
+                                        @mouseleave="iconColor.d4=''"
+                                        :color="iconColor.d4">
+                                        mdi-inbox-full-outline
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Мероприятия</span>
+                        </v-tooltip>
+
 
 
 
@@ -137,16 +160,19 @@
                         Причина гарантии:<br>
                         Вид надстройки: <br>
                         Виновник:<br>
+                        Поставщик:<br>
                         Устранение: <br>
                         Дата отгрузки шасси:<br>
                         Шасси: <br>
                     </v-col>
                     <v-col
                         cols="3">
-                        {{this.reason_name}}<br>
+                       {{this.reason_id}}<br>
                         {{this.complaint.vehicle}}<br>
-                        {{this.culprit_name}}<br>
+                       {{this.culprit_id}}<br>
+                        {{this.provider_name}}<br>
                         {{this.executor_id}}<br>
+                        {{  }}<br>
                         {{this.complaint.unload_at | date}}<br>
                         {{this.complaint.chassises}} <br>
                     </v-col>
@@ -183,6 +209,13 @@
 
         </component-redress>
 
+        <component-event
+            v-if="eventsCreateDialog"
+            v-model="eventsCreateDialog"
+            :complaint_id="id"
+        >
+        </component-event>
+
 
     </v-dialog>
 </template>
@@ -192,9 +225,10 @@ import AddFile from "./AddFile";
 import SendFile from "./SendFile";
 import ExpensesCard from "./ExpensesCard";
 import ComponentRedress from "./ComponentRedress";
+import ComponentEvent from "./ComponentEvent";
 
 export default {
-    components: {AddFile, SendFile,ExpensesCard,ComponentRedress},
+    components: {AddFile, SendFile,ExpensesCard,ComponentRedress,ComponentEvent},
     name: "LookRecord",
     props: {
         value: {
@@ -213,14 +247,18 @@ export default {
         api.call(endpoint('complaints.show', this.id))
             .then((response) => {
                 this.warranty_type_name = response.data.warranty_type_name;
-                this.reason_name = response.data.reason_name;
                 this.type_comp_name = response.data.type_comp_name;
-                this.culprit_name = response.data.culprit_name;
                 this.executors = response.data.executors;
+                this.reasons = response.data.reasons;
+                this.culprits = response.data.culprits;
                 this.contractor_name = response.data.contractor_name;
+                this.provider_name = response.data.provider_name;
+
                 this.chassises = response.data.chassises;
                 this.complaint = response.data.complaint;
                 this.executor_id = response.data.executor_id.join(', ');
+                this.reason_id = response.data.reason_id.join(', ');
+                this.culprit_id = response.data.culprit_id.join(', ');
                 this.showDialog = true;
                 this.complaint.chassises = this.complaint.chassises.map(function (item) {
                     return item.number
@@ -254,6 +292,7 @@ export default {
             sendFileCreateDialog: false,
             expensesCreateDialog: false, //затраты
             redressCreateDialog: false,
+            eventsCreateDialog:false,
 
         }
     },
@@ -299,6 +338,10 @@ export default {
 
         openRedressDialog() {
             this.redressCreateDialog = true;
+        },
+
+        openEventDialog() {
+          this.eventsCreateDialog = true;
         },
 
         // getColor(){

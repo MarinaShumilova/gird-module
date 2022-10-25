@@ -62,7 +62,8 @@ class ComplaintController extends Controller
                 'reasons',
                 'culprits',
                 'contractor',
-                'transfer'
+                'transfer.attachments',
+
 
             ])
                 ->withCount([

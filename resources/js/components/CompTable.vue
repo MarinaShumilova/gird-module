@@ -279,7 +279,7 @@
                             </v-tooltip>
 
                             <!--                                                если виновна другая сторона-->
-                            <v-tooltip right v-if="item.transfer">
+                            <v-tooltip right v-if="item.transfer && item.transfer.attachments.length">
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-icon
                                         small
@@ -289,7 +289,7 @@
                                     >mdi-email-send-outline
                                     </v-icon>
                                 </template>
-                                <span>Регресс {{ item.transfer.transfer_at |date}}</span>
+                                <span>Регресс {{ item.transfer.transfer_at |date }}</span>
                             </v-tooltip>
                         </v-row>
                     </template>
@@ -364,7 +364,6 @@ export default {
 
             showUser: false,
             showAccount: false,
-
 
             editedRow: null,   //вернет строку со всеми данными при вызове
 
@@ -451,6 +450,9 @@ export default {
             })
         },
 
+        // changeSendState(e) {
+        //     this.compFiles = e;
+        // },
 
         returnUser() {
             return this.$store.getters.userHasRole('admin');

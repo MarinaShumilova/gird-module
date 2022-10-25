@@ -46,7 +46,7 @@
                 value="0"
                 dense
                 outlined
-                hide-spin-buttons
+
                 suffix="₽"
                 hint="компенсации">
             </v-text-field>
@@ -54,7 +54,7 @@
         <v-col cols="12">
             <v-textarea
                 v-show="showUser||showAccount"
-                :disabled="redress.expenses_redress == null"
+                :disabled="this.getDisable"
                 v-model="redress.comment"
                 :error-messages="errors['comment']"
                 dense
@@ -159,6 +159,8 @@ export default {
             monthExpenses: '',
             monthName: '',
 
+            disExpenses:'',
+
         }
     },
 
@@ -169,6 +171,8 @@ export default {
         value(redress){
             this.redress = this.value;
         },
+
+
 
 
     },
@@ -184,8 +188,14 @@ export default {
                 return this.monthStr;
             }
 
-        }
+        },
 
+        getDisable()
+        {if (this.redress.expenses_redress == ''||this.redress.expenses_redress == null)
+                return this.disExpenses = true
+            else
+                return this.disExpenses = false;
+        }
 
     },
 
@@ -252,6 +262,8 @@ export default {
         deleteRedress() {
             this.$emit('delete', false);
         },
+
+
     },
 }
 

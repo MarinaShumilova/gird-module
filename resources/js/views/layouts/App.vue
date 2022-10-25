@@ -13,7 +13,7 @@
                 drawer: true,
                 drawerItems: [
                     {
-                        text: 'Home',
+                        text: 'Рекламации',
                         icon: 'mdi-home',
                         to: { name: 'home' },
                         exact: true,

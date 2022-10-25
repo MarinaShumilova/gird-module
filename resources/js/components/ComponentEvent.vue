@@ -66,6 +66,7 @@
                             :error-messages="errors['prevention']"
                             :disabled="!showUser"
                             outlined
+                            dense
                             label="Мероприятия на предотвращение"
                             auto-grow
                             rows="1"

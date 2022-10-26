@@ -160,10 +160,7 @@
                             <v-btn
                                 :disabled="loading"
                                 text
-                                @click="close"
-
-                            >
-                                {{this.emptyFile}}
+                                @click="close">
                                 Отмена
                             </v-btn>
                             <v-spacer></v-spacer>
@@ -266,20 +263,10 @@ export default {
         }
     },
     computed: {
-        getDisable() {
+        getDisable(){
             if (this.redress.expenses_redress == '' || this.redress.expenses_redress == null)
-                return this.disExpenses = true
-            else
-                return this.disExpenses = false
+                return true
         },
-
-        // getFileEmpty() {
-        //     if (this.files.length === 0)
-        //        return  this.emptyFile = false
-        //     else
-        //        return  this.emptyFile = true
-        //
-        // },
 
         emptyFile() {
             return this.files.length === 0;
@@ -287,15 +274,6 @@ export default {
 
     },
 
-    // watch: {
-    //     emptyFile() {
-    //         this.$emit('arrFiles', {emptyFile: this.emptyFile, compId: this.compId})
-    //     }
-    //
-    //
-    //
-    //
-    // },
 
     created() {
 
@@ -312,7 +290,6 @@ export default {
         this.showUser = this.returnUser();
         this.showAccount = this.returnUserAccount();
 
-        // this.getParamForm(this.showUser);
         this.getRedress();
 
     },

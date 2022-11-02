@@ -20,6 +20,7 @@ class TypeCompsTableSeeder extends Seeder
             'Отказ',
             'Политика',
             'Платно',
+            'Перенаправлено'
         ];
 
         foreach ($compType as $c) {

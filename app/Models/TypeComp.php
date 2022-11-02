@@ -17,7 +17,7 @@ class TypeComp extends Model
      |--------------------------------------------------------------------------
      */
 
-    protected $fillable = [];
+    protected $fillable = ['name'];
 
     public $timestamps = null;
     /*

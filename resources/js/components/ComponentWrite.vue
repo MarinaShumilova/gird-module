@@ -216,7 +216,6 @@
                         :error-messages="errors['chassises']"
                         label="Шасси"
                         :items="chassises"
-                        small-chips
                         dense
                         solo
                         multiple

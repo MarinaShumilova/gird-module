@@ -9,6 +9,7 @@ use App\Http\Controllers\RedressComplaintController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TransferFileController;
 use App\Models\Complaint;
+use App\Models\TypeComp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExpensesController;

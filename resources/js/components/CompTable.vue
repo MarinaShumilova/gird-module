@@ -406,7 +406,7 @@ export default {
                     sortable: false,
                     value: 'action',
                 },
-                {text: 'Дата создания', value: 'pretension_at'},
+                {text: 'Дата заявки', value: 'pretension_at'},
                 {text: 'Дата закрытия', value: 'close_at'},
                 {text: 'Приказ', value: 'numb_order'},
                 {text: 'Гарантийный приказ', value: 'warranty_decree'},
@@ -454,6 +454,7 @@ export default {
             type_comps: [],
             warranty_types: [],
             search:'',
+            dataFilter: {},
 
         }
     },
@@ -478,10 +479,6 @@ export default {
             })
         },
 
-        // changeSendState(e) {
-        //     this.compFiles = e;
-        // },
-
         returnUser() {
             return this.$store.getters.userHasRole('admin');
         },
@@ -489,9 +486,9 @@ export default {
             return this.$store.getters.userHasRole('account');
         },
 
-
         closeExpensesCard() {
-            this.getComplaints();
+
+            this.getComplaints(this.dataFilter);
         },
 
         closeSendFile() {
@@ -566,10 +563,11 @@ export default {
         },
 
         getFilterComplaint(value) {
+            this.dataFilter = value;
+
             if (value !== undefined) {
                 this.getComplaints(value);
             }
-
 
         },
 
@@ -584,7 +582,6 @@ export default {
         },
 
         closeComplaint() {
-
         },
 
         /**
@@ -593,7 +590,6 @@ export default {
 
         /*  Получить данные*/
         getComplaints(input) {
-            // input = this.options;
             api.call(endpoint('complaints.index', Object.assign({}, input, this.options)))
                 .then(response => {
                     this.complaints = response.data.data;

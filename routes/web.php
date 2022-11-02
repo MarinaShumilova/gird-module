@@ -4,6 +4,7 @@ use App\Http\Controllers\AppController;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\ComplaintController;
 use App\Models\Complaint;
+use App\Models\TypeComp;
 use GirdBase\Models\User;
 use Illuminate\Support\Facades\Route;
 

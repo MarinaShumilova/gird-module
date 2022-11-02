@@ -268,7 +268,6 @@ export default {
             this.$emit('close-expenses', false);
 
 
-
         },
 
         destroyExpense(id) {

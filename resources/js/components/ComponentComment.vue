@@ -18,17 +18,19 @@
             <v-card-text>
                 <v-row>
                     <v-col
-                        cols="10">
+                        cols="11">
                         <v-textarea
                             v-model="commentData.comments"
                             v-show="showUser"
                             :error-messages="errors['comment']"
-                            dense
-                            rows="1">
+                            rows="1"
+                            auto-grow
+
+                            dense>
                         </v-textarea>
                     </v-col>
                     <v-col
-                        sm="2">
+                        sm="1" class="pa-1">
                         <v-btn icon
                                v-show="showUser"
                                :loading="loading"
@@ -42,13 +44,22 @@
                     </v-col>
 
                     <v-col
-                        sm="10">
+                        sm="12" class="pa-0 ma-0">
                         <v-list>
                             <v-list-item
                                 v-for="item in comments"
                                 :key="item.id"
                             >
-                                <v-list-item-title>{{item.comment}}
+                                <v-list-item-title>
+                                    <v-textarea
+                                        hide-details
+                                        rows="1"
+                                        dense
+
+
+                                        outlined
+                                        :value="item.comment">
+                                    </v-textarea>
 
                                     <v-divider></v-divider>
                                 </v-list-item-title>

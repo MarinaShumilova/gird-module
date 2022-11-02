@@ -13,15 +13,18 @@
                     dense
                 >
                     <template v-slot:top>
-                        <v-row class="filters">
-                            <component-filter
-                                :status="statuses"
-                                :type_comps="type_comps"
-                                :warranty_types="warranty_types"
-                                @change="getFilterComplaint"
-                            >
+                        <v-row class="justify-center">
+                            <v-col>
+                                <component-filter
+                                    :status="statuses"
+                                    :type_comps="type_comps"
+                                    :warranty_types="warranty_types"
+                                    :search="search"
+                                    @change="getFilterComplaint"
+                                >
+                                </component-filter>
 
-                            </component-filter>
+                            </v-col>
 
                         </v-row>
 
@@ -103,6 +106,8 @@
                             </v-list>
                         </v-menu>
 
+                        <p class="text-uppercase">Сумма за период: {{ sumMonth|format }} ₽</p>
+
                         <!--   затраты-->
                         <expenses-card
                             v-show="showUser||showAccount"
@@ -172,14 +177,14 @@
                             @expenses-created="dialogRecord= false">
                         </look-record>
 
-<!--                        <component-redress-->
-<!--                            v-show="showUser||showAccount"-->
-<!--                            v-if="redressCreateDialog"-->
-<!--                            v-model="redressCreateDialog"-->
-<!--                            :compId="editedRow.id"-->
-<!--                        >-->
+                        <!--                        <component-redress-->
+                        <!--                            v-show="showUser||showAccount"-->
+                        <!--                            v-if="redressCreateDialog"-->
+                        <!--                            v-model="redressCreateDialog"-->
+                        <!--                            :compId="editedRow.id"-->
+                        <!--                        >-->
 
-<!--                        </component-redress>-->
+                        <!--                        </component-redress>-->
 
 
                     </template>
@@ -197,12 +202,17 @@
                     </template>
 
 
-                    <template v-slot:item.start_at="{ item }">
-                        {{ item.start_at | date }}
+                    <template v-slot:item.pretension_at="{ item }">
+                        {{ item.pretension_at|date }}
                     </template>
 
                     <template v-slot:item.close_at="{ item }">
-                        {{ item.close_at | date }}
+                        {{ item.close_at|date }}
+                    </template>
+
+                    <template v-slot:item.expense_sum="{ item }">
+                        {{ item.expense_sum|format }}
+
                     </template>
 
 
@@ -319,6 +329,13 @@
 
                     </template>
 
+                    <!--                    <template #footer.prepend>-->
+                    <!--                        <span>-->
+                    <!--                        Сумма за период:{{ sumMonth|format}}-->
+                    <!--                        </span>-->
+
+                    <!--                    </template>-->
+
 
                 </base-data-table>
             </v-col>
@@ -358,9 +375,16 @@ export default {
 
     data() {
         return {
+            options: {
+              page: 1,
+              itemsPerPage: 30,
+            },
+
             showMenu: false,
             x: 0,
             y: 0,
+
+            sumMonth: 0,
 
             showUser: false,
             showAccount: false,
@@ -369,7 +393,7 @@ export default {
 
             type: 'number',
             selectAll: false,    /*Выбор значения из списка*/
-            search: '',         /*Поиск*/
+
             complaints: [],      /*таблица*/
             loading: false,      /*загрузка таблицы*/
             arrCulprits: [],
@@ -382,14 +406,14 @@ export default {
                     sortable: false,
                     value: 'action',
                 },
-                {text: 'Дата создания', value: 'start_at'},
+                {text: 'Дата создания', value: 'pretension_at'},
                 {text: 'Дата закрытия', value: 'close_at'},
                 {text: 'Приказ', value: 'numb_order'},
                 {text: 'Гарантийный приказ', value: 'warranty_decree'},
                 {text: 'Контрагент', value: 'contractor.name'},
                 {text: 'Причина ГС', value: 'reasons'},
                 {text: 'Виновная сторона', value: 'culprits'},
-                {text: 'Затраты', value: 'expense_sum'},
+                {text: 'Затраты', value: 'expense_sum', cellClass: 'text-no-wrap'},
 
 
             ],
@@ -428,13 +452,17 @@ export default {
 
             statuses: [],/* статуса из таблицы Статус*/
             type_comps: [],
-            warranty_types:[],
+            warranty_types: [],
+            search:'',
 
         }
     },
-
+    filters: {
+        format: val => val ? `${val}`.replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ') : '',
+    },
     watch: {},
     methods: {
+
         /*      открыть форму редактирования и загрузить данные с таблицы */
 
         show(item, e) {
@@ -565,10 +593,12 @@ export default {
 
         /*  Получить данные*/
         getComplaints(input) {
-            api.call(endpoint('complaints.index', input))
+            // input = this.options;
+            api.call(endpoint('complaints.index', Object.assign({}, input, this.options)))
                 .then(response => {
                     this.complaints = response.data.data;
 
+                    this.sumMonth = this.complaints.map(item => +item.expense_sum).reduce((prev, cur) => prev + cur);
                     this.makePagination(response.data);
                     this.getStatuses();
 
@@ -585,6 +615,7 @@ export default {
                     this.statuses = response.data;
 
                 })
+
         },
 
         makePagination(response) {
@@ -597,6 +628,7 @@ export default {
                 to: response.to,
                 total: response.total
             }
+
         },
 
 
@@ -636,6 +668,7 @@ export default {
             .then((response) => {
                 this.type_comps = response.data.type_comps;
                 this.warranty_types = response.data.warranty_types;
+
             });
 
 

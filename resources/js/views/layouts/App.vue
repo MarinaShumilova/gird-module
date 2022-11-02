@@ -14,7 +14,7 @@
                 drawerItems: [
                     {
                         text: 'Рекламации',
-                        icon: 'mdi-home',
+                        icon: 'mdi-alert-box-outline',
                         to: { name: 'home' },
                         exact: true,
                         //show: () => { return true }   // будет ли показан пункт меню

@@ -1,8 +1,19 @@
 <template>
-    <v-container>
+<span>
     <v-row justify="space-around"
            class="text-caption"
     >
+        <v-col
+            sm="2">
+            <v-text-field
+                v-model="filter.search"
+                append-icon="mdi-magnify"
+                label="Поиск"
+                dense
+                hide-details
+            ></v-text-field>
+        </v-col>
+
         <v-col
             sm="3">
             <v-select
@@ -81,9 +92,9 @@
 
         </component-excel>
 
+</span>
 
 
-    </v-container>
 
 </template>
 
@@ -122,6 +133,7 @@ export default {
                 status_filter: '',
                 type_comps_filter:'',
                 warranty_types:'',
+                search: '',         /*Поиск*/
             },
             menu: false,
             date: ' ',
@@ -129,6 +141,8 @@ export default {
             dialogExcel:false,
             dialog: this.value,
             loading:false,
+
+
 
 
         }

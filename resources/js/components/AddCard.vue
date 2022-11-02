@@ -149,6 +149,7 @@ export default {
     methods: {
         /*Запись в базу*/
         submit() {
+
             this.loading = true;
 
             let formData = new FormData();
@@ -176,7 +177,7 @@ export default {
 
 
             for (let i = 0; i < this.complaint.chassises.length; i++) {
-                formData.append('chassis' + '[' + i + ']', this.complaint.chassises[i]);
+                formData.append('chassises' + '[' + i + ']', this.complaint.chassises[i]);
             };
 
 

@@ -34,19 +34,21 @@ class ComplaintController extends Controller
     {
         $this->authorize('viewAny', Complaint::class);
 
+
+//        $request->itemsPerPage = 43;
+
         return response(
             Complaint::
             when($request->input('data_expenses'), function ($q) use ($request) {
                 $q->whereHas('expenses', function ($q) use ($request) {
-                    if ($request->has(['data_expenses'])) {
-                        $resultExp = array_map(function ($date) {
-                            return $date . '-01';
-                        }, $request->input('data_expenses'));
 
+                        $resultExp = $this->setMonth($request);
                         $q->whereIn('start_at', $resultExp);
-                    }
-
                 });
+
+            })->
+            when($request->input('search'), function ($q) use ($request) {
+                $q->where('numb_order', 'LIKE', '%'.$request->input('search').'%');
 
             })->
 
@@ -56,25 +58,41 @@ class ComplaintController extends Controller
 
             when($request->input('warranty_types'), function ($q) use ($request) {
                 $q->where('warranty_type_id', $request->input('warranty_types'));
-            })->
-
-            with([
-                'reasons',
-                'culprits',
-                'contractor',
-                'transfer.attachments',
-
-
-            ])
+            })
                 ->withCount([
-                    'expenses AS expense_sum' => function ($query) {
-                        $query->select(\DB::raw('sum(sum)'));
-                    }
-                ])->orderBy('created_at', 'desc')->paginate($request->itemsPerPage)
-        );
+                    'expenses AS expense_sum' => function ($query) use ($request) {
+                        if ($request->has(['data_expenses'])) {
+                            $resultExp = $this->setMonth($request);
+                            $query->whereIn('start_at', $resultExp)->select(\DB::raw('sum(sum)'));
+
+
+                        } else {
+                            $query->select(\DB::raw('sum(sum)'));
+                        }
+
+                    },
+
+                ])
+                ->
+                with([
+                    'reasons',
+                    'culprits',
+                    'contractor',
+                    'transfer.attachments',
+
+
+
+                ])
+                ->orderBy('created_at', 'desc')
+                ->paginate($request->itemsPerPage)
+            );
+
+
+
 
 
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -93,7 +111,7 @@ class ComplaintController extends Controller
             'culprits' => Culprit::get(),
             'executors' => Executor::get(),
             'contractors' => Contractor::get(),
-            'providers'=>ProviderComplaint::get(),
+            'providers' => ProviderComplaint::get(),
             'warranty_decrees' => WarrantyDecree::get(),
             'attachment_rules' => AttachFile::rules(),
             'expenses' => Expense::get(),
@@ -110,7 +128,6 @@ class ComplaintController extends Controller
      */
     public function store(StoreComplaintPost $request)
     {
-
 
 
         $this->authorize('create', Complaint::class);
@@ -153,19 +170,18 @@ class ComplaintController extends Controller
         };
 
         if ($request->has('reason_id')) {
-            foreach ($request->reason_id as $reasonId){
+            foreach ($request->reason_id as $reasonId) {
 
                 $complaint->reasons()->attach($reasonId);
             }
         }
 
         if ($request->has('culprit_id')) {
-            foreach ($request->culprit_id as $culpritId){
+            foreach ($request->culprit_id as $culpritId) {
 
                 $complaint->culprits()->attach($culpritId);
             }
         }
-
 
 
     }
@@ -201,17 +217,17 @@ class ComplaintController extends Controller
         $type_comp_name = $complaint->type_comp->name;
 
 
-
         return [
             'complaint' => $complaint,
             'chassises' => $arrChassis,
             'executor_id' => $executors,
-            'reason_id'=>$reasons,
-            'culprit_id'=>$culprits,
+            'reason_id' => $reasons,
+            'culprit_id' => $culprits,
             'contractor_name' => $contractor_name,
-            'provider_name'=>$provider_name,
+            'provider_name' => $provider_name,
             'warranty_type_name' => $warranty_type_name,
             'type_comp_name' => $type_comp_name,
+
         ];
 
 
@@ -244,7 +260,7 @@ class ComplaintController extends Controller
         return [
             'executor_id' => $executors,
             'culprit_id' => $culprits,
-            'reason_id'=> $reasons,
+            'reason_id' => $reasons,
             'warranty_types' => WarrantyType::get(),
             'reason' => Reason::get(),
             'type_comps' => TypeComp::get(),
@@ -252,7 +268,7 @@ class ComplaintController extends Controller
             'executors' => Executor::get(),
             'chassises' => $arrChassis,
             'contractors' => [$complaint->contractor],
-            'providers'=>ProviderComplaint::get(),
+            'providers' => ProviderComplaint::get(),
             'warranty_decrees' => WarrantyDecree::get(),
             'complaint' => $complaint
         ];
@@ -275,8 +291,6 @@ class ComplaintController extends Controller
 
         $complaint->reasons()->sync($request->reason_id);
         $complaint->culprits()->sync($request->culprit_id);
-
-
 
 
         $arrOldChassis = $complaint->chassises->pluck('number')->toArray();
@@ -351,12 +365,11 @@ class ComplaintController extends Controller
             ])->get();
 
 
-
-
         $this->saveToExcel($complaints);
 
 
     }
+
 
     private function saveToExcel($complaints)
     {
@@ -402,10 +415,8 @@ class ComplaintController extends Controller
             $close_at = strtotime($complaints[$i]->close_at);
             $close_date = date('d.m.Y', $close_at);
 
-            $culpritNames =  $complaints[$i]->culprits->pluck('name')->join(', ');
-            $reasonsNames =  $complaints[$i]->reasons->pluck('name')->join(', ');
-
-
+            $culpritNames = $complaints[$i]->culprits->pluck('name')->join(', ');
+            $reasonsNames = $complaints[$i]->reasons->pluck('name')->join(', ');
 
 
             $sheet->setCellValue('A' . ($i + 2), $complaints[$i]->id)->getColumnDimension('A');
@@ -433,5 +444,18 @@ class ComplaintController extends Controller
         exit();
 
 
+    }
+
+    private function setMonth(Request $request): array
+    {
+        //преобразовать период фильтрации
+        if ($request->has(['data_expenses'])) {
+            return array_map(function ($date) {
+                return $date . '-01';
+            }, $request->input('data_expenses')) ;
+
+        }
+
+        return [];
     }
 }

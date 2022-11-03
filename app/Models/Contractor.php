@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Contractor extends Model
 {
+    protected $connection = 'payment';
+
      /*
      |--------------------------------------------------------------------------
      | GLOBAL VARIABLES

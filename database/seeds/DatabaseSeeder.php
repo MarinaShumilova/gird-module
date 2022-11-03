@@ -16,14 +16,15 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         //регистрация модуля
-        $this->call(ModuleSeeder::class);
+//        $this->call(ModuleSeeder::class);
 
-        if(config('app.env') !== 'production') {
-            $this->call(AccessableIpSeeder::class);   //разрешенные ip
+//        if(config('app.env') !== 'production') {
+//            $this->call(AccessableIpSeeder::class);   //разрешенные ip
 //            $this->call(UsersSeeder::class);
-            $this->call(RoleSeeder::class);             //роли/разрешения
-        }
+//            $this->call(RoleSeeder::class);             //роли/разрешения
+//        }
 
+        $this->call(RoleSeeder::class);
 //        $this->call(CommentsTableSeeder::class);
 
 
@@ -48,7 +49,9 @@ class DatabaseSeeder extends Seeder
      //   $this->call(ComplaintExecutorTableSeeder::class);
 
 
-        $this->call(AddUsersSeeder::class);
+//        $this->call(AddUsersSeeder::class);
+
+        $this->call(ProfileSeeder::class);
 
 
 

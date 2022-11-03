@@ -1,6 +1,8 @@
 <template>
     <v-container>
-    <v-row justify="space-around">
+    <v-row justify="space-around"
+           class="text-caption"
+    >
         <v-col
             sm="3">
             <v-select

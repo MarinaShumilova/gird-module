@@ -10,6 +10,7 @@
                     :meta="meta"
                     :headers="headers"
                     disable-sort
+                    dense
                 >
                     <template v-slot:top>
                         <v-row class="filters">
@@ -36,8 +37,6 @@
                             {{ reason.name }}
                         </span>
                     </template>
-
-
 
 
                     <template #footer.prepend>
@@ -103,7 +102,6 @@
                                         </v-list-item-icon>
                                         <v-list-item-title left>Восстанавить</v-list-item-title>
                                     </v-list-item>
-
 
 
                                 </v-list-item-group>
@@ -189,7 +187,6 @@
                         </component-redress>
 
 
-
                     </template>
                     <template v-slot:item.deleteEntry="{item}">
                         <v-btn
@@ -215,75 +212,91 @@
 
 
                     <template v-slot:item.action="{ item }">
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{on, attrs}">
-                                <v-icon
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    small
-                                    :color="getColor(item.status_id)"
-                                >mdi-octagon
-                                </v-icon>
-                            </template>
-                            <span>{{ textStatus(item.status_id) }}</span>
-                        </v-tooltip>
-
-                        <v-tooltip right>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    icon
-                                    @click.stop="openComponentEditCard(item.id)"
-                                    v-show="showUser"
-                                >
+                        <v-row no-gutters class="flex-nowrap">
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{on, attrs}">
                                     <v-icon
-                                        dense
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        x-small
+                                        :color="getColor(item.status_id)"
+                                    >mdi-octagon
+                                    </v-icon>
+                                </template>
+                                <span>{{ textStatus(item.status_id) }}</span>
+                            </v-tooltip>
+
+                            <v-btn icon
+                                   v-show="showUser||showAccount"
+                                   @click.stop="show(item, $event)">
+                                <v-icon>mdi-menu</v-icon>
+                            </v-btn>
+
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-icon
+                                        class="mx-1"
+                                        small
+                                        @click.stop="openComponentEditCard(item.id)"
+                                        v-show="showUser"
+                                        v-on="on"
                                     >mdi-pencil
                                     </v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Редактировать</span>
+                                </template>
+                                <div class="caption">
+                                    Редактировать
+                                </div>
+                            </v-tooltip>
 
-                        </v-tooltip>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-icon
+                                        v-show="!showUser"
+                                        icon
+                                        @click.stop="openComponentLookRecord(item.id)"
+                                        small
+                                        v-on="on"
+                                    >mdi-information-outline
+                                    </v-icon>
+                                </template>
+                                <div class="caption">
+                                    Информация
+                                </div>
 
-                        <v-btn
-                            v-show="!showUser"
-                            icon
-                            @click.stop="openComponentLookRecord(item.id)"
-                        >
-                            <v-icon
-                                dense
-                            >mdi-information-outline
-                            </v-icon>
-                        </v-btn>
-
-                        <v-btn icon
-                               v-show="showUser||showAccount"
-                               @click.stop="show(item, $event)">
-                            <v-icon>mdi-menu</v-icon>
-                        </v-btn>
-                        <!--                        комментарий-->
-                        <v-btn icon
-                               @click.stop="openComponentComment(item.id)">
-                            <v-icon>
-                                mdi-card-account-details-outline
-                            </v-icon>
-                        </v-btn>
+                            </v-tooltip>
 
 
-                        <!--                                                если виновна другая сторона-->
-                        <v-tooltip right v-if="item.transfer">
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-icon
-                                    small
-                                    color="red darken-4"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                >mdi-email-send-outline
-                                </v-icon>
-                            </template>
-                            <span>Регресс {{item.transfer.transfer_at}}</span>
-                        </v-tooltip>
+                            <!--                        комментарий-->
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-icon small
+                                            class="mx-1"
+                                            @click.stop="openComponentComment(item.id)"
+                                            v-on="on">
+                                        mdi-card-account-details-outline
 
+                                    </v-icon>
+                                </template>
+                                <div class="caption">
+                                    Контакты
+                                </div>
+
+                            </v-tooltip>
+
+                            <!--                                                если виновна другая сторона-->
+                            <v-tooltip right v-if="item.transfer">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-icon
+                                        small
+                                        color="red darken-4"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >mdi-email-send-outline
+                                    </v-icon>
+                                </template>
+                                <span>Регресс {{ item.transfer.transfer_at }}</span>
+                            </v-tooltip>
+                        </v-row>
                     </template>
 
                     <template #footer.append
@@ -339,7 +352,7 @@ export default {
         ComponentFilter,
         AddCard, ExpensesCard, SendFile,
         AddFile, BaseMonthPicker, EditCard, LookRecord,
-        BaseDataTable, ComponentComment, ComponentRedress,ComponentEvent,
+        BaseDataTable, ComponentComment, ComponentRedress, ComponentEvent,
     },
 
 
@@ -365,7 +378,7 @@ export default {
             search: '',         /*Поиск*/
             complaints: [],      /*таблица*/
             loading: false,      /*загрузка таблицы*/
-            arrCulprits:[],
+            arrCulprits: [],
 
 
             headers: [          /*столбцы таблицы*/
@@ -455,8 +468,8 @@ export default {
             this.getComplaints();
         },
 
-        closeSendFile(){
-          this.getComplaints();
+        closeSendFile() {
+            this.getComplaints();
         },
 
         closeCommentCard() {
@@ -506,9 +519,9 @@ export default {
 
         },
 
-        openEventsDialog(id){
-           this.eventsCreateDialog = true;
-           this.rowComplaint.id = id;
+        openEventsDialog(id) {
+            this.eventsCreateDialog = true;
+            this.rowComplaint.id = id;
         },
 
         openCardDialog() {

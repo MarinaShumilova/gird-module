@@ -117,11 +117,11 @@ export default {
                 files:[],
                 chassises:[],
 
-                numb_pretension:null,    //№ ретензии
+                numb_pretension:'',    //№ ретензии
                 pretension_at:new Date().toISOString().substr(0, 10),  //дата претензии
 
 
-                warranty_decree:null,
+                warranty_decree:'',
                 numb_order:null,
                 vehicle:null,
                 start_at: new Date().toISOString().substr(0, 10),
@@ -162,8 +162,7 @@ export default {
 
             if (this.complaint.provider_id)
                 formData.append('provider_id', this.complaint.provider_id);
-            // formData.append('culprit_id', this.complaint.culprit_id);
-            // formData.append('reason_id', this.complaint.reason_id);
+
             formData.append('warranty_type_id', this.complaint.warranty_type_id);
             formData.append('type_comp_id', this.complaint.type_comp_id);
 

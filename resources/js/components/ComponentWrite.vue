@@ -106,10 +106,8 @@
                         v-model="complaint.numb_pretension"
                         :error-messages="errors['numb_pretension']"
                         item-value="id"
-                        item-text="number"
                         label="№ Входящей претензии"
                         outlined
-                        type="number"
                         dense
                         hide-spin-buttons
                     ></v-text-field>

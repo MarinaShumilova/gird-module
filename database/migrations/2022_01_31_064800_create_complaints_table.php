@@ -20,7 +20,7 @@ class CreateComplaintsTable extends Migration
             $table->date('close_at')->nullable();
             $table->softDeletes();
 
-            $table->string('vehicle');          //вид надстройки
+            $table->longText('vehicle');          //вид надстройки
             $table->string('numb_order')->comment('номер приказа');
             $table->date('order_at')->comment('дата приказа');
 
@@ -30,7 +30,7 @@ class CreateComplaintsTable extends Migration
 
 
             $table->string('warranty_decree')->nullable()->comment('№ гар-го приказа');
-            $table->string('numb_pretension')->comment('№ претензии');
+            $table->string('numb_pretension')->nullable()->comment('№ претензии');
             $table->date('pretension_at')->comment('дата поступления');
 
 
@@ -50,8 +50,8 @@ class CreateComplaintsTable extends Migration
             $table->foreign('warranty_type_id')->references('id')->on('warranty_types');
            // $table->foreign('reason_id')->references('id')->on('reasons');
             $table->foreign('type_comp_id')->references('id')->on('type_comps');
-            $table->foreign('contractor_id')->references('id')->on('contractors');   //закоментить на релиз
-            $table->foreign('provider_id')->references('id')->on('provider_complaints');
+//            $table->foreign('contractor_id')->references('id')->on('contractors');   //закоментить на релиз
+//            $table->foreign('provider_id')->references('id')->on('provider_complaints');
            // $table->foreign('culprit_id')->references('id')->on('culprits');
             $table->foreign('status_id')->references('id')->on('statuses');
 

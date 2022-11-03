@@ -138,20 +138,20 @@
                         Приказ:<br>
                         Дата приказа:<br>
                         Дата заявки:<br>
-                        Контрагент:<br>
                         Гарантийный приказ:<br>
                         Гарантия:<br>
                         Статус:<br>
+                        Контрагент:<br>
                     </v-col>
                     <v-col
                         cols="3">
                         {{ this.complaint.numb_order}}<br>
                         {{this.complaint.order_at | date}}<br>
                         {{this.complaint.start_at | date}}<br>
-                        {{this.contractor_name}}<br>
                         {{this.complaint.warranty_decree}}<br>
                         {{this.warranty_type_name}}<br>
                         {{this.type_comp_name}}<br>
+                        {{this.contractor_name}}<br>
                     </v-col>
 
 
@@ -159,22 +159,22 @@
                         cols="2">
                         Причина гарантии:<br>
                         Вид надстройки: <br>
-                        Виновник:<br>
-                        Поставщик:<br>
                         Устранение: <br>
                         Дата отгрузки шасси:<br>
                         Шасси: <br>
+                        Виновник:<br>
+                        Поставщик:<br>
                     </v-col>
                     <v-col
                         cols="3">
                        {{this.reason_id}}<br>
                         {{this.complaint.vehicle}}<br>
-                       {{this.culprit_id}}<br>
-                        {{this.provider_name}}<br>
                         {{this.executor_id}}<br>
                         {{  }}<br>
                         {{this.complaint.unload_at | date}}<br>
                         {{this.complaint.chassises}} <br>
+                        {{this.culprit_id}}<br>
+                        {{this.provider_name}}<br>
                     </v-col>
 
 

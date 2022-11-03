@@ -1,158 +1,119 @@
 <!--Компенсация-->
 <template>
-    <v-dialog
-        v-if="showDialog"
-        :value="value"
-        width="500"
-        scrollable
-        persistent>
-        <v-card>
-            <v-toolbar
-                elevation="1"
-                height="50">
-                <span>
-                    <v-icon>mdi-cash-multiple</v-icon>
-                   Компенсация
-                </span>
-                <v-spacer></v-spacer>
-                <v-btn icon color="error" @click="close">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-toolbar>
-            <v-container >
-                <v-card-text>
-                    <v-row justify="center">
-                        <v-col sm="6"
-                               v-show="showUser||showAccount">
-                            <v-menu
-                                ref="menu"
-                                v-model="menu"
-                                :close-on-content-click="false"
-                                :return-value.sync="date"
-                                transition="fade-transition"
-                                offset-y
-                                max-width="290px"
-                                min-width="auto">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field
-                                        v-show="showUser||showAccount"
-                                        :value="computedDateFormat"
-                                        label="Период компенсации"
-                                        prepend-icon="mdi-calendar"
-                                        readonly
-                                        dense
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                    color="teal lighten-2"
-                                    v-model="redress.redress_at"
-                                    :error-messages="errors['redress_at']"
-                                    type="month"
-                                    flat
-                                >
-                                </v-date-picker>
-                            </v-menu>
-                        </v-col>
-                        <v-col  sm="6"
-                          >
-                            <v-text-field
-                                v-show="showUser||showAccount"
-                                v-model="redress.expenses_redress"
-                                :error-messages="errors['expenses_redress']"
-                                type="number"
-                                label="Сумма компенсации"
-                                value="0"
-                                dense
-                                outlined
-                                hide-spin-buttons
-                                suffix="₽">
-                            </v-text-field>
-                        </v-col>
-                        <v-col sm="12">
-                            <v-textarea
-                                v-show="showUser||showAccount"
-                                :disabled="redress.expenses_redress == null"
-                                v-model="redress.comment"
-                                :error-messages="errors['comment']"
-                                dense
-                                label="Комментарии"
-                                outlined
-                                auto-grow
-                                rows="2">
-                            </v-textarea>
-                        </v-col>
+    <v-row>
+        <v-col cols="6"
+               v-show="showUser||showAccount">
+            <v-menu
+                ref="menu"
+                v-model="menu"
+                :close-on-content-click="false"
+                :return-value.sync="date"
+                transition="fade-transition"
+                offset-y
+                max-width="290px"
+                min-width="auto">
+                <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                        outlined
+                        v-show="showUser||showAccount"
+                        :value="computedDateFormat"
+                        label="Период компенсации"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        dense
+                        v-bind="attrs"
+                        v-on="on"
+                    ></v-text-field>
+                </template>
+                <v-date-picker
+                    color="teal lighten-2"
+                    v-model="redress.redress_at"
+                    :error-messages="errors['redress_at']"
+                    type="month"
+                    flat
+                >
+                </v-date-picker>
+            </v-menu>
+        </v-col>
+        <v-col cols="6"
+        >
+            <v-text-field
+                v-show="showUser||showAccount"
+                v-model="redress.expenses_redress"
+                :error-messages="errors['expenses_redress']"
+                type="number"
+                label="Сумма"
+                value="0"
+                dense
+                outlined
+                hide-spin-buttons
+                suffix="₽"
+                hint="компенсации">
+            </v-text-field>
+        </v-col>
+        <v-col cols="12">
+            <v-textarea
+                v-show="showUser||showAccount"
+                :disabled="redress.expenses_redress == null"
+                v-model="redress.comment"
+                :error-messages="errors['comment']"
+                dense
+                label="Комментарии"
+                outlined
+                auto-grow
+                rows="2">
+            </v-textarea>
+        </v-col>
 
+        <v-col class="pa-0">
+            <v-card
+                v-scroll.self="onScroll"
+                class="overflow-y-auto"
+                max-height="150"
+                elevation="0">
+                <v-list class="pa-1">
+                    <v-list-item
 
-                        <v-col sm="12">
+                        v-for="item in arrResult"
+                        :key="item.id">
+                        <v-list-item-title dense>
+                            <v-row>
+                                <v-col cols="3" class="pa-5" align-self="start">
+                                    <span>{{ item.redress_at }}</span>
+                                </v-col>
 
-                            <li v-for="item in expenses_list"
-                                :key="item.id"
-                                v-if="item.comment != null">
+                                <v-col cols="3" class="pa-5">
+                                    <span>{{ item.expenses_redress }}</span>
+                                </v-col>
 
-                                {{item.comment}}
+                                <v-col class="pa-0 ma-0">
+                                    <v-textarea
+                                        :disabled="!showUser"
+                                        :value="item.comment"
+                                        rows="1"
+                                    ></v-textarea>
+                                </v-col>
+                            </v-row>
 
-                            </li>
-                        </v-col>
+                            <v-divider></v-divider>
 
-                        <v-col  sm="8">
-                            <v-list     class="pa-2"
-                                       >
-                                <v-list-item
-                                    v-for="item in expenses_list"
-                                    :key="item.id"
-                                >
-                                    <v-list-item-title dense>
-                                        <v-row class="justify-space-around">
-                                            <v-col sm="5">
-                                                <span>{{ item.redress_at }}</span>
-                                            </v-col>
+                        </v-list-item-title>
 
-                                            <v-col sm="5">
-                                                <span >{{ item.expenses_redress }}</span>
-                                            </v-col>
-                                        </v-row>
-                                        <v-divider></v-divider>
-
-                                    </v-list-item-title>
-                                    <v-btn icon
-                                           @click.stop="destroyRedress(item.id)"
-                                    >
-                                        <v-icon small color="red">mdi-bucket</v-icon>
-                                    </v-btn>
-                                </v-list-item>
-                            </v-list>
-                        </v-col>
-
-
-                    </v-row>
-
-                    <v-card-actions
-                        v-show="showUser||showAccount">
                         <v-btn
-                            :disabled="loading"
-                            text
-                            @click="close"
-                        >
-                            Отмена
+                            v-show="showUser"
+                            icon
+                            @click.stop="destroyRedress(item.id)">
+                            <v-icon small color="red">mdi-bucket</v-icon>
                         </v-btn>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            :loading="loading"
-                            text
-                            color="primary"
-                            @click="submit"
-                        >
-                            Сохранить
-                        </v-btn>
-                    </v-card-actions>
-                </v-card-text>
+                    </v-list-item>
+                </v-list>
+            </v-card>
 
-            </v-container>
-        </v-card>
+        </v-col>
 
-    </v-dialog>
+
+    </v-row>
+
 </template>
 <script>
 import BaseMonthPicker from "./BaseMonthPicker";
@@ -163,27 +124,32 @@ export default {
     name: "ComponentRedress",
     props: {
         value: {
-            type: Boolean,
+            type: Object,
             required: true,
         },
-        compId: {
-            type: Number,
-            required: true
+        errors: {
+            type: Object,
+            required: false
         },
+        arrResult: {
+            type: Array,
+            required: true,
+        },
+
     },
     data() {
         return {
             showDialog: false,
-
             showUser: false,
             showAccount: false,
 
             menu: false,
+            //errors: {},
+            redress: this.value,
 
-            errors: {},
-
-            dialog: this.value,
-            loading: false,
+            scrollInvoked: 0,
+            // dialog: this.value,
+            // loading: false,
             expenses_list: [],
             date: ' ',
             formater: '',
@@ -193,17 +159,17 @@ export default {
             monthExpenses: '',
             monthName: '',
 
-            redress: {
-                redress_at: null,
-                complaint_id: this.compId,
-                comment: null,
-                expenses_redress: null,
-            },
-
-            arrResult: [],
-
-
         }
+    },
+
+    watch: {
+        redress(value) {
+            this.$emit('input', value);
+
+
+        },
+
+
     },
 
     computed: {
@@ -222,9 +188,8 @@ export default {
 
     },
 
+
     created() {
-        this.showDialog = false;
-        this.getRedress();
         this.showUser = this.returnUser();
         this.showAccount = this.returnUserAccount();
 
@@ -235,67 +200,24 @@ export default {
         // this.showUser = this.returnUser();
         this.showDialog = true;
 
+
     },
     methods: {
-        getRedress() {
-            api.call(endpoint('complaints.redress.index', this.compId))
-                .then((response) => {
-                    this.expenses_list = response.data;
-
-                    this.arrResult = this.expenses_list.map(function (item) {
-                        let str = item.redress_at;
-                        let mnt = '';
-                        mnt = new Date(str);
-
-                        let DataFormat = new Intl.DateTimeFormat("ru", {
-                            month: "long",
-
-                        });
-                        let res = '';
-                        res = DataFormat.format(mnt);
-                        let result = res[0].toUpperCase() + res.slice(1);
-
-                        item.redress_at = result;
-                        return item;
-                    })
-
-
-                });
-
+        onScroll() {
+            this.scrollInvoked++
         },
 
-        submit() {
-            this.loading = true;
+        getRedress() {
+            this.arrResult.map(function (item) {
+                this.redress.redress_at = item.redress_at;
 
-            api.call(endpoint('complaints.redress.store', this.compId), this.redress)
-                .then(response => {
-                    this.redress = {
-                        complaint_id: this.compId,
-                        expenses_redress: null,
-                    };
-
-                })
-                .catch(error => {
-                    this.errors = error.response.data.errors
-                })
-                .finally(() => {
-                    this.getRedress();
-                    this.loading = false;
-                })
-
-
+            })
         },
 
         close() {
             this.$emit('input', false);
         },
 
-        destroyRedress(id) {
-            api.call(endpoint('complaints.redress.destroy', id))
-                .then(response => {
-                    this.getRedress();
-                })
-        },
 
         capitalize(value) {
             return value[0].toUpperCase() + value.slice(1);
@@ -307,9 +229,15 @@ export default {
 
             });
 
-
             return this.capitalize(DataFormat.format(monthRedress));
 
+        },
+        destroyRedress(id) {
+            api.call(endpoint('complaints.redress.destroy', id))
+                .then(response => {
+                    this.$emit("delete");
+                    //  this.getRedress();
+                })
         },
 
 
@@ -320,6 +248,9 @@ export default {
             return this.$store.getters.userHasRole('account');
         },
 
+        deleteRedress() {
+            this.$emit('delete', false);
+        },
     },
 }
 

@@ -1,7 +1,7 @@
 <template>
     <v-dialog
         :value="value"
-        max-width="600px"
+        max-width="800px"
         scrollable
         persistent
     >

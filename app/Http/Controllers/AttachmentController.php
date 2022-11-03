@@ -7,6 +7,8 @@ use App\Http\Requests\StoreExpensePost;
 use App\Models\AttachFile;
 use App\Models\Attachment;
 use App\Models\Complaint;
+use App\Models\Firms;
+use App\Models\TypePact;
 use GirdBase\Rules\ExtensionRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -20,9 +22,9 @@ class AttachmentController extends Controller
      */
     public function index(Complaint $complaint)
     {
-        $this->authorize('viewAny', Attachment::class);
+        $this->authorize('viewAny', AttachFile::class);
 
-        return  $complaint->attachments()->get();
+        return  $complaint->attachments()->with(['firm','typePact'])->get();
 
     }
 
@@ -33,9 +35,14 @@ class AttachmentController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Attachment::class);
+        $this->authorize('create', AttachFile::class);
+
+
+
         return [
             'attachment_rules' => AttachFile::rules(),
+            'firm_id'=> Firms::get(),
+            'type_pact_id'=>TypePact::get(),
         ];
     }
 
@@ -47,12 +54,17 @@ class AttachmentController extends Controller
      */
     public function store(StoreAttachmentPost $request,Complaint $complaint)
     {
-        $this->authorize('create', Attachment::class);
+        $this->authorize('create', AttachFile::class);
+
+//        dd($request->all());
 
         if($request->has('attachments')){
             foreach ($request->attachments as $file)
             {
-                $complaint->saveAttachment($file);
+                $complaint->saveAttachment($file, $attributes = [
+                    'firm_id' => $request['firm_id'],
+                    'type_pact_id' => $request['type_pact_id']
+                ]);
             };
         };
     }
@@ -104,7 +116,7 @@ class AttachmentController extends Controller
      */
     public function destroy(Complaint $complaint, AttachFile $attachment)
     {
-        $this->authorize('delete', Attachment::class);
+         $this->authorize('delete', $attachment);
 
         $complaint->attachments()->detach($attachment);
         $attachment->delete();

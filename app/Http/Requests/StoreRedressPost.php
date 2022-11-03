@@ -24,10 +24,10 @@ class StoreRedressPost extends FormRequest
     public function rules()
     {
         return [
-            'redress_at'=>'required',
+            'redress_at'=>'nullable',
             'complaint_id'=>'required|exists:App\Models\Complaint,id',
             'comment'=>'nullable|string|max:65000',
-            'expenses_redress'=> 'required|integer',
+            'expenses_redress'=> 'nullable|integer',
         ];
     }
 }

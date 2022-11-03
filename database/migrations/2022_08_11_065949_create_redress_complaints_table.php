@@ -15,8 +15,8 @@ class CreateRedressComplaintsTable extends Migration
     {
         Schema::create('redress_complaints', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('expenses_redress');
-            $table->date('redress_at');
+            $table->unsignedBigInteger('expenses_redress')->nullable();
+            $table->date('redress_at')->nullable();
             $table->text('comment')->nullable();
             $table->softDeletes();
             $table->unsignedBigInteger('complaint_id');

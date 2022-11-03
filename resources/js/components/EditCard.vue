@@ -13,25 +13,27 @@
         </template>
 
         <v-container>
-       <component-write
-           v-model="complaint"
-           :warranty-types="warrantyTypes"
-           :reasons="reasons"
-           :type_comps="type_comps"
-           :culprits="culprits"
-           :executors="executors"
-           :contractors="contractors"
-           :providers="providers"
-           :errors="validationErrors"
-           :executor_id="executor_id"
-           :chassises="chassises"
-           :reason_id="reason_id"
-           :culprit_id="culprit_id"
-           :providerCulprit="providerCulprit"
+            <component-write
+                v-model="complaint"
+                :warranty-types="warrantyTypes"
+                :reasons="reasons"
+                :type_comps="type_comps"
+                :culprits="culprits"
+                :executors="executors"
+                :contractors="contractors"
 
-           >
+                :errors="validationErrors"
+                :executor_id="executor_id"
+                :chassises="chassises"
+                :reason_id="reason_id"
+                :culprit_id="culprit_id"
+                :providerCulprit="providerCulprit"
+                :tripExecutor="tripExecutor"
+                :type-reason="typeReason"
 
-       </component-write>
+            >
+
+            </component-write>
         </v-container>
 
     </base-dialog-action>
@@ -49,8 +51,8 @@ export default {
             type: Boolean,
             //required: true,
         },
-        id:{
-            type:Number,
+        id: {
+            type: Number,
             required: true
         },
 
@@ -68,16 +70,15 @@ export default {
                 this.culprits = response.data.culprits;
                 this.executors = response.data.executors;
                 this.contractors = response.data.contractors;
-                this.providers = response.data.providers;
-                //this.executor_id = response.data.complaint;
                 this.chassises = response.data.chassises;
                 this.complaint = response.data.complaint;
                 this.complaint.executor_id = response.data.executor_id;
                 this.complaint.reason_id = response.data.reason_id;
                 this.complaint.culprit_id = response.data.culprit_id;
                 this.getCulprits();
-                this.complaint.chassises=this.complaint.chassises.map(function(item)
-                {
+                this.getExecutors();
+              //  this.getTypeCulprits();
+                this.complaint.chassises = this.complaint.chassises.map(function (item) {
                     return item.number;
                 })
 
@@ -87,32 +88,36 @@ export default {
 
 
     },
+
     data() {
         return {
             warrantyTypes: [],
-            reasons:[],
-            reason_id:[],
-            culprit_id:[],
-            type_comps:[],
-            culprits:[],
-            executors:[],
-            executor_id:[],
-            contractors:[],
-            providers:[],
-            chassis:[],
+            reasons: [],
+            reason_id: [],
+            culprit_id: [],
+            type_comps: [],
+            culprits: [],
+            executors: [],
+            executor_id: [],
+            contractors: [],
+            // providers:[],
+            chassis: [],
 
-            complaint:{ },  //объект с данными
+
+            complaint: {},  //объект с данными
 
 
             dialog: this.value,
-            showDialog:false,
-            validationErrors: { },
+            showDialog: false,
+            validationErrors: {},
             loading: false,
 
-            providerCulprit:false,
+            providerCulprit: false,
+            tripExecutor: false,
+            typeReason: false,
+
 
         }
-
 
 
     },
@@ -139,22 +144,39 @@ export default {
                     this.close()
 
                 })
-                .catch(error =>{
+                .catch(error => {
                     this.validationErrors = error.response.data.errors
-                    console.log(error)})
-                .finally(()=>{
+                    console.log(error)
+                })
+                .finally(() => {
                     this.loading = false;
                 })
 
         },
 
-        getCulprits(){
+        getCulprits() {
             let arrCulprits = this.complaint.culprit_id.map(function (item) {
                 return item
             }).join(', ')
 
             this.providerCulprit = arrCulprits.includes('1');
+        },
 
+        getTypeCulprits() {
+            let arrCulprits = this.complaint.culprit_id.map(function (item) {
+                return item
+            }).join(', ')
+
+            this.typeReason = arrCulprits.includes('3');
+        },
+
+
+        getExecutors() {
+            let arrExecutors = this.complaint.executor_id.map(function (item) {
+                return item
+            }).join(', ')
+
+            this.tripExecutor = arrExecutors.includes('2');
         },
 
 

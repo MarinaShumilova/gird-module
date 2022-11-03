@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Attachment;
+use App\Models\AttachFile;
 use GirdBase\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -28,7 +28,7 @@ class AttachmentPolicy
      * @param  \App\Models\Attachment  $attachment
      * @return mixed
      */
-    public function view(User $user, Attachment $attachment)
+    public function view(User $user, AttachFile $attachment)
     {
         return true;
     }
@@ -51,7 +51,7 @@ class AttachmentPolicy
      * @param  \App\Models\Attachment  $attachment
      * @return mixed
      */
-    public function update(User $user, Attachment $attachment)
+    public function update(User $user, AttachFile $attachment)
     {
         return  $this->rightsRole('admin');
     }
@@ -63,9 +63,15 @@ class AttachmentPolicy
      * @param  \App\Models\Attachment  $attachment
      * @return mixed
      */
-    public function delete(User $user, Attachment $attachment)
+    public function delete(User $user, AttachFile $attachment)
     {
-        return  $this->rightsRole('admin');
+       return  $this->rightsRole('admin');
+
+//
+//        if($this->rightsRole('admin'))
+//            abort(500);
+
+
     }
 
     /**
@@ -75,9 +81,9 @@ class AttachmentPolicy
      * @param  \App\Models\Attachment  $attachment
      * @return mixed
      */
-    public function restore(User $user, Attachment $attachment)
+    public function restore(User $user, AttachFile $attachment)
     {
-        //
+        return  $this->rightsRole('admin');
     }
 
     /**

@@ -15,6 +15,10 @@ class AttachFile extends Attachment
 {
     protected static $URLRouteName = 'attachments.show';
 
+    //protected $guarded = ['*'];
+
+    protected $fillable = ['path', 'name', 'extension', 'type','firm_id','type_pact_id'];
+
      /*
      |--------------------------------------------------------------------------
      | GLOBAL VARIABLES
@@ -28,6 +32,17 @@ class AttachFile extends Attachment
     |--------------------------------------------------------------------------
     */
 
+    public function firm()
+    {
+//        return $this->belongsTo(Firms::class, 'firm_id','id');
+        return $this->hasOne(Firms::class, 'id','firm_id');
+    }
+
+
+    public function typePact()
+    {
+        return $this->hasOne(TypePact::class,'id', 'type_pact_id');
+    }
 
 
     /*

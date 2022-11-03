@@ -83,28 +83,7 @@
                             </template>
                             <span>Затраты</span>
                         </v-tooltip>
-                        <br>
 
-                        <v-tooltip
-                            color="light-blue darken-4"
-                            top>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    icon
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    @click.stop="openRedressDialog">
-                                    <v-icon
-                                        @mouseenter="iconColor.d2='teal lighten'"
-                                        @mouseleave="iconColor.d2=''"
-                                        :color="iconColor.d2">
-                                        mdi-cash-multiple
-                                    </v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Компенсации</span>
-                        </v-tooltip>
-                        <br>
                         <v-tooltip
                             color="light-blue darken-4"
                             top>
@@ -133,50 +112,17 @@
                         vertical>
 
                     </v-divider>
-                    <v-col
-                        cols="3">
-                        Приказ:<br>
-                        Дата приказа:<br>
-                        Дата заявки:<br>
-                        Гарантийный приказ:<br>
-                        Гарантия:<br>
-                        Статус:<br>
-                        Контрагент:<br>
-                    </v-col>
-                    <v-col
-                        cols="3">
-                        {{ this.complaint.numb_order}}<br>
-                        {{this.complaint.order_at | date}}<br>
-                        {{this.complaint.start_at | date}}<br>
-                        {{this.complaint.warranty_decree}}<br>
-                        {{this.warranty_type_name}}<br>
-                        {{this.type_comp_name}}<br>
-                        {{this.contractor_name}}<br>
-                    </v-col>
 
+                    <v-col cols="11">
+                        <v-card-text>
+                            <v-row v-for="(row, index) in rows" :key="index">
+                                <v-col cols="4">{{ row.name }}</v-col>
+                                <v-col cols="8">{{ row.value }}</v-col>
 
-                    <v-col
-                        cols="2">
-                        Причина гарантии:<br>
-                        Вид надстройки: <br>
-                        Устранение: <br>
-                        Дата отгрузки шасси:<br>
-                        Шасси: <br>
-                        Виновник:<br>
-                        Поставщик:<br>
-                    </v-col>
-                    <v-col
-                        cols="3">
-                       {{this.reason_id}}<br>
-                        {{this.complaint.vehicle}}<br>
-                        {{this.executor_id}}<br>
-                        {{  }}<br>
-                        {{this.complaint.unload_at | date}}<br>
-                        {{this.complaint.chassises}} <br>
-                        {{this.culprit_id}}<br>
-                        {{this.provider_name}}<br>
-                    </v-col>
+                            </v-row>
+                        </v-card-text>
 
+                    </v-col>
 
                 </v-row>
             </v-card-text>
@@ -246,13 +192,15 @@ export default {
         this.showDialog = false;
         api.call(endpoint('complaints.show', this.id))
             .then((response) => {
+
+
                 this.warranty_type_name = response.data.warranty_type_name;
                 this.type_comp_name = response.data.type_comp_name;
                 this.executors = response.data.executors;
                 this.reasons = response.data.reasons;
                 this.culprits = response.data.culprits;
                 this.contractor_name = response.data.contractor_name;
-                this.provider_name = response.data.provider_name;
+               // this.provider_name = response.data.provider_name;
 
                 this.chassises = response.data.chassises;
                 this.complaint = response.data.complaint;
@@ -278,6 +226,7 @@ export default {
                 d4:'',
             },
 
+
             insert: true,
             showDialog: false,
             items: [
@@ -301,8 +250,30 @@ export default {
         dialog(value) {
             this.$emit('input', value);
         },
-
     },
+
+    computed: {
+        rows() {
+            return [
+                {name:'Приказ:', value:this.complaint.numb_order},
+                {name:'Дата приказа:', value:this.complaint.order_at },
+                {name:'Дата заявки:', value:this.complaint.start_at },
+                {name:'Гарантийный приказ:', value:this.complaint.warranty_decree},
+                {name:'Гарантия:', value:this.warranty_type_name},
+                {name:'Статус:', value:this.type_comp_name},
+                {name:'Контрагент:', value:this.contractor_name},
+                {name:'Причина гарантии:', value:this.reason_id},
+                {name:'Вид надстройки:', value:this.complaint.vehicle},
+                {name:'Устранение:', value:this.executor_id},
+                {name:'Командировка', value:this.complaint.tripTo},
+                {name:'Дата отгрузки шасси:', value:this.complaint.unload_at },
+                {name:'Шасси:', value:this.complaint.chassises},
+                {name:'Виновник:', value:this.culprit_id},
+                {name:'Поставщик:', value:this.complaint.providers},
+            ];
+        }
+    },
+
     methods: {
         showComplaint(id) {
             api.call(endpoint('complaints.show', id))

@@ -12,7 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Attachment extends Model
 {
-    use HasAttachments;
+    //use HasAttachments;
+
      /*
      |--------------------------------------------------------------------------
      | GLOBAL VARIABLES

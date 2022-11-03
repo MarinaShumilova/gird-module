@@ -34,20 +34,16 @@ class ComplaintController extends Controller
     {
         $this->authorize('viewAny', Complaint::class);
 
-
-
         return response(
             Complaint::
             when($request->input('data_expenses'), function ($q) use ($request) {
                 $q->whereHas('expenses', function ($q) use ($request) {
                     if ($request->has(['data_expenses'])) {
-//                        if (!empty($resultExp)) {
                         $resultExp = array_map(function ($date) {
                             return $date . '-01';
                         }, $request->input('data_expenses'));
 
                         $q->whereIn('start_at', $resultExp);
-//                        }
                     }
 
                 });
@@ -58,8 +54,8 @@ class ComplaintController extends Controller
                 $q->where('status_id', $request->input('status_filter'));
             })->
 
-            when($request->input('type_comps_filter'), function ($q) use ($request) {
-                $q->where('type_comp_id', $request->input('type_comps_filter'));
+            when($request->input('warranty_types'), function ($q) use ($request) {
+                $q->where('warranty_type_id', $request->input('warranty_types'));
             })->
 
             with([
@@ -254,7 +250,7 @@ class ComplaintController extends Controller
             'culprits' => Culprit::get(),
             'executors' => Executor::get(),
             'chassises' => $arrChassis,
-            'contractors' => Contractor::get(),
+            'contractors' => [$complaint->contractor],
             'providers'=>ProviderComplaint::get(),
             'warranty_decrees' => WarrantyDecree::get(),
             'complaint' => $complaint

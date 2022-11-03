@@ -21,7 +21,11 @@ class CreateComplaintsTable extends Migration
             $table->softDeletes();
 
             $table->longText('vehicle');          //вид надстройки
-            $table->string('numb_order')->comment('номер приказа');
+            $table->text('numb_order')->comment('номер приказа');
+
+            $table->longText('providers')->nullable()->comment('поставщик');
+            $table->longText('tripTo')->nullable()->comment('командировка');
+
             $table->date('order_at')->comment('дата приказа');
 
             $table->date('unload_at')->comment('дата отгрузки');
@@ -35,12 +39,13 @@ class CreateComplaintsTable extends Migration
 
 
             $table->unsignedBigInteger('warranty_type_id')->comment('гарантия');
-            //$table->unsignedBigInteger('reason_id')->comment('причина гар-ии');
-            $table->unsignedBigInteger('type_comp_id')->comment('тип рекламации');
+
+            $table->unsignedBigInteger('type_comp_id')->nullable()->comment('признание случая');
             $table->unsignedBigInteger('contractor_id')->comment('контрагент');
 
-            $table->unsignedBigInteger('provider_id')->nullable()->comment('поставщик');
-           // $table->unsignedBigInteger('culprit_id')->comment('виновник');
+            //$table->unsignedBigInteger('provider_id')->nullable()->comment('поставщик');
+
+
             $table->unsignedBigInteger('status_id')->comment('статус');
 
 

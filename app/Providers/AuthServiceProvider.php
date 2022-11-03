@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\AttachFile;
 use App\Models\Attachment;
 use App\Models\CommentComplaint;
 use App\Models\Complaint;
@@ -29,7 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         Complaint::class => ComplaintPolicy::class,
         Expense::class => ExpensePolicy::class,
         CommentComplaint::class=>CommentComplaintPolicy::class,
-        Attachment::class=>AttachmentPolicy::class,
+        AttachFile::class=>AttachmentPolicy::class,
         TransferFile::class=>TransferFilePolicy::class,
         RedressComplaint::class=>RedressPolicy::class,
         EventComplaint::class=>EventPolicy::class,

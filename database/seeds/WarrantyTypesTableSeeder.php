@@ -15,8 +15,8 @@ class WarrantyTypesTableSeeder extends Seeder
     public function run()
     {
         $warrantyType = [
-            'Политика',
-            'Производство',
+            'Гарантийный',
+            'Не гарантийный',
 
         ];
 

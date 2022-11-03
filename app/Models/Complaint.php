@@ -32,7 +32,7 @@ class Complaint extends Model
     protected $fillable = ['start_at','close_at','vehicle','numb_order',
        'warranty_decree', 'warranty_type_id','type_comp_id',
         'contractor_id','unload_at','order_at','numb_pretension','pretension_at',
-        'provider_id'
+        'providers','tripTo'
     ];
 
 
@@ -65,10 +65,10 @@ class Complaint extends Model
         return $this->belongsTo(Contractor::class, 'contractor_id','id');
     }
 
-    public function providers()
-    {
-        return $this->belongsTo(ProviderComplaint::class, 'provider_id','id');
-    }
+//    public function providers()
+//    {
+//        return $this->belongsTo(ProviderComplaint::class, 'provider_id','id');
+//    }
 
 
     public function expenses()

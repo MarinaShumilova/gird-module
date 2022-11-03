@@ -2,18 +2,15 @@
 <template>
     <base-dialog-action
         v-model="dialog"
-        max-width="800"
+        max-width="900"
         persistent
         @confirmed="submit"
         :loading="loading"
-
     >
-
         <template v-slot:title>
             Добавить запись
         </template>
-            <v-container>
-
+            <v-container class="pa-2">
             <component-write
                 v-model="complaint"
                 :warranty-types="warrantyTypes"
@@ -25,21 +22,20 @@
                 :reason_id="reasons"
                 :culprit_id="culprits"
                 :contractors="contractors"
-                :providers="providers"
                 :errors="validationErrors"
                 :chassises="chassises"
 
             >
             </component-write>
 
-        <base-file-input
-            v-model="complaint.files"
-            :extensions="extensions"
-            lable = "Прикрепить документы"
-            :max-size="maxSize"
-            :error-messages="validationErrors['attachments']"
+<!--        <base-file-input-->
+<!--            v-model="complaint.files"-->
+<!--            :extensions="extensions"-->
+<!--            lable = "Прикрепить документы"-->
+<!--            :max-size="maxSize"-->
+<!--            :error-messages="validationErrors['attachments']"-->
 
-        ></base-file-input>
+<!--        ></base-file-input>-->
         </v-container>
 
 
@@ -77,7 +73,7 @@ export default {
                 this.culprits = response.data.culprits;
                 this.executors = response.data.executors;
                 this.contractors = response.data.contractors;
-                this.providers = response.data.providers;
+                // this.providers = response.data.providers;
                 this.maxSize = response.data.attachment_rules.max_size;
                 this.extensions = response.data.attachment_rules.extensions;
                 this.showDialog = true;
@@ -97,7 +93,7 @@ export default {
             executors:[],
             contractors:[],
             chassises:[],
-            providers:[],
+            // providers:[],
 
             // файлы
 
@@ -108,11 +104,14 @@ export default {
             complaint: {
                 warranty_type_id: 1,
                 reason_id: [],
-                type_comp_id:1,
+                type_comp_id:'',
                 culprit_id:[],
                 executor_id: [],
                 contractor_id: null,
-                provider_id: null,
+                // provider_id: null,
+                providers:'',
+                tripTo:'',
+
                 status_id:1,  /*статус в работе*/
                 files:[],
                 chassises:[],
@@ -136,7 +135,7 @@ export default {
             showDialog:false,   /*загружает данные до отображения*/
             loading: false,
 
-            provider:false,
+             provider:false,
 
 
         }
@@ -154,14 +153,17 @@ export default {
 
             let formData = new FormData();
             formData.append('vehicle', this.complaint.vehicle ?? ' ');
+            formData.append('providers', this.complaint.providers ?? ' ');
+            formData.append('tripTo', this.complaint.tripTo ?? ' ');
+
             formData.append('start_at', this.complaint.start_at);
             formData.append('unload_at', this.complaint.unload_at);
             formData.append('numb_order', this.complaint.numb_order ?? ' ');
             formData.append('order_at', this.complaint.order_at);
             formData.append('contractor_id', this.complaint.contractor_id);
 
-            if (this.complaint.provider_id)
-                formData.append('provider_id', this.complaint.provider_id);
+            // if (this.complaint.provider_id)
+            //     formData.append('provider_id', this.complaint.provider_id);
 
             formData.append('warranty_type_id', this.complaint.warranty_type_id);
             formData.append('type_comp_id', this.complaint.type_comp_id);

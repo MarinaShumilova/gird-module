@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-row>
             <v-col>
                 <base-data-table
@@ -17,6 +17,7 @@
                             <component-filter
                                 :status="statuses"
                                 :type_comps="type_comps"
+                                :warranty_types="warranty_types"
                                 @change="getFilterComplaint"
                             >
 
@@ -64,19 +65,13 @@
                                         <v-list-item-icon>
                                             <v-icon right>mdi-shuffle-disabled</v-icon>
                                         </v-list-item-icon>
-                                        <v-list-item-title>Перенаправить документы</v-list-item-title>
+                                        <v-list-item-title>Регресс</v-list-item-title>
                                     </v-list-item>
                                     <v-list-item v-show="showUser" @click.stop="openAddFileDialog">
                                         <v-list-item-icon>
                                             <v-icon right>mdi-card-plus-outline</v-icon>
                                         </v-list-item-icon>
                                         <v-list-item-title>Прикрепить документы</v-list-item-title>
-                                    </v-list-item>
-                                    <v-list-item v-show="showUser||showAccount" @click.stop="openRedressDialog">
-                                        <v-list-item-icon>
-                                            <v-icon right>mdi-cash-multiple</v-icon>
-                                        </v-list-item-icon>
-                                        <v-list-item-title>Компенсации</v-list-item-title>
                                     </v-list-item>
 
                                     <v-list-item v-show="showUser||showAccount" @click.stop="openEventsDialog">
@@ -177,14 +172,14 @@
                             @expenses-created="dialogRecord= false">
                         </look-record>
 
-                        <component-redress
-                            v-show="showUser||showAccount"
-                            v-if="redressCreateDialog"
-                            v-model="redressCreateDialog"
-                            :compId="editedRow.id"
-                        >
+<!--                        <component-redress-->
+<!--                            v-show="showUser||showAccount"-->
+<!--                            v-if="redressCreateDialog"-->
+<!--                            v-model="redressCreateDialog"-->
+<!--                            :compId="editedRow.id"-->
+<!--                        >-->
 
-                        </component-redress>
+<!--                        </component-redress>-->
 
 
                     </template>
@@ -434,6 +429,7 @@ export default {
 
             statuses: [],/* статуса из таблицы Статус*/
             type_comps: [],
+            warranty_types:[],
 
         }
     },
@@ -637,6 +633,7 @@ export default {
         api.call(endpoint('complaints.create'))
             .then((response) => {
                 this.type_comps = response.data.type_comps;
+                this.warranty_types = response.data.warranty_types;
             });
 
 

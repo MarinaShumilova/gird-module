@@ -5,23 +5,35 @@
         :width=getParamForm().widthForm
         scrollable
         persistent>
-        <v-card>
+        <v-card flat>
             <v-toolbar
                 elevation="1"
                 height="50">
                 <span>
                     <v-icon>mdi-shuffle-disabled</v-icon>
-                   {{this.paramForm.name}}
+                   {{ this.paramForm.name }}
                 </span>
                 <v-spacer></v-spacer>
                 <v-btn icon color="error" @click="close">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-toolbar>
-            <v-container>
-                <v-card-text>
-                    <v-row>
-                        <v-col sm="4"     v-show="showUser">
+            <v-card-text class="pa-3">
+                <v-row dense>
+                    <v-col cols="8">
+                        <v-card-title class="pa-2">
+                            Регресс
+                        </v-card-title>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-card-title class="pa-2">
+                            Документы
+                        </v-card-title>
+                    </v-col>
+
+                    <v-col cols="8" class="pa-1">
+                        <v-row>
+                        <v-col cols="4" v-show="showUser" >
                             <base-date-picker
                                 v-model="redirectFile.transfer_at"
                                 :error-messages="validationErrors['transfer_at']"
@@ -31,7 +43,7 @@
                             </base-date-picker>
                         </v-col>
 
-                        <v-col :sm=getParamForm().smCol>
+                        <v-col cols="8">
                             <v-textarea
                                 v-model="redirectFile.comment"
                                 :error-messages="validationErrors['comments']"
@@ -40,78 +52,116 @@
                                 outlined
                                 auto-grow
                                 :disabled="!showUser"
-                                rows="2">
+                                rows="1">
                             </v-textarea>
-
                         </v-col>
-                        <v-col
-                            sm="12">
+
+                        </v-row>
+
+                        <v-col class="pa-0" cols="11">
                             <base-file-input
                                 v-show="showUser"
                                 v-model="attachments"
                                 :extensions="extensions"
-                                lable="Прикрепить документы"
+                                label="Прикрепить документы"
                                 :max-size="maxSize"
                                 :error-messages="validationErrors['attachments']"
                             ></base-file-input>
                         </v-col>
-<!--                        <v-col sm="2">-->
-<!--                            <v-btn-->
-<!--                                @click.stop = "destroyTransfer()"-->
-<!--                                small-->
-<!--                                text-->
-<!--                                color="primary">-->
-<!--                                Отменить перенаправление-->
-<!--                            </v-btn>-->
+
+<!--                        <v-col cols="8" class="pa-5">-->
+<!--                            <v-divider-->
+<!--                                color="DimGray"></v-divider>-->
 <!--                        </v-col>-->
+                        <v-col cols="12">
+                            <v-card-title class="pa-2">
+                                Компенсация
+                            </v-card-title>
+                        </v-col>
 
-                        <v-col sm="12">
-                            <v-list>
-                                <v-list-item
-                                    v-for="item in files"
-                                    :key="item.id"
-                                >
-                                    <v-list-item-title>{{item.name}}
-                                        <v-divider></v-divider>
-                                    </v-list-item-title>
+                        <v-row>
+                        <v-col cols="12">
 
-                                    <v-btn
-                                        :href="item.url" target="_blank"
-                                        icon>
-                                        <v-icon small color="blue">mdi-file-download-outline</v-icon>
-                                    </v-btn>
-                                    <v-btn
-                                        icon
-                                        @click.stop="destroyFile(item.id)"
-                                    >
-                                        <v-icon small color="red">mdi-bucket</v-icon>
-                                    </v-btn>
-                                </v-list-item>
-                            </v-list>
+                            <component-redress
+                            v-model="redress"
+                            :arr-result="arrResult"
+                            :errors="errors"
+                            @delete="this.getRedress"
+                            >
+
+                            </component-redress>
 
 
                         </v-col>
-                    </v-row>
-                    <v-card-actions  v-show="showUser">
-                        <v-btn
-                            :disabled="loading"
-                            text
-                            @click="close"
-                        >
-                            Отмена
-                        </v-btn>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            :loading="loading"
-                            text
-                            color="primary"
-                            @click="submit"
-                        >
-                            Сохранить
-                        </v-btn>
-                    </v-card-actions>
-                </v-card-text>
-            </v-container>
+
+                        </v-row>
+
+                    </v-col>
+
+
+                    <v-col cols="4">
+                        <v-row>
+                            <v-col cols="12">
+                        <v-card
+                            v-scroll.self="onScroll"
+                            class="overflow-y-auto"
+                            max-height="500"
+                            elevation="0">
+                        <v-list>
+                            <v-list-item
+                                v-for="item in files"
+                                :key="item.id"
+                            >
+                                <v-list-item-title>{{ item.name }}
+                                    <v-divider></v-divider>
+                                </v-list-item-title>
+                                <v-btn
+                                    :href="item.url" target="_blank"
+                                    icon>
+                                    <v-icon small color="blue">mdi-file-download-outline</v-icon>
+                                </v-btn>
+                                <v-btn
+                                    v-show="showUser"
+                                    icon
+                                    @click.stop="destroyFile(item.id)"
+                                >
+                                    <v-icon small color="red">mdi-bucket</v-icon>
+                                </v-btn>
+                            </v-list-item>
+                        </v-list>
+                        </v-card>
+                            </v-col>
+                        </v-row>
+
+                    </v-col>
+
+
+                </v-row>
+
+
+            </v-card-text>
+
+
+            <v-card-actions v-show="showUser">
+                <v-btn
+                    :disabled="loading"
+                    text
+                    @click="close"
+
+                >
+                    Отмена
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn
+                    :loading="loading"
+                    text
+                    color="primary"
+                    @click="submitAll"
+                >
+                    Сохранить
+                </v-btn>
+            </v-card-actions>
+
 
         </v-card>
     </v-dialog>
@@ -124,10 +174,11 @@
 import BaseDatePicker from "gird-base-front/src/components/BaseDatePicker";
 import Comment from "./Comment";
 import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
+import ComponentRedress from "./ComponentRedress";
 
 
 export default {
-    components: {BaseDatePicker, Comment, BaseFileInput},
+    components: {BaseDatePicker, Comment, BaseFileInput, ComponentRedress},
     name: "SendFile",
     props: {
         value: {
@@ -141,18 +192,23 @@ export default {
     },
     data() {
         return {
-            showUser:false,
+            arrResult:[],
+            showUser: false,
             Calendar: null,
-           // transfer_at: new Date().toISOString().substr(0, 10),
+            // transfer_at: new Date().toISOString().substr(0, 10),
             extensions: [],
-            comment:'',
+            comment: '',
             attachments: [],
-            files:[],
+            files: [],
             idTransfer: 0,
-            idComponent:0,
+            idComponent: 0,
 
-
-
+            redress: {
+                redress_at: null,
+                complaint_id: this.compId,
+                comment: null,
+                expenses_redress: null,
+            },
 
             redirectFile: {
                 transfer_at: new Date().toISOString().substr(0, 10),
@@ -164,15 +220,18 @@ export default {
 
             dialog: this.value,
             loading: false,
-            paramForm:{
-                name:'Перенаправить доккументы',
-                widthForm:'600',
-                smCol:'8',
+            paramForm: {
+                name: 'Регресс',
+                widthForm: '700',
+                // smCol: '9',
             },
+            errors:{},
 
-
-            validationErrors: { },
+            scrollInvoked: 0,
+            validationErrors: {},
             commentsCreateDialog: false,
+
+            expenses_list: [],
         }
     },
 
@@ -190,10 +249,22 @@ export default {
             });
         this.showUser = this.returnUser();
         this.getParamForm(this.showUser);
+        this.getRedress();
+
     },
 
     methods: {
+        submitAll(){
+          this.submit();
 
+
+          if(this.redress.expenses_redress){
+              this.submitRedress();
+          }
+
+
+
+        },
         close() {
             this.$emit('input', false);
             this.$emit('close-send', false);
@@ -203,17 +274,55 @@ export default {
             this.commentsCreateDialog = true;
         },
 
+        onScroll () {
+            this.scrollInvoked++
+        },
+
         getTransfer() {
             api.call(endpoint('complaints.transfer.index', this.compId))
                 .then((response) => {
-                   //this.redirectFile.transfer_at = response.data.transfer_at;
+                    //this.redirectFile.transfer_at = response.data.transfer_at;
 
-                   this.redirectFile.comment = response.data.comment;
-                   this.files = response.data.attachments;
-                   this.idTransfer = response.data.id;
+                    this.redirectFile.comment = response.data.comment;
+                    this.files = response.data.attachments;
+                    this.idTransfer = response.data.id;
 
                 });
         },
+        getRedress() {
+            api.call(endpoint('complaints.redress.index', this.compId))
+                .then((response) => {
+                    this.expenses_list = response.data;
+
+                    this.arrResult = this.expenses_list.map(function (item) {
+                        let str = item.redress_at;
+                        let mnt = '';
+                        mnt = new Date(str);
+
+                        let DataFormat = new Intl.DateTimeFormat("ru", {
+                            month: "long",
+
+                        });
+                        let res = '';
+                        res = DataFormat.format(mnt);
+                        let result = res[0].toUpperCase() + res.slice(1); //имя месяца
+
+                        item.redress_at = result;
+                        return item;
+
+                    })
+
+                });
+
+        },
+        // destroyRedress(id) {
+        //     api.call(endpoint('complaints.redress.destroy', id))
+        //         .then(response => {
+        //              this.getRedress();
+        //         })
+        // },
+
+
 
         // событие с дочернего компонента
         // updateComment(textComment) {
@@ -231,7 +340,8 @@ export default {
             // attachments
             for (let i = 0; i < this.attachments.length; i++) {
                 formData.append('attachments' + '[' + i + ']', this.attachments[i]);
-            };
+            }
+            ;
 
             api.call(endpoint('complaints.transfer.store', this.compId), formData)
                 .then(response => {
@@ -246,29 +356,51 @@ export default {
                 })
         },
 
-        destroyFile(id){
-            api.call(endpoint('transfers.attachments.delete',[this.idTransfer, id]))
-                .then(response=> {
+        submitRedress() {
+           // this.loading = true;
+
+            // if(this.redress.expenses_redress != null) {
+
+                api.call(endpoint('complaints.redress.store', this.compId), this.redress)
+                    .then(response => {
+                        this.redress = {
+                            complaint_id: this.compId,
+                            expenses_redress: null,
+                        };
+
+                    })
+                    .catch(error => {
+                        this.errors = error.response.data.errors
+                    })
+                    .finally(() => {
+                        this.getRedress();
+                        this.loading = false;
+                    })
+
+
+
+        },
+
+
+        destroyFile(id) {
+            api.call(endpoint('transfers.attachments.delete', [this.idTransfer, id]))
+                .then(response => {
                     this.idComponent = id;
 
                     this.getTransfer();
 
                 })
         },
-        // destroyTransfer(){
-        //     api.call(endpoint('complaints.transfer.destroy',[this.compId,this.idComponent]))
-        //         .then(response=> {
-        //         })
-        // },
 
-        returnUser(){
+
+        returnUser() {
             return this.$store.getters.userHasRole('admin');
         },
-        getParamForm(){
-            if(!this.showUser){
-                this.paramForm.name ='Перенаправленные документы';
-                this.paramForm.widthForm = '400';
-                this.paramForm.smCol = '12';
+        getParamForm() {
+            if (!this.showUser) {
+             //   this.paramForm.name = 'Перенаправленные документы';
+                this.paramForm.widthForm = '900';
+                //this.paramForm.smCol = '9';
 
             }
 
@@ -279,3 +411,11 @@ export default {
     }
 }
 </script>
+<style>
+.vl {
+    border-left: 1px solid DimGrey;
+    /*//height: 500px;*/
+    width: 10px;
+
+}
+</style>

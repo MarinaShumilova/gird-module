@@ -19,6 +19,13 @@ class CreateAttachFilesTable extends Migration
             $table->string('name');
             $table->string('extension');
             $table->string('type');
+
+            $table->unsignedBigInteger('firm_id')->nullable();
+            $table->unsignedBigInteger('type_pact_id')->nullable();
+
+            $table->foreign('firm_id')->references('id')->on('firms');
+            $table->foreign('type_pact_id')->references('id')->on('type_pacts');
+
             $table->timestamps();
         });
     }

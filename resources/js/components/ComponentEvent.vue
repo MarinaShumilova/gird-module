@@ -21,7 +21,7 @@
                         <v-textarea
                             v-model="eventData.warranty"
                             :error-messages="errors['warranty']"
-                            :readonly="!showUser"
+                            :disabled="!showUser"
                             outlined
                             label="Мероприятия по гарантийному случаю"
                             auto-grow
@@ -38,7 +38,7 @@
                         <v-textarea
                             v-model="eventData.prevention"
                             :error-messages="errors['prevention']"
-                            :readonly="!showUser"
+                            :disabled="!showUser"
                             outlined
                             label="Мероприятия на предотвращение"
                             auto-grow

@@ -19,10 +19,10 @@
         <v-col
             sm="3">
             <v-select
-                v-model="filter.type_comps_filter"
+                v-model="filter.warranty_types"
                 item-value="id"
                 item-text="name"
-                :items="type_comps"
+                :items="warranty_types"
                 dense
                 label="Статус гарантии"
                 clearable
@@ -105,6 +105,12 @@ export default {
             type: Array,
             required: true
         },
+        warranty_types: {
+            type:Array,
+            required:true
+        }
+
+
 
     },
 
@@ -115,6 +121,7 @@ export default {
                 data_expenses: [],
                 status_filter: '',
                 type_comps_filter:'',
+                warranty_types:'',
             },
             menu: false,
             date: ' ',

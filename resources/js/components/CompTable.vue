@@ -486,6 +486,11 @@ export default {
             return this.$store.getters.userHasRole('account');
         },
 
+        //метод, закрыть форму и обновить таблицу
+        closeFormMenu(){
+            this.getComplaints(this.dataFilter);
+        },
+
         closeExpensesCard() {
 
             this.getComplaints(this.dataFilter);
@@ -563,8 +568,8 @@ export default {
         },
 
         getFilterComplaint(value) {
-            this.dataFilter = value;
 
+            this.dataFilter = value;
             if (value !== undefined) {
                 this.getComplaints(value);
             }

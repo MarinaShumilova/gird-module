@@ -88,7 +88,7 @@
 
                                 <v-col class="pa-0 ma-0">
                                     <v-textarea
-                                        :disabled="!showUser"
+                                        :disabled="true"
                                         :value="item.comment"
                                         rows="1"
                                     ></v-textarea>
@@ -100,7 +100,7 @@
                         </v-list-item-title>
 
                         <v-btn
-                            v-show="showUser"
+                            v-show="showUser||showAccount"
                             icon
                             @click.stop="destroyRedress(item.id)">
                             <v-icon small color="red">mdi-bucket</v-icon>
@@ -165,8 +165,9 @@ export default {
     watch: {
         redress(value) {
             this.$emit('input', value);
-
-
+        },
+        value(redress){
+            this.redress = this.value;
         },
 
 

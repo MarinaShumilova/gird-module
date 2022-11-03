@@ -60,7 +60,7 @@
 
                         <v-col class="pa-0" cols="11">
                             <base-file-input
-                                v-show="showUser"
+                                v-show="showUser||showAccount"
                                 v-model="attachments"
                                 :extensions="extensions"
                                 label="Прикрепить документы"
@@ -69,10 +69,6 @@
                             ></base-file-input>
                         </v-col>
 
-<!--                        <v-col cols="8" class="pa-5">-->
-<!--                            <v-divider-->
-<!--                                color="DimGray"></v-divider>-->
-<!--                        </v-col>-->
                         <v-col cols="12">
                             <v-card-title class="pa-2">
                                 Компенсация
@@ -121,7 +117,7 @@
                                     <v-icon small color="blue">mdi-file-download-outline</v-icon>
                                 </v-btn>
                                 <v-btn
-                                    v-show="showUser"
+                                    v-show="showUser||showAccount"
                                     icon
                                     @click.stop="destroyFile(item.id)"
                                 >
@@ -142,7 +138,7 @@
             </v-card-text>
 
 
-            <v-card-actions v-show="showUser">
+            <v-card-actions v-show="showUser||showAccount">
                 <v-btn
                     :disabled="loading"
                     text
@@ -194,6 +190,8 @@ export default {
         return {
             arrResult:[],
             showUser: false,
+            showAccount: false,
+
             Calendar: null,
             // transfer_at: new Date().toISOString().substr(0, 10),
             extensions: [],
@@ -248,7 +246,9 @@ export default {
 
             });
         this.showUser = this.returnUser();
-        this.getParamForm(this.showUser);
+        this.showAccount = this.returnUserAccount();
+
+       // this.getParamForm(this.showUser);
         this.getRedress();
 
     },
@@ -256,11 +256,12 @@ export default {
     methods: {
         submitAll(){
           this.submit();
+            this.submitRedress();
 
-
-          if(this.redress.expenses_redress){
-              this.submitRedress();
-          }
+          // if(this.redress.expenses_redress !== ""){
+          //     this.submitRedress();
+          //
+          // }
 
 
 
@@ -315,20 +316,6 @@ export default {
                 });
 
         },
-        // destroyRedress(id) {
-        //     api.call(endpoint('complaints.redress.destroy', id))
-        //         .then(response => {
-        //              this.getRedress();
-        //         })
-        // },
-
-
-
-        // событие с дочернего компонента
-        // updateComment(textComment) {
-        //     this.comment.push(textComment);
-        //     this.redirectFile.comment = textComment;
-        // },
 
 
         submit() {
@@ -357,16 +344,13 @@ export default {
         },
 
         submitRedress() {
-           // this.loading = true;
-
-            // if(this.redress.expenses_redress != null) {
 
                 api.call(endpoint('complaints.redress.store', this.compId), this.redress)
                     .then(response => {
-                        this.redress = {
-                            complaint_id: this.compId,
-                            expenses_redress: null,
-                        };
+                        // this.redress = {
+                        //     complaint_id: this.compId,
+                        //    // expenses_redress: null,
+                        // };
 
                     })
                     .catch(error => {
@@ -396,6 +380,10 @@ export default {
         returnUser() {
             return this.$store.getters.userHasRole('admin');
         },
+        returnUserAccount() {
+            return this.$store.getters.userHasRole('account');
+        },
+
         getParamForm() {
             if (!this.showUser) {
              //   this.paramForm.name = 'Перенаправленные документы';

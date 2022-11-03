@@ -61,7 +61,7 @@
                                         </v-list-item-icon>
                                         <v-list-item-title>Затраты</v-list-item-title>
                                     </v-list-item>
-                                    <v-list-item v-show="showUser" @click.stop="openSendFileDialog">
+                                    <v-list-item v-show="showUser||showAccount" @click.stop="openSendFileDialog">
                                         <v-list-item-icon>
                                             <v-icon right>mdi-shuffle-disabled</v-icon>
                                         </v-list-item-icon>
@@ -121,7 +121,7 @@
 
                         <!--    перенаправить -->
                         <send-file
-                            v-show="showUser"
+                            v-show="showUser||showAccount"
                             v-if="sendFileCreateDialog"
                             v-model="sendFileCreateDialog"
                             :compId="editedRow.id"

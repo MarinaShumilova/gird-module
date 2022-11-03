@@ -347,10 +347,6 @@ export default {
 
                 api.call(endpoint('complaints.redress.store', this.compId), this.redress)
                     .then(response => {
-                        // this.redress = {
-                        //     complaint_id: this.compId,
-                        //    // expenses_redress: null,
-                        // };
 
                     })
                     .catch(error => {

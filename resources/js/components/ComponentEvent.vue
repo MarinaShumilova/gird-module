@@ -23,16 +23,42 @@
                             :error-messages="errors['warranty']"
                             :disabled="!showUser"
                             outlined
+                            dense
                             label="Мероприятия по гарантийному случаю"
                             auto-grow
-
+                            rows="1"
                             hide-details="auto">
-
                         </v-textarea>
+
+                    </v-col>
+                    <v-col cols="12">
+                        <v-list>
+                            <v-list-item
+                                v-for="item in event"
+                                :key="item.id"
+                                v-if="item.warranty != null">
+
+                                   <v-row>
+                                       <v-col cols="8" class="pa-5" align-self="start">
+                                           {{ item.warranty}}
+                                       </v-col>
+                                       <v-col cols="3" class="pa-5" align-self="start">
+                                           {{ item.created_at| date }}
+                                       </v-col>
+
+                                       <v-btn
+                                           v-show="showUser"
+                                           icon
+                                           @click.stop="deleteWarranty(item.id)">
+                                           <v-icon small color="red">mdi-bucket</v-icon>
+                                       </v-btn>
+                                   </v-row>
+
+                            </v-list-item>
+                        </v-list>
 
 
                     </v-col>
-
                     <v-col
                         cols="12">
                         <v-textarea
@@ -42,8 +68,34 @@
                             outlined
                             label="Мероприятия на предотвращение"
                             auto-grow
+                            rows="1"
                             hide-details="auto">
                         </v-textarea>
+
+                        <v-list>
+                            <v-list-item
+                                v-for="item in event"
+                                :key="item.id"
+                                v-if="item.prevention != null"
+                            >
+                            <v-row  class="pa-5" align-self="start">
+                                    <v-col cols="8" >
+                                        {{ item.prevention}}
+                                    </v-col>
+                                    <v-col cols="3" >
+                                        {{ item.created_at| date }}
+                                    </v-col>
+
+                                <v-btn
+                                    v-show="showUser"
+                                    icon
+                                    @click.stop="deletePrevention(item.id)">
+                                    <v-icon small color="red">mdi-bucket</v-icon>
+                                </v-btn>
+                            </v-row>
+                            </v-list-item>
+                        </v-list>
+
                     </v-col>
 
                 </v-row>
@@ -99,12 +151,15 @@ export default {
                 complaint_id: this.complaint_id,
                 warranty: '',
                 prevention: '',
+
             },
-            // warranty: [],
-            // prevention: [],
+            warranty: [],
+            prevention: [],
+            created_at: new Date().toISOString().substr(0, 10),  //дата претензии
 
             loading: false,
             errors: {},
+            event: [],
 
         }
     },
@@ -127,30 +182,51 @@ export default {
             api.call(endpoint('complaints.events.index', this.complaint_id))
                 .then((response) => {
                     this.event = response.data;
-                    this.eventData.warranty = this.event.map(function (item) {
-                        return item.warranty;
-                    });
-
-                    this.eventData.prevention = this.event.map(function (item){
-                        return item.prevention;
-                    })
-
-
                 });
 
         },
+
+        updateEvent(id){
+
+
+            api.call(endpoint('complaints.events.update', id), this.eventData)
+                .then(response=>{
+
+                    this.getEvents();
+                    this.eventData.warranty = '';
+                    this.eventData.prevention = '';
+                })
+        },
+
+        deletePrevention(id){
+            this.eventData.prevention = '';
+            this.eventData.warranty = '-';
+            this.updateEvent(id);
+
+        },
+
+        deleteWarranty(id){
+          this.eventData.warranty = '';
+          this.eventData.prevention = '-';
+          this.updateEvent(id);
+
+        },
+
 
         submit() {
             // this.loading = true;
             api.call(endpoint('complaints.events.store', this.complaint_id), this.eventData)
                 .then(response => {
+                    this.eventData.warranty='';
+                    this.eventData.prevention='';
+
                 })
                 .catch(error => {
                     this.errors = error.response.data.errors
                 })
                 .finally(() => {
                     this.getEvents();
-                    this.close()
+                   // this.close()
                     // this.loading = false;
                 })
 

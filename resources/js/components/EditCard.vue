@@ -77,7 +77,7 @@ export default {
                 this.complaint.culprit_id = response.data.culprit_id;
                 this.getCulprits();
                 this.getExecutors();
-              //  this.getTypeCulprits();
+                this.getTypeCulprits();
                 this.complaint.chassises = this.complaint.chassises.map(function (item) {
                     return item.number;
                 })
@@ -160,6 +160,8 @@ export default {
             }).join(', ')
 
             this.providerCulprit = arrCulprits.includes('1');
+
+
         },
 
         getTypeCulprits() {

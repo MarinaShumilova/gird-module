@@ -42,7 +42,7 @@ class EventController extends Controller
         $this->authorize('create', EventComplaint::class);
 
         $event = new EventComplaint($request->all());
-//        $event->event=$request->events;
+       // $event->event=$request->events;
         $event->save();
     }
 
@@ -77,7 +77,19 @@ class EventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $event = EventComplaint::findOrFail($id);
+
+
+        if ($request->warranty != null)
+        {
+            $event->update(['prevention' => $request->input('prevention')]);
+        }
+
+        if ($request->prevention !=null){
+            $event->update(['warranty' => $request->input('warranty')]);
+        }
+
+
     }
 
     /**

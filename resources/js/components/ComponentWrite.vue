@@ -210,7 +210,7 @@
                     </base-date-picker>
                 </v-col>
                 <v-col
-                    cols="4">
+                    cols="5">
                     <v-combobox
                         v-model="complaint.chassises"
                         :error-messages="errors['chassises']"
@@ -384,9 +384,12 @@ export default {
         getReasons() {
             let arrCulprits = this.complaint.culprit_id.map(function (item) {
                 return item
+                console.log(item)
             }).join(', ')
 
             this.setReason = arrCulprits.includes('3');
+
+
         },
 
 

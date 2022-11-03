@@ -24,8 +24,8 @@ class StoreEventPost extends FormRequest
     public function rules()
     {
         return [
-            'warranty' => 'max:65000',
-            'prevention' => 'max:65000',
+            'warranty' => 'nullable|string|max:65000',
+            'prevention' => 'nullable|string|max:65000',
             'complaint_id'=>'required|exists:App\Models\Complaint,id'
         ];
     }

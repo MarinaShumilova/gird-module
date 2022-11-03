@@ -34,6 +34,8 @@ const Endpoints = {
 
         "complaints.events.index":{"uri":"/complaints/{complaint}/events","method":"get"},
         "complaints.events.store":{"uri":"/complaints/{complaint}/events","method":"post"},
+        "complaints.events.update":{"uri":"/events/{event}","method":"put"},
+
 
         "complaints.attachments.index":{"uri":"/complaints/{complaint}/attachments","method":"get"},
 

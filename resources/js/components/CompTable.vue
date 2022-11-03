@@ -289,7 +289,7 @@
                                     >mdi-email-send-outline
                                     </v-icon>
                                 </template>
-                                <span>Регресс {{ item.transfer.transfer_at }}</span>
+                                <span>Регресс {{ item.transfer.transfer_at |date}}</span>
                             </v-tooltip>
                         </v-row>
                     </template>

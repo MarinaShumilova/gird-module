@@ -2,6 +2,8 @@
 _ide_helper.php
 .idea
 
+/public/js/app.js
+/public/mix-manifest.json
 
 /node_modules
 /public/hot

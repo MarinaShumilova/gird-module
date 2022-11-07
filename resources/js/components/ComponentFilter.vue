@@ -1,5 +1,5 @@
 <template>
-<span>
+<v-container>
     <v-row justify="space-around"
            class="text-caption"
     >
@@ -92,7 +92,7 @@
 
         </component-excel>
 
-</span>
+</v-container>
 
 
 

@@ -42,7 +42,7 @@ class StoreComplaintPost extends FormRequest
             'unload_at' => 'required|date|before_or_equal:' . date("d.m.Y"),
             'numb_order' => 'required|string',
             'order_at'=>'required|date||before_or_equal:' . date("d.m.Y"),
-            'chassis' => 'nullable|array',
+            'chassis' => 'nullable|string',
 
 
 

@@ -18,14 +18,14 @@
                 ></v-textarea>
             </v-col>
             <v-col
-                cols="2">
-                <base-date-picker
+                cols="3">
+                <base-date-input-picker
                     v-model="complaint.order_at"
                     :error-messages="errors['order_at']"
                     dense
                     outlined
                     label="Дата приказа">
-                </base-date-picker>
+                </base-date-input-picker>
             </v-col>
             <v-col
                 cols="4">
@@ -42,7 +42,7 @@
             </v-col>
 
             <v-col
-                cols="3">
+                cols="2">
                 <base-date-picker
                     v-model="complaint.start_at"
                     :error-messages="errors['start_at']"
@@ -211,17 +211,16 @@
                 </v-col>
                 <v-col
                     cols="5">
-                    <v-combobox
+                    <v-textarea
                         v-model="complaint.chassises"
-                        :error-messages="errors['chassises']"
                         label="Шасси"
-                        :items="chassises"
+                        rows="1"
+                        outlined
+                        auto-grow
                         dense
-                        solo
-                        multiple
-                        hide-selected
                         hide-spin-buttons>
-                    </v-combobox>
+                    </v-textarea>
+
                 </v-col>
         </v-row>
         <v-row dense>
@@ -249,12 +248,13 @@
 <script>
 
 import BaseDatePicker from "gird-base-front/src/components/BaseDatePicker";
+import BaseDateInputPicker from "gird-base-front/src/components/BaseDateInputPicker";
 import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
 import ContractorSelect from "./ContractorSelect";
 
 export default {
     name: "ComponentWrite",
-    components: {BaseDatePicker, BaseFileInput, ContractorSelect},
+    components: {BaseDatePicker,BaseDateInputPicker, BaseFileInput, ContractorSelect},
     props: {
         errors: {
             type: Object,
@@ -383,7 +383,6 @@ export default {
         getReasons() {
             let arrCulprits = this.complaint.culprit_id.map(function (item) {
                 return item
-                console.log(item)
             }).join(', ')
 
             this.setReason = arrCulprits.includes('3');

@@ -37,23 +37,27 @@
                                 v-for="item in event"
                                 :key="item.id"
                                 v-if="item.warranty != null">
+                                <v-list-item-content>
 
-                                   <v-row>
-                                       <v-col cols="8" class="pa-5" align-self="start">
-                                           {{ item.warranty}}
-                                       </v-col>
-                                       <v-col cols="3" class="pa-5" align-self="start">
-                                           {{ item.created_at| date }}
-                                       </v-col>
 
-                                       <v-btn
-                                           v-show="showUser"
-                                           icon
-                                           @click.stop="deleteWarranty(item.id)">
-                                           <v-icon small color="red">mdi-bucket</v-icon>
-                                       </v-btn>
-                                   </v-row>
+                                    <v-row>
+                                        <v-col cols="8" class="pa-5" align-self="start">
+                                            {{ item.warranty}}
+                                        </v-col>
+                                        <v-col cols="3" class="pa-5" align-self="start">
+                                            {{ item.created_at| date }}
+                                        </v-col>
+                                        <v-col>
+                                            <v-btn
+                                                v-show="showUser"
+                                                icon
+                                                @click.stop="deleteWarranty(item.id)">
+                                                <v-icon small color="red">mdi-bucket</v-icon>
+                                            </v-btn>
 
+                                        </v-col>
+                                    </v-row>
+                                </v-list-item-content>
                             </v-list-item>
                         </v-list>
 
@@ -79,21 +83,21 @@
                                 :key="item.id"
                                 v-if="item.prevention != null"
                             >
-                            <v-row  class="pa-5" align-self="start">
-                                    <v-col cols="8" >
-                                        {{ item.prevention}}
+                                <v-row class="pa-5" align-self="start">
+                                    <v-col cols="8">
+                                        {{ item.prevention }}
                                     </v-col>
-                                    <v-col cols="3" >
+                                    <v-col cols="3">
                                         {{ item.created_at| date }}
                                     </v-col>
 
-                                <v-btn
-                                    v-show="showUser"
-                                    icon
-                                    @click.stop="deletePrevention(item.id)">
-                                    <v-icon small color="red">mdi-bucket</v-icon>
-                                </v-btn>
-                            </v-row>
+                                    <v-btn
+                                        v-show="showUser"
+                                        icon
+                                        @click.stop="deletePrevention(item.id)">
+                                        <v-icon small color="red">mdi-bucket</v-icon>
+                                    </v-btn>
+                                </v-row>
                             </v-list-item>
                         </v-list>
 
@@ -187,11 +191,11 @@ export default {
 
         },
 
-        updateEvent(id){
+        updateEvent(id) {
 
 
             api.call(endpoint('complaints.events.update', id), this.eventData)
-                .then(response=>{
+                .then(response => {
 
                     this.getEvents();
                     this.eventData.warranty = '';
@@ -199,17 +203,17 @@ export default {
                 })
         },
 
-        deletePrevention(id){
+        deletePrevention(id) {
             this.eventData.prevention = '';
             this.eventData.warranty = '-';
             this.updateEvent(id);
 
         },
 
-        deleteWarranty(id){
-          this.eventData.warranty = '';
-          this.eventData.prevention = '-';
-          this.updateEvent(id);
+        deleteWarranty(id) {
+            this.eventData.warranty = '';
+            this.eventData.prevention = '-';
+            this.updateEvent(id);
 
         },
 
@@ -218,8 +222,8 @@ export default {
             // this.loading = true;
             api.call(endpoint('complaints.events.store', this.complaint_id), this.eventData)
                 .then(response => {
-                    this.eventData.warranty='';
-                    this.eventData.prevention='';
+                    this.eventData.warranty = '';
+                    this.eventData.prevention = '';
 
                 })
                 .catch(error => {
@@ -227,7 +231,7 @@ export default {
                 })
                 .finally(() => {
                     this.getEvents();
-                   // this.close()
+                    // this.close()
                     // this.loading = false;
                 })
 

@@ -21,17 +21,17 @@
                 :culprits="culprits"
                 :executors="executors"
                 :contractors="contractors"
-
+                :chassises="chassises"
                 :errors="validationErrors"
                 :executor_id="executor_id"
-                :chassises="chassises"
                 :reason_id="reason_id"
                 :culprit_id="culprit_id"
                 :providerCulprit="providerCulprit"
                 :tripExecutor="tripExecutor"
                 :type-reason="typeReason"
-
             >
+
+<!--                -->
 
             </component-write>
         </v-container>
@@ -75,6 +75,8 @@ export default {
                 this.complaint.executor_id = response.data.executor_id;
                 this.complaint.reason_id = response.data.reason_id;
                 this.complaint.culprit_id = response.data.culprit_id;
+
+
                 this.getCulprits();
                 this.getExecutors();
                 this.getTypeCulprits();
@@ -101,7 +103,7 @@ export default {
             executor_id: [],
             contractors: [],
             // providers:[],
-            chassis: [],
+            chassis:null,
 
 
             complaint: {},  //объект с данными

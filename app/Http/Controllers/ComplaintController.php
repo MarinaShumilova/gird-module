@@ -152,15 +152,24 @@ class ComplaintController extends Controller
         };
 
 
-        if ($request->has('chassises')) {
-            foreach ($request->chassises as $chassis) {
-                $chassised = new Chassis();                          //создать строку в таблице
 
-                $chassised->number = $chassis;                      //обращаюсь к столбцу
+        if (($request->chassises) != null){
+                $chassised = new Chassis();                          //создать строку в таблице
+                $chassised->number = $request->chassises;                      //обращаюсь к столбцу
                 $chassised->complaint_id = $complaint->id;
                 $chassised->save();
-            };
         };
+
+
+//        if ($request->has('chassises')) {
+//            foreach ($request->chassises as $chassis) {
+//                $chassised = new Chassis();                          //создать строку в таблице
+//
+//                $chassised->number = $chassis;                      //обращаюсь к столбцу
+//                $chassised->complaint_id = $complaint->id;
+//                $chassised->save();
+//            };
+//        };
 
 
         if ($request->has('executor_id')) {
@@ -198,6 +207,8 @@ class ComplaintController extends Controller
 
         $complaint = Complaint::findOrFail($id);
 
+
+
         $this->authorize('view', $complaint);
 
         $executors = $complaint->executors->pluck('name')->toArray();
@@ -208,13 +219,18 @@ class ComplaintController extends Controller
 
 
         $arrChassis = $complaint->chassises->pluck('number')->toArray();
+        $complaint->chassises = $complaint->chassises->pluck('number');
 
         $contractor_name = $complaint->contractor->name;
 
-        $provider_name = optional($complaint->providers)->name;
+       // $provider_name = optional($complaint->providers)->name;
 
         $warranty_type_name = $complaint->warranty_type->name;
-        $type_comp_name = $complaint->type_comp->name;
+
+       if($complaint->type_comp) {
+           $type_comp_name = $complaint->type_comp->name;
+       } else {$type_comp_name = null;}
+
 
 
         return [
@@ -224,9 +240,11 @@ class ComplaintController extends Controller
             'reason_id' => $reasons,
             'culprit_id' => $culprits,
             'contractor_name' => $contractor_name,
-            'provider_name' => $provider_name,
+            //'provider_name' => $provider_name,
             'warranty_type_name' => $warranty_type_name,
-            'type_comp_name' => $type_comp_name,
+             'type_comp_name' => $type_comp_name,
+
+
 
         ];
 
@@ -250,10 +268,7 @@ class ComplaintController extends Controller
         $culprits = $complaint->culprits->pluck('id');
         $culprits->all();
 
-
         $arrChassis = $complaint->chassises->pluck('number')->toArray();
-
-
         $complaint->chassises = $complaint->chassises->pluck('number');
 
 
@@ -292,30 +307,22 @@ class ComplaintController extends Controller
         $complaint->reasons()->sync($request->reason_id);
         $complaint->culprits()->sync($request->culprit_id);
 
+        //найти шасси по id
+        $chassi = Chassis::firstWhere('complaint_id', $complaint->id);
 
-        $arrOldChassis = $complaint->chassises->pluck('number')->toArray();
+        //запись есть - обновить
+        if ($chassi) {
+            $chassi->update([
+               'number' => $request->chassises,
+            ]);
+        }
+        else {
+           Chassis::create([
+               'number' => $request->chassises,
+               'complaint_id' => $complaint->id,
+           ]);
+        }
 
-
-        $chassis = (array)$request->chassises;
-
-        foreach ($arrOldChassis as $chassisNumber) {
-            $chassis = Chassis::where('number', $chassisNumber)->first();
-            if ($chassis) {
-                $chassis->delete();
-            }
-
-        };
-        foreach ($request->chassises as $chassisNumber) {
-            $chassis = Chassis::where('number', $chassisNumber)->first();
-            if (!$chassis) {
-                Chassis::create([
-                    'number' => $chassisNumber,
-                    'complaint_id' => $complaint->id
-                ]);
-
-            }
-
-        };
 
 
         $this->authorize('update', $complaint);

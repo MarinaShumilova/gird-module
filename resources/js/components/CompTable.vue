@@ -16,6 +16,7 @@
                         <v-row class="justify-center">
                             <v-col>
                                 <component-filter
+                                    class="filters"
                                     :status="statuses"
                                     :type_comps="type_comps"
                                     :warranty_types="warranty_types"
@@ -113,7 +114,7 @@
                             v-show="showUser||showAccount"
                             v-if="expensesCreateDialog"
                             v-model="expensesCreateDialog"
-                            @close-expenses="closeExpensesCard"
+                            @close-expenses="closeFormMenu"
                             :complaint_id="editedRow.id"
                         ></expenses-card>
                         <!--кооментарий к комплайну-->
@@ -121,7 +122,7 @@
                             v-if="commentsCreateDialog"
                             v-model="commentsCreateDialog"
                             :complaint_id="rowComplaint.id"
-                            @close-comments="closeCommentCard"
+                            @close-comments="closeFormMenu"
                         ></component-comment>
 
                         <!--    перенаправить -->
@@ -130,7 +131,7 @@
                             v-if="sendFileCreateDialog"
                             v-model="sendFileCreateDialog"
                             :compId="editedRow.id"
-                            @close-send="closeSendFile">
+                            @close-send="closeFormMenu">
                         </send-file>
                         <!--   прикрепить документ-->
                         <add-file
@@ -138,7 +139,7 @@
                             v-if="addFileCreateDialog"
                             v-model="addFileCreateDialog"
                             :comp-id="editedRow.id"
-                            @close-add-file="closeAddFile()">
+                            @close-add-file="closeFormMenu">
                         </add-file>
 
                         <component-event
@@ -146,7 +147,7 @@
                             v-if="eventsCreateDialog"
                             v-model="eventsCreateDialog"
                             :complaint_id="editedRow.id"
-                            @close-comments="closeCommentCard">
+                            @close-comments="closeFormMenu">
 
                         </component-event>
 
@@ -491,22 +492,6 @@ export default {
             this.getComplaints(this.dataFilter);
         },
 
-        closeExpensesCard() {
-
-            this.getComplaints(this.dataFilter);
-        },
-
-        closeSendFile() {
-            this.getComplaints();
-        },
-
-        closeCommentCard() {
-            this.getComplaints();
-        },
-        closeAddFile() {
-            this.getComplaints();
-        },
-
         close() {
             this.dialog = false;
         },
@@ -586,8 +571,6 @@ export default {
             }
         },
 
-        closeComplaint() {
-        },
 
         /**
          * In a real application this would be a call to fetch() or axios.get()

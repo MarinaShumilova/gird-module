@@ -24,8 +24,8 @@
                 :contractors="contractors"
                 :errors="validationErrors"
                 :chassises="chassises"
-
             >
+
             </component-write>
 
 <!--        <base-file-input-->
@@ -84,45 +84,47 @@ export default {
     },
 
 
-    data() {
+    data: function () {
         return {
             warrantyTypes: [],
-            reasons:[],
-            type_comps:[],
-            culprits:[],
-            executors:[],
-            contractors:[],
+            reasons: [],
+            type_comps: [],
+            culprits: [],
+            executors: [],
+            contractors: [],
             chassises:[],
             // providers:[],
 
             // файлы
 
-            extensions:[],
-            maxSize:0,
+            extensions: [],
+            maxSize: 0,
 
 
             complaint: {
                 warranty_type_id: 1,
                 reason_id: [],
-                type_comp_id:'',
-                culprit_id:[],
+                type_comp_id: '',
+                culprit_id: [],
                 executor_id: [],
                 contractor_id: null,
                 // provider_id: null,
-                providers:'',
-                tripTo:'',
+                providers: '',
+                tripTo: '',
 
-                status_id:1,  /*статус в работе*/
-                files:[],
-                chassises:[],
+                status_id: 1,  /*статус в работе*/
+                files: [],
+                //chassises:[],
 
-                numb_pretension:'',    //№ ретензии
-                pretension_at:new Date().toISOString().substr(0, 10),  //дата претензии
+                numb_pretension: '',    //№ ретензии
+                pretension_at: new Date().toISOString().substr(0, 10),  //дата претензии
 
 
-                warranty_decree:'',
-                numb_order:null,
-                vehicle:null,
+                warranty_decree: '',
+                numb_order: null,
+                vehicle: null,
+                chassises: null,
+
                 start_at: new Date().toISOString().substr(0, 10),
                 close_at: new Date().toISOString().substr(0, 10),
                 unload_at: new Date().toISOString().substr(0, 10),
@@ -130,12 +132,12 @@ export default {
 
             },
             dialog: this.value,
-            validationErrors: { },
+            validationErrors: {},
             errors: {},
-            showDialog:false,   /*загружает данные до отображения*/
+            showDialog: false,   /*загружает данные до отображения*/
             loading: false,
 
-             provider:false,
+            provider: false,
 
 
         }
@@ -173,12 +175,14 @@ export default {
             formData.append('numb_pretension', this.complaint.numb_pretension);
             formData.append('pretension_at', this.complaint.pretension_at);
 
+            formData.append('chassises', this.complaint.chassises ?? ' ');
 
 
+            // for (let i = 0; i < this.complaint.chassises.length; i++) {
+            //     formData.append('chassises' + '[' + i + ']', this.complaint.chassises[i]);
+            // };
+            //
 
-            for (let i = 0; i < this.complaint.chassises.length; i++) {
-                formData.append('chassises' + '[' + i + ']', this.complaint.chassises[i]);
-            };
 
 
 

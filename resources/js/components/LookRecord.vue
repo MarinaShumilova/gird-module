@@ -256,7 +256,7 @@ export default {
         rows() {
             return [
                 {name:'Приказ:', value:this.complaint.numb_order},
-                {name:'Дата приказа:', value:this.complaint.order_at },
+                {name:'Дата приказа:', value:this.complaint.order_at},
                 {name:'Дата заявки:', value:this.complaint.start_at },
                 {name:'Гарантийный приказ:', value:this.complaint.warranty_decree},
                 {name:'Гарантия:', value:this.warranty_type_name},

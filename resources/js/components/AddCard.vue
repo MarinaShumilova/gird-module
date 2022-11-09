@@ -2,7 +2,7 @@
 <template>
     <base-dialog-action
         v-model="dialog"
-        max-width="900"
+        max-width="1200"
         persistent
         @confirmed="submit"
         :loading="loading"
@@ -10,33 +10,34 @@
         <template v-slot:title>
             Добавить запись
         </template>
-            <v-container class="pa-2">
-            <component-write
-                v-model="complaint"
-                :warranty-types="warrantyTypes"
-                :reasons="reasons"
-                :type_comps="type_comps"
-                :culprits="culprits"
-                :executors="executors"
-                :executor_id="executors"
-                :reason_id="reasons"
-                :culprit_id="culprits"
-                :contractors="contractors"
-                :errors="validationErrors"
-                :chassises="chassises"
-            >
 
-            </component-write>
+        <component-write
+            class="pt-4"
+            v-model="complaint"
+            :warranty-types="warrantyTypes"
+            :reasons="reasons"
+            :type_comps="type_comps"
+            :culprits="culprits"
+            :executors="executors"
+            :executor_id="executors"
+            :reason_id="reasons"
+            :culprit_id="culprits"
+            :contractors="contractors"
+            :errors="validationErrors"
+            :chassises="chassises"
+            :sideCompanies="sideCompanies"
+        >
+        </component-write>
 
-<!--        <base-file-input-->
-<!--            v-model="complaint.files"-->
-<!--            :extensions="extensions"-->
-<!--            lable = "Прикрепить документы"-->
-<!--            :max-size="maxSize"-->
-<!--            :error-messages="validationErrors['attachments']"-->
 
-<!--        ></base-file-input>-->
-        </v-container>
+        <!--        <base-file-input-->
+        <!--            v-model="complaint.files"-->
+        <!--            :extensions="extensions"-->
+        <!--            lable = "Прикрепить документы"-->
+        <!--            :max-size="maxSize"-->
+        <!--            :error-messages="validationErrors['attachments']"-->
+
+        <!--        ></base-file-input>-->
 
 
     </base-dialog-action>
@@ -92,7 +93,10 @@ export default {
             culprits: [],
             executors: [],
             contractors: [],
-            chassises:[],
+
+            chassises: '',
+            sideCompanies: '',
+
             // providers:[],
 
             // файлы
@@ -114,7 +118,7 @@ export default {
 
                 status_id: 1,  /*статус в работе*/
                 files: [],
-                //chassises:[],
+
 
                 numb_pretension: '',    //№ ретензии
                 pretension_at: new Date().toISOString().substr(0, 10),  //дата претензии
@@ -124,6 +128,8 @@ export default {
                 numb_order: null,
                 vehicle: null,
                 chassises: null,
+                sideCompanies: null,
+
 
                 start_at: new Date().toISOString().substr(0, 10),
                 close_at: new Date().toISOString().substr(0, 10),
@@ -177,66 +183,51 @@ export default {
 
             formData.append('chassises', this.complaint.chassises ?? ' ');
 
-
-            // for (let i = 0; i < this.complaint.chassises.length; i++) {
-            //     formData.append('chassises' + '[' + i + ']', this.complaint.chassises[i]);
-            // };
-            //
-
-
+            formData.append('sideCompanies', this.complaint.sideCompanies ?? ' ');
 
 
             for (let i = 0; i < this.complaint.executor_id.length; i++) {
-                   formData.append('executor_id' + '[' + i + ']', this.complaint.executor_id[i]);
-               };
+                formData.append('executor_id' + '[' + i + ']', this.complaint.executor_id[i]);
+            }
+            ;
 
             for (let i = 0; i < this.complaint.reason_id.length; i++) {
                 formData.append('reason_id' + '[' + i + ']', this.complaint.reason_id[i]);
-            };
+            }
+            ;
 
             for (let i = 0; i < this.complaint.culprit_id.length; i++) {
                 formData.append('culprit_id' + '[' + i + ']', this.complaint.culprit_id[i]);
-            };
+            }
+            ;
 
 
             // attachments
             for (let i = 0; i < this.complaint.files.length; i++) {
-                formData.append('attachments'+'[' + i + ']', this.complaint.files[i]);
+                formData.append('attachments' + '[' + i + ']', this.complaint.files[i]);
 
-            };
+            }
+            ;
 
-            // api.call(endpoint('complaints.store'), this.complaint)
             api.call(endpoint('complaints.store'), formData)
                 .then(response => {
                     this.$emit('store-complaint');
                     this.close()
                 })
-                .catch(error =>{
+                .catch(error => {
                     this.validationErrors = error.response.data.errors
-                    })
-                .finally(()=>{
+                })
+                .finally(() => {
                     this.loading = false;
                 })
 
         },
-
-        // getCulprits(){
-        //     let arrCulprits = this.complaint.culprit_id.map(function (item) {
-        //         return item
-        //     }).join(', ')
-        //
-        //     provider = arrCulprits.includes('1');
-        //
-        // },
-
-
 
         close() {
             this.$emit('input', false);
 
 
         },
-
 
 
     }

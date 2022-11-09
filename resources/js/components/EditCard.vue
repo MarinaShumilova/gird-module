@@ -2,7 +2,7 @@
     <base-dialog-action
         v-if="showDialog"
         v-model="dialog"
-        max-width="800"
+        max-width="1200"
         persistent
         @confirmed="submit"
         :loading="loading"
@@ -22,12 +22,14 @@
                 :executors="executors"
                 :contractors="contractors"
                 :chassises="chassises"
+                :sideCompanies="sideCompanies"
                 :errors="validationErrors"
                 :executor_id="executor_id"
                 :reason_id="reason_id"
                 :culprit_id="culprit_id"
                 :providerCulprit="providerCulprit"
                 :tripExecutor="tripExecutor"
+                :type-side="sideCompSelect"
                 :type-reason="typeReason"
             >
 
@@ -71,6 +73,8 @@ export default {
                 this.executors = response.data.executors;
                 this.contractors = response.data.contractors;
                 this.chassises = response.data.chassises;
+                this.sideCompanies = response.data.sideCompanies;
+
                 this.complaint = response.data.complaint;
                 this.complaint.executor_id = response.data.executor_id;
                 this.complaint.reason_id = response.data.reason_id;
@@ -80,9 +84,13 @@ export default {
                 this.getCulprits();
                 this.getExecutors();
                 this.getTypeCulprits();
+                this.getTypeSide();
+
+
+
                 this.complaint.chassises = this.complaint.chassises.map(function (item) {
                     return item.number;
-                })
+                }).join(',');
 
                 this.showDialog = true;
 
@@ -105,6 +113,8 @@ export default {
             // providers:[],
             chassis:null,
 
+            chassises:'',
+            sideCompanies:'',
 
             complaint: {},  //объект с данными
 
@@ -117,6 +127,7 @@ export default {
             providerCulprit: false,
             tripExecutor: false,
             typeReason: false,
+            sideCompSelect:false,
 
 
         }
@@ -148,7 +159,7 @@ export default {
                 })
                 .catch(error => {
                     this.validationErrors = error.response.data.errors
-                    console.log(error)
+
                 })
                 .finally(() => {
                     this.loading = false;
@@ -163,7 +174,6 @@ export default {
 
             this.providerCulprit = arrCulprits.includes('1');
 
-
         },
 
         getTypeCulprits() {
@@ -172,6 +182,16 @@ export default {
             }).join(', ')
 
             this.typeReason = arrCulprits.includes('3');
+        },
+
+        getTypeSide() {
+            let arrExecutors = this.complaint.executor_id.map(function (item) {
+                return item
+            }).join(', ')
+
+            this.sideCompSelect = arrExecutors.includes('4');
+
+
         },
 
 

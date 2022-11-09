@@ -150,17 +150,15 @@
         <component-redress
             v-if="redressCreateDialog"
             v-model="redressCreateDialog"
-            :compId="id"
-        >
-
+            :compId="id">
         </component-redress>
 
         <component-event
             v-if="eventsCreateDialog"
             v-model="eventsCreateDialog"
-            :complaint_id="id"
-        >
+            :complaint_id="id">
         </component-event>
+
 
 
     </v-dialog>
@@ -201,6 +199,7 @@ export default {
                 this.culprits = response.data.culprits;
                 this.contractor_name = response.data.contractor_name;
                // this.provider_name = response.data.provider_name;
+               // this.sideCompanies = response.data.sideCompanies;
 
                 this.chassises = response.data.chassises;
                 this.complaint = response.data.complaint;
@@ -210,7 +209,12 @@ export default {
                 this.showDialog = true;
                 this.complaint.chassises = this.complaint.chassises.map(function (item) {
                     return item.number
+                }).join(', '),
+
+                this.complaint.sideCompanies = this.complaint.sideCompanies.map(function (item) {
+                    return item
                 }).join(', ')
+
 
 
             });
@@ -243,6 +247,7 @@ export default {
             redressCreateDialog: false,
             eventsCreateDialog:false,
 
+
         }
     },
 
@@ -256,8 +261,8 @@ export default {
         rows() {
             return [
                 {name:'Приказ:', value:this.complaint.numb_order},
-                {name:'Дата приказа:', value:this.complaint.order_at},
-                {name:'Дата заявки:', value:this.complaint.start_at },
+                {name:'Дата приказа:', value:this.complaint.order_at.replace(/^(\d+)-(\d+)-(\d+)$/, `$3.$2.$1`)},
+                {name:'Дата заявки:', value:this.complaint.start_at.replace(/^(\d+)-(\d+)-(\d+)$/, `$3.$2.$1`)},
                 {name:'Гарантийный приказ:', value:this.complaint.warranty_decree},
                 {name:'Гарантия:', value:this.warranty_type_name},
                 {name:'Статус:', value:this.type_comp_name},
@@ -266,7 +271,8 @@ export default {
                 {name:'Вид надстройки:', value:this.complaint.vehicle},
                 {name:'Устранение:', value:this.executor_id},
                 {name:'Командировка', value:this.complaint.tripTo},
-                {name:'Дата отгрузки шасси:', value:this.complaint.unload_at },
+                {name:'Сторонняя организация', value:this.complaint.sideCompanies},
+                {name:'Дата отгрузки шасси:', value:this.complaint.unload_at.replace(/^(\d+)-(\d+)-(\d+)$/, `$3.$2.$1`)},
                 {name:'Шасси:', value:this.complaint.chassises},
                 {name:'Виновник:', value:this.culprit_id},
                 {name:'Поставщик:', value:this.complaint.providers},
@@ -297,7 +303,6 @@ export default {
 
         openAddFileDialog() {
             this.addFileCreateDialog = true;
-
         },
         openSendFileDialog() {
             this.sendFileCreateDialog = true;
@@ -314,11 +319,6 @@ export default {
         openEventDialog() {
           this.eventsCreateDialog = true;
         },
-
-        // getColor(){
-        //
-        // },
-
 
 
         close() {

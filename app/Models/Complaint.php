@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\CommentComplaintController;
+use Gird\QueryFilter\QueryFilterable;
 use GirdBase\Models\Attachment;
 use GirdBase\Traits\Models\HasAttachments;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Complaint extends Model
 {
+    use QueryFilterable;
     use HasAttachments;
 
     use SoftDeletes;
@@ -115,6 +117,12 @@ class Complaint extends Model
     {
         return $this->hasMany(Chassis::class,'complaint_id', 'id');
     }
+
+    public function sideCompanies()
+    {
+        return $this->hasMany(SideCompany::class,'complaint_id', 'id');
+    }
+
 
 
     public function transfer()

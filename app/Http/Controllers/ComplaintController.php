@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Filter\Complaints\ComplaintFilter;
 use App\Models\ProviderComplaint;
+use App\Models\SideCompany;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Http\Requests\StoreComplaintPost;
@@ -18,92 +20,43 @@ use App\Models\TypeComp;
 use App\Models\WarrantyDecree;
 use App\Models\WarrantyType;
 use Illuminate\Http\Request;
-use PhpParser\Builder;
-use function Symfony\Component\Translation\t;
+
 
 
 class ComplaintController extends Controller
 {
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         $this->authorize('viewAny', Complaint::class);
-
-
-//        $request->itemsPerPage = 43;
-
         return response(
             Complaint::
-            when($request->input('data_expenses'), function ($q) use ($request) {
-                $q->whereHas('expenses', function ($q) use ($request) {
-
-                        $resultExp = $this->setMonth($request);
-                        $q->whereIn('start_at', $resultExp);
-                });
-
-            })->
-            when($request->input('search'), function ($q) use ($request) {
-                $q->where('numb_order', 'LIKE', '%'.$request->input('search').'%');
-
-            })->
-
-            when($request->input('status_filter'), function ($q) use ($request) {
-                $q->where('status_id', $request->input('status_filter'));
-            })->
-
-            when($request->input('warranty_types'), function ($q) use ($request) {
-                $q->where('warranty_type_id', $request->input('warranty_types'));
-            })
-                ->withCount([
-                    'expenses AS expense_sum' => function ($query) use ($request) {
-                        if ($request->has(['data_expenses'])) {
-                            $resultExp = $this->setMonth($request);
-                            $query->whereIn('start_at', $resultExp)->select(\DB::raw('sum(sum)'));
-
-
-                        } else {
-                            $query->select(\DB::raw('sum(sum)'));
-                        }
-
-                    },
-
-                ])
-                ->
                 with([
                     'reasons',
                     'culprits',
                     'contractor',
                     'transfer.attachments',
-
-
-
-                ])
+                ])->
+            withCount([
+                'expenses AS expense_sum' => function ($query) use ($request) {
+                    if ($request->has(['data_expenses'])) {
+                        $resultExp = $this->setMonth($request);
+                        $query->whereIn('start_at', $resultExp)->select(\DB::raw('sum(sum)'));
+                    } else {
+                        $query->select(\DB::raw('sum(sum)'));
+                    }
+                },
+            ])
                 ->orderBy('created_at', 'desc')
+                ->filter(new ComplaintFilter($request->query()))
                 ->paginate($request->itemsPerPage)
             );
-
-
-
-
-
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return array
-     */
     public function create()
     {
-        // $this->authorize('create', Complaint::class);
+        $this->authorize('create', Complaint::class);
 
-        //считать данные
+        //загрузить справочники
         return [
             'warranty_types' => WarrantyType::get(),
             'reason' => Reason::get(),
@@ -115,42 +68,24 @@ class ComplaintController extends Controller
             'warranty_decrees' => WarrantyDecree::get(),
             'attachment_rules' => AttachFile::rules(),
             'expenses' => Expense::get(),
-
-
         ];
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreComplaintPost $request)
     {
 
-
         $this->authorize('create', Complaint::class);
 
-
         $complaint = new Complaint($request->all());
-
-
         $complaint->status_id = 1;
-
-
         $complaint->save();
-
-        // dd($request->culprit_id);
 
 
         if ($request->has('attachments')) {
             foreach ($request->attachments as $file) {
                 $complaint->saveAttachment($file);
-
             };
         };
-
 
 
         if (($request->chassises) != null){
@@ -161,15 +96,12 @@ class ComplaintController extends Controller
         };
 
 
-//        if ($request->has('chassises')) {
-//            foreach ($request->chassises as $chassis) {
-//                $chassised = new Chassis();                          //создать строку в таблице
-//
-//                $chassised->number = $chassis;                      //обращаюсь к столбцу
-//                $chassised->complaint_id = $complaint->id;
-//                $chassised->save();
-//            };
-//        };
+        if (($request->sideCompanies) != null){
+            $sideComp = new SideCompany();
+            $sideComp->name = $request->sideCompanies;//обращаюсь к столбцу
+            $sideComp->complaint_id = $complaint->id;
+            $sideComp->save();
+        };
 
 
         if ($request->has('executor_id')) {
@@ -195,19 +127,10 @@ class ComplaintController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
-        //
-
         $complaint = Complaint::findOrFail($id);
-
-
 
         $this->authorize('view', $complaint);
 
@@ -221,17 +144,18 @@ class ComplaintController extends Controller
         $arrChassis = $complaint->chassises->pluck('number')->toArray();
         $complaint->chassises = $complaint->chassises->pluck('number');
 
+        $sideComp = $complaint->sideCompanies->pluck('name');
+        $complaint->sideCompanies = $complaint->sideCompanies->pluck('name');
+
+
+
         $contractor_name = $complaint->contractor->name;
-
        // $provider_name = optional($complaint->providers)->name;
-
         $warranty_type_name = $complaint->warranty_type->name;
 
        if($complaint->type_comp) {
            $type_comp_name = $complaint->type_comp->name;
        } else {$type_comp_name = null;}
-
-
 
         return [
             'complaint' => $complaint,
@@ -243,8 +167,7 @@ class ComplaintController extends Controller
             //'provider_name' => $provider_name,
             'warranty_type_name' => $warranty_type_name,
              'type_comp_name' => $type_comp_name,
-
-
+            'sideCompanies' => $sideComp,
 
         ];
 
@@ -268,8 +191,11 @@ class ComplaintController extends Controller
         $culprits = $complaint->culprits->pluck('id');
         $culprits->all();
 
-        $arrChassis = $complaint->chassises->pluck('number')->toArray();
-        $complaint->chassises = $complaint->chassises->pluck('number');
+        $strChassis = $complaint->chassises->pluck('number')->join(',');
+        $complaint->chassises = $complaint->chassises->pluck('number')->join(',');
+
+        $sideComp = $complaint->sideCompanies->pluck('name')->join(',');
+        $complaint->sideCompanies = $complaint->sideCompanies->pluck('name')->join(',');
 
 
         return [
@@ -281,7 +207,8 @@ class ComplaintController extends Controller
             'type_comps' => TypeComp::get(),
             'culprits' => Culprit::get(),
             'executors' => Executor::get(),
-            'chassises' => $arrChassis,
+            'chassises' => $strChassis,
+            'sideCompanies' => $sideComp,
             'contractors' => [$complaint->contractor],
             'providers' => ProviderComplaint::get(),
             'warranty_decrees' => WarrantyDecree::get(),
@@ -289,13 +216,6 @@ class ComplaintController extends Controller
         ];
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(StoreComplaintPost $request, $id)
     {
         // обращаемся в объект за id
@@ -321,8 +241,20 @@ class ComplaintController extends Controller
                'number' => $request->chassises,
                'complaint_id' => $complaint->id,
            ]);
-        }
+        };
 
+        $sideComp = SideCompany::firstWhere('complaint_id', $complaint->id);
+        if ($sideComp) {
+            $sideComp->update([
+                'name' => $request->sideCompanies,
+            ]);
+        }
+        else {
+            SideCompany::create([
+                'name' => $request->sideCompanies,
+                'complaint_id' => $complaint->id,
+            ]);
+        }
 
 
         $this->authorize('update', $complaint);

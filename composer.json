@@ -79,6 +79,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/tarashev/gird-base"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/gird-it/query-filter"
         }
     ]
 }

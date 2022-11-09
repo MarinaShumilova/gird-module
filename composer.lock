@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0175aab4f73bd79a5571620b4cc8e04c",
+    "content-hash": "84640afb8b41203cc929e64d78f46fb4",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -729,6 +729,36 @@
                 "issues": "https://github.com/tarashev/gird-base/issues"
             },
             "time": "2022-07-26T05:20:45+00:00"
+        },
+        {
+            "name": "gird/query-filter",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:gird-it/query-filter.git",
+                "reference": "8019d976c64becac88807d74bc528adbbcaa2565"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gird-it/query-filter/zipball/8019d976c64becac88807d74bc528adbbcaa2565",
+                "reference": "8019d976c64becac88807d74bc528adbbcaa2565",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Gird\\QueryFilter\\": "src/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Query filter for Eloquent models",
+            "support": {
+                "source": "https://github.com/gird-it/query-filter/tree/v1.0.0",
+                "issues": "https://github.com/gird-it/query-filter/issues"
+            },
+            "time": "2022-08-23T05:50:31+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

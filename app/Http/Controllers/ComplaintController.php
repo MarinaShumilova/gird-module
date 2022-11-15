@@ -54,7 +54,7 @@ class ComplaintController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Complaint::class);
+       // $this->authorize('create', Complaint::class);
 
         //загрузить справочники
         return [
@@ -210,7 +210,7 @@ class ComplaintController extends Controller
             'chassises' => $strChassis,
             'sideCompanies' => $sideComp,
             'contractors' => [$complaint->contractor],
-            'providers' => ProviderComplaint::get(),
+           'providers' => ProviderComplaint::get(),
             'warranty_decrees' => WarrantyDecree::get(),
             'complaint' => $complaint
         ];

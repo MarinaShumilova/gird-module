@@ -93,14 +93,9 @@ export default {
             api.call(endpoint('complaints.excel', {year: this.yearComplaint}))
                 .then(response=>{
 
-
-
                 })
 
         },
-
-
-
 
     }
 

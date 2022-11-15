@@ -26,19 +26,9 @@
             :errors="validationErrors"
             :chassises="chassises"
             :sideCompanies="sideCompanies"
+
         >
         </component-write>
-
-
-        <!--        <base-file-input-->
-        <!--            v-model="complaint.files"-->
-        <!--            :extensions="extensions"-->
-        <!--            lable = "Прикрепить документы"-->
-        <!--            :max-size="maxSize"-->
-        <!--            :error-messages="validationErrors['attachments']"-->
-
-        <!--        ></base-file-input>-->
-
 
     </base-dialog-action>
 
@@ -51,6 +41,7 @@
 import ComponentWrite from "./ComponentWrite";
 import BaseDialogAction from "gird-base-front/src/components/BaseDialogAction";
 import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
+import ComponentEvent from "./ComponentEvent";
 
 
 export default {
@@ -62,7 +53,7 @@ export default {
         },
 
     },
-    components: {ComponentWrite, BaseDialogAction, BaseFileInput},
+    components: {ComponentEvent,ComponentWrite, BaseDialogAction, BaseFileInput},
     /*Загрузить данные с базы*/
     created() {
         this.showDialog = false;
@@ -74,7 +65,6 @@ export default {
                 this.culprits = response.data.culprits;
                 this.executors = response.data.executors;
                 this.contractors = response.data.contractors;
-                // this.providers = response.data.providers;
                 this.maxSize = response.data.attachment_rules.max_size;
                 this.extensions = response.data.attachment_rules.extensions;
                 this.showDialog = true;
@@ -93,13 +83,8 @@ export default {
             culprits: [],
             executors: [],
             contractors: [],
-
             chassises: '',
             sideCompanies: '',
-
-            // providers:[],
-
-            // файлы
 
             extensions: [],
             maxSize: 0,
@@ -146,6 +131,7 @@ export default {
             provider: false,
 
 
+
         }
     },
 
@@ -170,10 +156,6 @@ export default {
             formData.append('numb_order', this.complaint.numb_order ?? ' ');
             formData.append('order_at', this.complaint.order_at);
             formData.append('contractor_id', this.complaint.contractor_id);
-
-            // if (this.complaint.provider_id)
-            //     formData.append('provider_id', this.complaint.provider_id);
-
             formData.append('warranty_type_id', this.complaint.warranty_type_id);
             formData.append('type_comp_id', this.complaint.type_comp_id);
 
@@ -188,26 +170,22 @@ export default {
 
             for (let i = 0; i < this.complaint.executor_id.length; i++) {
                 formData.append('executor_id' + '[' + i + ']', this.complaint.executor_id[i]);
-            }
-            ;
+            };
 
             for (let i = 0; i < this.complaint.reason_id.length; i++) {
                 formData.append('reason_id' + '[' + i + ']', this.complaint.reason_id[i]);
-            }
-            ;
+            };
 
             for (let i = 0; i < this.complaint.culprit_id.length; i++) {
                 formData.append('culprit_id' + '[' + i + ']', this.complaint.culprit_id[i]);
-            }
-            ;
+            };
 
 
             // attachments
             for (let i = 0; i < this.complaint.files.length; i++) {
                 formData.append('attachments' + '[' + i + ']', this.complaint.files[i]);
 
-            }
-            ;
+            };
 
             api.call(endpoint('complaints.store'), formData)
                 .then(response => {
@@ -225,7 +203,6 @@ export default {
 
         close() {
             this.$emit('input', false);
-
 
         },
 

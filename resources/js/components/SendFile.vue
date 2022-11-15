@@ -104,8 +104,7 @@
                                     v-model="redress"
                                     :arr-result="arrResult"
                                     :errors="errors"
-                                    @delete="this.getRedress"
-                                >
+                                    @delete="this.getRedress">
 
                                 </component-redress>
 

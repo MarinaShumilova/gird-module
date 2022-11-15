@@ -39,9 +39,11 @@ class EventController extends Controller
      */
     public function store(StoreEventPost $request, Complaint $complaint)
     {
+
         $this->authorize('create', EventComplaint::class);
 
         $event = new EventComplaint($request->all());
+
        // $event->event=$request->events;
         $event->save();
     }

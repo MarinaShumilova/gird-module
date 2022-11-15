@@ -10,6 +10,6 @@ class ComplaintWarrantyCondition implements QueryCondition
 
     public function apply(Builder $query, $value): Builder
     {
-        return $query->where('warranty_type_id','like', "$value%");
+        return $query->where('warranty_type_id', $value);
     }
 }

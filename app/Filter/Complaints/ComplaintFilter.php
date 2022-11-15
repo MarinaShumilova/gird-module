@@ -11,5 +11,7 @@ class ComplaintFilter extends QueryFilter
                 'data_expenses'=>ComplaintExpensesCondition::class,
                 'warranty_types'=>ComplaintWarrantyCondition::class,
                 'search'=>ComplaintSearchCondition::class,
+                'contractor_search'=>ComplaintContractorCondition::class,
+                'warranty_decree_filter'=>ComplaintWarrantyDecreeCondition::class,
     ];
 }

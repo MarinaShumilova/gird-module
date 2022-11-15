@@ -4,7 +4,7 @@
         v-model="dialog"
         max-width="1200"
         persistent
-        @confirmed="submit"
+        @confirmed="submitAll"
         :loading="loading"
 
     >
@@ -31,11 +31,23 @@
                 :tripExecutor="tripExecutor"
                 :type-side="sideCompSelect"
                 :type-reason="typeReason"
+                @revers="getReason"
             >
-
-<!--                -->
-
             </component-write>
+
+            <v-row dense v-show="vReason">
+                <v-col>
+                    <component-event
+                        v-model="eventData"
+                        :arr-result="arrResult"
+                        :errors="errors"
+                        @delete="this.getEvents">
+
+                    </component-event>
+                </v-col>
+            </v-row>
+
+
         </v-container>
 
     </base-dialog-action>
@@ -45,6 +57,7 @@
 
 import ComponentWrite from "./ComponentWrite";
 import BaseDialogAction from "gird-base-front/src/components/BaseDialogAction"
+import ComponentEvent from "./ComponentEvent";
 
 export default {
     name: "EditCard",
@@ -59,7 +72,7 @@ export default {
         },
 
     },
-    components: {ComponentWrite, BaseDialogAction},
+    components: {ComponentEvent, ComponentWrite, BaseDialogAction},
 
     //создаем массив данных комплайн
     created() {
@@ -85,8 +98,7 @@ export default {
                 this.getExecutors();
                 this.getTypeCulprits();
                 this.getTypeSide();
-
-
+                this.getEvents();
 
                 this.complaint.chassises = this.complaint.chassises.map(function (item) {
                     return item.number;
@@ -96,6 +108,7 @@ export default {
 
             });
 
+        this.getEvents();
 
     },
 
@@ -111,10 +124,20 @@ export default {
             executor_id: [],
             contractors: [],
             // providers:[],
-            chassis:null,
+            chassis: null,
 
-            chassises:'',
-            sideCompanies:'',
+            arrResult: [],
+
+            chassises: '',
+            sideCompanies: '',
+            vReason: true,
+            event_list:[],
+
+            eventData: {
+                complaint_id: this.id,
+                warranty: '',
+                prevention: '',
+            },
 
             complaint: {},  //объект с данными
 
@@ -122,12 +145,13 @@ export default {
             dialog: this.value,
             showDialog: false,
             validationErrors: {},
+            errors: {},
             loading: false,
 
             providerCulprit: false,
             tripExecutor: false,
             typeReason: false,
-            sideCompSelect:false,
+            sideCompSelect: false,
 
 
         }
@@ -138,16 +162,19 @@ export default {
         dialog(value) {
             this.$emit('input', value);
         },
-        //
+
 
     },
 
     methods: {
         /*Обновление базы, передаем id и сам объект с данными*/
+        submitAll() {
+            this.submit();
+            this.submitEvent();
+
+        },
         submit() {
             this.loading = true;
-
-
             api.call(endpoint('complaints.update', this.id), this.complaint)
                 .then(response => {
                     this.vehicle = response.data.complaint;
@@ -165,23 +192,27 @@ export default {
                     this.loading = false;
                 })
 
+
         },
 
         getCulprits() {
             let arrCulprits = this.complaint.culprit_id.map(function (item) {
                 return item
             }).join(', ')
-
             this.providerCulprit = arrCulprits.includes('1');
 
+        },
+
+        getReason(value) {
+            this.vReason = value
         },
 
         getTypeCulprits() {
             let arrCulprits = this.complaint.culprit_id.map(function (item) {
                 return item
             }).join(', ')
-
             this.typeReason = arrCulprits.includes('3');
+
         },
 
         getTypeSide() {
@@ -191,9 +222,7 @@ export default {
 
             this.sideCompSelect = arrExecutors.includes('4');
 
-
         },
-
 
         getExecutors() {
             let arrExecutors = this.complaint.executor_id.map(function (item) {
@@ -202,6 +231,26 @@ export default {
 
             this.tripExecutor = arrExecutors.includes('2');
         },
+
+        submitEvent() {
+            api.call(endpoint('complaints.events.store', this.id), this.eventData)
+                .then(response => {
+                    this.eventData.warranty = '';
+                    this.eventData.prevention = '';
+                    this.getEvents();
+                })
+                .catch(error => {
+                    this.errors = error.response.data.errors
+                });
+        },
+
+        getEvents() {
+            api.call(endpoint('complaints.events.index', this.id))
+                .then((response) => {
+                    this.arrResult = response.data;
+                });
+        },
+
 
 
 

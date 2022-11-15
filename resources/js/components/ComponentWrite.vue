@@ -233,15 +233,13 @@
                                     persistent-hint
                                     dense
                                     outlined>
-
                                 </v-text-field>
                             </v-col>
                         </v-row>
-
                     </v-col>
+
                 </v-row>
             </v-col>
-
 
             <v-col cols="3">
                 <v-textarea
@@ -266,10 +264,12 @@ import BaseDatePicker from "gird-base-front/src/components/BaseDatePicker";
 import BaseDateInputPicker from "gird-base-front/src/components/BaseDateInputPicker";
 import BaseFileInput from "gird-base-front/src/components/BaseFileInput";
 import ContractorSelect from "./ContractorSelect";
+import ComponentEvent from "./ComponentEvent";
 
 export default {
     name: "ComponentWrite",
-    components: {BaseDatePicker, BaseDateInputPicker, BaseFileInput, ContractorSelect},
+    components: {ComponentEvent, BaseDatePicker, BaseDateInputPicker, BaseFileInput,
+        ContractorSelect},
     props: {
         errors: {
             type: Object,
@@ -356,6 +356,7 @@ export default {
             complaint: this.value,          //переприсвоить value(работа с моделью)
 
             Calendar: null,
+            heightVehical:320,
             contractorSelect: false,
             providerSelect: false,
             sideCompSelect: false,
@@ -368,9 +369,31 @@ export default {
         }
 
     },
+    computed:{
+        // heightForm(){
+        //     if(this.setReason){
+        //         return this.heightVehical = 400}
+        // },
+
+
+    },
+    watch: {     //следить за изменением value
+        value: {
+            handler(value) {
+                this.complaint = value;
+            },
+            immediate: true,
+        },
+        setReason: {
+            handler: function (value) {
+                this.$emit('revers', value);
+            },
+            immediate: true,
+        }
+
+    },
+
     methods: {
-
-
         close() {
             this.$emit('input', false);
         },
@@ -387,6 +410,11 @@ export default {
             this.sideCompSelect = true;
         },
 
+        heightForm() {
+            if(this.setReason){
+                return this.heightVehical = 400}
+        },
+
         getCulprits() {
             let arrCulprits = this.complaint.culprit_id.map(function (item) {
                 return item
@@ -394,8 +422,6 @@ export default {
 
             this.setProvider = arrCulprits.includes('1');
             this.getReasons();
-
-
         },
 
         getExecutors() {
@@ -427,18 +453,7 @@ export default {
 
 
     },
-    watch: {     //следить за изменением value
-        value: {
-            handler(value) {
-                this.complaint = value;
-            },
-            immediate: true,
 
-
-        },
-
-
-    }
 
 }
 </script>

@@ -2,8 +2,7 @@
     <v-dialog
         v-if="showDialog"
         v-model="dialog"
-        max-width="1000"
-
+        max-width="800"
         persistent
     >
         <v-card
@@ -84,32 +83,11 @@
                             <span>Затраты</span>
                         </v-tooltip>
 
-                        <v-tooltip
-                            color="light-blue darken-4"
-                            top>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    icon
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    @click.stop="openEventDialog">
-                                    <v-icon
-                                        @mouseenter="iconColor.d4='light-blue darken'"
-                                        @mouseleave="iconColor.d4=''"
-                                        :color="iconColor.d4">
-                                        mdi-inbox-full-outline
-                                    </v-icon>
-                                </v-btn>
-                            </template>
-                            <span>Мероприятия</span>
-                        </v-tooltip>
-
 
 
 
                     </v-col>
-                    <v-divider
-                        vertical>
+                    <v-divider vertical>
 
                     </v-divider>
 
@@ -118,8 +96,54 @@
                             <v-row v-for="(row, index) in rows" :key="index">
                                 <v-col cols="4">{{ row.name }}</v-col>
                                 <v-col cols="8">{{ row.value }}</v-col>
-
                             </v-row>
+                            <br>
+
+                            <v-divider></v-divider>
+                            Мероприятия по гарантийному случаю:
+
+                            <v-col >
+                                <v-list>
+                                    <v-list-item
+                                        v-for="item in arrResult"
+                                        :key="item.id"
+                                        v-if="item.warranty != null">
+                                            <v-row class="pt-2" align-self="start">
+                                                <v-col cols="10" class="pt-2" align-self="start">
+                                                    {{ item.warranty}}
+                                                </v-col>
+                                                <v-col cols="2" class="pt-2" align-self="start">
+                                                    {{ item.created_at| date }}
+                                                </v-col>
+                                            </v-row>
+
+                                    </v-list-item>
+                                </v-list>
+
+                            </v-col>
+                            <v-divider></v-divider>
+                            Мероприятия на предотвращение:
+
+                            <v-col >
+                                <v-list>
+                                    <v-list-item
+                                        v-for="item in arrResult"
+                                        :key="item.id"
+                                        v-if="item.prevention != null">
+                                        <v-row class="pt-2" align-self="start">
+                                            <v-col cols="10">
+                                                {{ item.prevention }}
+                                            </v-col>
+                                            <v-col cols="2" class="pt-2" align-self="start">
+                                                {{ item.created_at| date }}
+                                            </v-col>
+                                        </v-row>
+                                    </v-list-item>
+                                </v-list>
+
+                            </v-col>
+
+
                         </v-card-text>
 
                     </v-col>
@@ -152,13 +176,6 @@
             v-model="redressCreateDialog"
             :compId="id">
         </component-redress>
-
-        <component-event
-            v-if="eventsCreateDialog"
-            v-model="eventsCreateDialog"
-            :complaint_id="id">
-        </component-event>
-
 
 
     </v-dialog>
@@ -215,7 +232,7 @@ export default {
                     return item
                 }).join(', ')
 
-
+                this.getEvents();
 
             });
 
@@ -239,6 +256,8 @@ export default {
             ],
             complaint: {},  //объект с данными
             dialog: this.value,
+
+            arrResult:[],
 
 
             addFileCreateDialog: false,   //прикрепить
@@ -265,7 +284,7 @@ export default {
                 {name:'Дата заявки:', value:this.complaint.start_at.replace(/^(\d+)-(\d+)-(\d+)$/, `$3.$2.$1`)},
                 {name:'Гарантийный приказ:', value:this.complaint.warranty_decree},
                 {name:'Гарантия:', value:this.warranty_type_name},
-                {name:'Статус:', value:this.type_comp_name},
+                {name:'Признание случая:', value:this.type_comp_name},
                 {name:'Контрагент:', value:this.contractor_name},
                 {name:'Причина гарантии:', value:this.reason_id},
                 {name:'Вид надстройки:', value:this.complaint.vehicle},
@@ -277,7 +296,9 @@ export default {
                 {name:'Виновник:', value:this.culprit_id},
                 {name:'Поставщик:', value:this.complaint.providers},
             ];
-        }
+        },
+
+
     },
 
     methods: {
@@ -301,6 +322,15 @@ export default {
                 });
         },
 
+        getEvents() {
+            api.call(endpoint('complaints.events.index', this.id))
+                .then((response) => {
+                    this.arrResult = response.data;
+
+                    console.log(this.arrResult)
+                });
+        },
+
         openAddFileDialog() {
             this.addFileCreateDialog = true;
         },
@@ -319,7 +349,6 @@ export default {
         openEventDialog() {
           this.eventsCreateDialog = true;
         },
-
 
         close() {
             this.$emit('input', false);

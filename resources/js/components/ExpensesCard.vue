@@ -90,7 +90,7 @@
                                 {{ item.sum }}
                             </v-list-item-title>
 
-                            <v-btn icon
+                            <v-btn icon v-show="showUser||showAccount"
                                    @click.stop="destroyExpense(item.id)"
                             >
                                 <v-icon small color="red">mdi-bucket</v-icon>

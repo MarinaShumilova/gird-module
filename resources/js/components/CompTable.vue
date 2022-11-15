@@ -14,13 +14,11 @@
                 >
                     <template v-slot:top>
                         <v-row class="justify-center">
-                            <v-col>
+                            <v-col class="pa-2">
                                 <component-filter
                                     class="filters"
                                     :status="statuses"
-                                    :type_comps="type_comps"
                                     :warranty_types="warranty_types"
-                                    :search="search"
                                     @change="getFilterComplaint"
                                 >
                                 </component-filter>
@@ -77,15 +75,6 @@
                                         </v-list-item-icon>
                                         <v-list-item-title>Прикрепить документы</v-list-item-title>
                                     </v-list-item>
-
-                                    <v-list-item v-show="showUser||showAccount" @click.stop="openEventsDialog">
-                                        <v-list-item-icon>
-                                            <v-icon right>mdi-inbox-full-outline</v-icon>
-                                        </v-list-item-icon>
-                                        <v-list-item-title>Мероприятия</v-list-item-title>
-                                    </v-list-item>
-
-
                                     <v-list-item v-show="showUser" v-if="editedRow.status_id === 1"
                                                  @click="exitComplaints(editedRow.id)">
                                         <v-list-item-icon>
@@ -177,16 +166,6 @@
                             @store-complaint="getComplaints"
                             @expenses-created="dialogRecord= false">
                         </look-record>
-
-                        <!--                        <component-redress-->
-                        <!--                            v-show="showUser||showAccount"-->
-                        <!--                            v-if="redressCreateDialog"-->
-                        <!--                            v-model="redressCreateDialog"-->
-                        <!--                            :compId="editedRow.id"-->
-                        <!--                        >-->
-
-                        <!--                        </component-redress>-->
-
 
                     </template>
                     <template v-slot:item.deleteEntry="{item}">
@@ -324,18 +303,11 @@
                                     </v-icon>
                                 </v-btn>
                             </template>
-                            <span style="color: #8e3939">
+                            <span style="color: #3d3132">
                               Добавить</span>
                         </v-tooltip>
 
                     </template>
-
-                    <!--                    <template #footer.prepend>-->
-                    <!--                        <span>-->
-                    <!--                        Сумма за период:{{ sumMonth|format}}-->
-                    <!--                        </span>-->
-
-                    <!--                    </template>-->
 
 
                 </base-data-table>
@@ -372,7 +344,6 @@ export default {
     mixins: [
         filtratable
     ],
-
 
     data() {
         return {
@@ -454,7 +425,7 @@ export default {
             statuses: [],/* статуса из таблицы Статус*/
             type_comps: [],
             warranty_types: [],
-            search:'',
+           // search:'',
             dataFilter: {},
 
         }
@@ -562,7 +533,6 @@ export default {
         },
 
         textStatus(status_id) {
-            // return  this.statuses.find(status => status.id === status_id).name;
             switch (status_id) {
                 case 1:
                     return 'В работе';
@@ -581,7 +551,6 @@ export default {
             api.call(endpoint('complaints.index', Object.assign({}, input, this.options)))
                 .then(response => {
                     this.complaints = response.data.data;
-
                     this.sumMonth = this.complaints.map(item => +item.expense_sum).reduce((prev, cur) => prev + cur);
                     this.makePagination(response.data);
                     this.getStatuses();

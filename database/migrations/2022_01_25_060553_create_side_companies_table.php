@@ -15,7 +15,7 @@ class CreateSideCompaniesTable extends Migration
     {
         Schema::create('side_companies', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
+            $table->text('name')->nullable();
             $table->unsignedBigInteger('complaint_id');
 
 

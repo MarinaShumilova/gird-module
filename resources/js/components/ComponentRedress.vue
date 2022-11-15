@@ -1,6 +1,6 @@
 <!--Компенсация-->
 <template>
-    <v-row>
+    <v-row dense>
         <v-col cols="6"
                v-show="showUser||showAccount">
             <v-menu
@@ -144,7 +144,6 @@ export default {
             showAccount: false,
 
             menu: false,
-            //errors: {},
             redress: this.value,
 
             scrollInvoked: 0,
@@ -171,8 +170,6 @@ export default {
         value(redress){
             this.redress = this.value;
         },
-
-
 
 
     },
@@ -247,7 +244,6 @@ export default {
             api.call(endpoint('complaints.redress.destroy', id))
                 .then(response => {
                     this.$emit("delete");
-                    //  this.getRedress();
                 })
         },
 

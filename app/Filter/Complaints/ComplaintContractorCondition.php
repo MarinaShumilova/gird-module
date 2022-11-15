@@ -5,11 +5,11 @@ namespace App\Filter\Complaints;
 use Gird\QueryFilter\QueryCondition;
 use Illuminate\Database\Eloquent\Builder;
 
-class ComplaintStatusCondition implements QueryCondition
+class ComplaintContractorCondition implements QueryCondition
 {
 
     public function apply(Builder $query, $value): Builder
     {
-        return $query->where('status_id', $value);
+        return $query->where('contractor_id', 'like' ,"$value%");
     }
 }

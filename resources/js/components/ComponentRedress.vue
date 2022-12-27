@@ -46,7 +46,6 @@
                 value="0"
                 dense
                 outlined
-
                 suffix="₽"
                 hint="компенсации">
             </v-text-field>

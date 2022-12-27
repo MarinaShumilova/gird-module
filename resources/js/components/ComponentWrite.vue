@@ -37,7 +37,6 @@
                             item-text="number"
                             label="№ Гарантийного приказа"
                             outlined
-                            type="number"
                             dense
                             hide-spin-buttons
                         ></v-text-field>
@@ -244,7 +243,7 @@
             <v-col cols="3">
                 <v-textarea
                     v-model="complaint.vehicle"
-                    auto-grow
+
                     item-text="name"
                     :error-messages="errors['vehicle']"
                     dense

@@ -106,7 +106,7 @@ export default {
 
 
                 numb_pretension: '',    //№ ретензии
-                pretension_at: new Date().toISOString().substr(0, 10),  //дата претензии
+                pretension_at: null,  //дата претензии
 
 
                 warranty_decree: '',
@@ -116,10 +116,11 @@ export default {
                 sideCompanies: null,
 
 
-                start_at: new Date().toISOString().substr(0, 10),
-                close_at: new Date().toISOString().substr(0, 10),
-                unload_at: new Date().toISOString().substr(0, 10),
-                order_at: new Date().toISOString().substr(0, 10),
+                // start_at: new Date().toISOString().substr(0, 10),
+                start_at: null,
+                close_at: null,
+                unload_at: null,
+                order_at: null,
 
             },
             dialog: this.value,
@@ -145,14 +146,13 @@ export default {
         submit() {
 
             this.loading = true;
-
             let formData = new FormData();
             formData.append('vehicle', this.complaint.vehicle ?? ' ');
             formData.append('providers', this.complaint.providers ?? ' ');
             formData.append('tripTo', this.complaint.tripTo ?? ' ');
 
-            formData.append('start_at', this.complaint.start_at);
-            formData.append('unload_at', this.complaint.unload_at);
+            formData.append('start_at', this.complaint.start_at ?? ' ');
+            formData.append('unload_at', this.complaint.unload_at ?? ' ');
             formData.append('numb_order', this.complaint.numb_order ?? ' ');
             formData.append('order_at', this.complaint.order_at);
             formData.append('contractor_id', this.complaint.contractor_id);

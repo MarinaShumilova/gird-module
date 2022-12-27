@@ -16,7 +16,7 @@ class CreateComplaintsTable extends Migration
         Schema::create('complaints', function (Blueprint $table) {
             $table->id();
 
-            $table->date('start_at');
+            $table->date('start_at')->nullable();
             $table->date('close_at')->nullable();
             $table->softDeletes();
 
@@ -28,7 +28,7 @@ class CreateComplaintsTable extends Migration
 
             $table->date('order_at')->comment('дата приказа');
 
-            $table->date('unload_at')->comment('дата отгрузки');
+            $table->date('unload_at')->nullable()->comment('дата отгрузки');
 
 
 

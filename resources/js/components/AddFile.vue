@@ -210,7 +210,7 @@ export default {
 
             api.call(endpoint('complaints.attachments.store', this.compId), formData)
                 .then(response => {
-                    this.files = null;
+                    this.attachments = [];
                     this.getAttachment();
                 })
                 .catch(error => {

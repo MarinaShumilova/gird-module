@@ -15,7 +15,7 @@ class CreateChassisTable extends Migration
     {
         Schema::create('chassis', function (Blueprint $table) {
             $table->id();
-            $table->string('number')->unique();
+            $table->string('number')->nullable();
             $table->unsignedBigInteger('complaint_id');
 
 

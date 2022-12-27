@@ -268,7 +268,7 @@
 
                             </v-tooltip>
 
-                            <!--                                                если виновна другая сторона-->
+<!--                                                                            если виновна другая сторона-->
                             <v-tooltip right v-if="item.transfer && item.transfer.attachments.length">
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-icon
@@ -426,7 +426,7 @@ export default {
             type_comps: [],
             warranty_types: [],
            // search:'',
-            dataFilter: {},
+            filters: {},
 
         }
     },
@@ -525,10 +525,10 @@ export default {
 
         getFilterComplaint(value) {
 
-            this.dataFilter = value;
-            if (value !== undefined) {
-                this.getComplaints(value);
-            }
+            this.filters= value;
+            // if (value !== undefined) {
+            //     this.getComplaints(value);
+            // }
 
         },
 
@@ -548,7 +548,7 @@ export default {
 
         /*  Получить данные*/
         getComplaints(input) {
-            api.call(endpoint('complaints.index', Object.assign({}, input, this.options)))
+            api.call(endpoint('complaints.index', this.params))
                 .then(response => {
                     this.complaints = response.data.data;
                     this.sumMonth = this.complaints.map(item => +item.expense_sum).reduce((prev, cur) => prev + cur);

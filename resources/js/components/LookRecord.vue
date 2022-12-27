@@ -327,7 +327,6 @@ export default {
                 .then((response) => {
                     this.arrResult = response.data;
 
-                    console.log(this.arrResult)
                 });
         },
 

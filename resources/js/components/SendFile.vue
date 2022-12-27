@@ -34,6 +34,7 @@
                     <v-col cols="8" class="pa-1">
                         <v-row>
                             <v-col cols="4" v-show="showUser">
+
                                 <base-date-picker
                                     v-model="redirectFile.transfer_at"
                                     :error-messages="validationErrors['transfer_at']"
@@ -43,30 +44,32 @@
                                 </base-date-picker>
                             </v-col>
 
-                            <v-col cols="8">
-                                <v-textarea
-                                    v-model="redirectFile.comment"
-                                    :error-messages="validationErrors['comments']"
-                                    dense
-                                    label="Комментарии"
-                                    outlined
-                                    auto-grow
-                                    :disabled="!showUser"
-                                    rows="1">
-                                </v-textarea>
+                            <v-col cols="8" class="pa-0">
+                                <base-file-input
+                                    v-show="showUser||showAccount"
+                                    v-model="attachments"
+                                    :extensions="extensions"
+                                    label="Прикрепить документы"
+                                    :max-size="maxSize"
+                                    :error-messages="validationErrors['attachments']"
+                                    :clearable="true"
+                                ></base-file-input>
+
                             </v-col>
 
                         </v-row>
 
-                        <v-col class="pa-0" cols="11">
-                            <base-file-input
-                                v-show="showUser||showAccount"
-                                v-model="attachments"
-                                :extensions="extensions"
-                                label="Прикрепить документы"
-                                :max-size="maxSize"
-                                :error-messages="validationErrors['attachments']"
-                            ></base-file-input>
+                        <v-col class="pa-0" cols="12">
+                            <v-textarea
+                                v-model="redirectFile.comment"
+                                :error-messages="validationErrors['comments']"
+                                dense
+                                label="Общий комментарий"
+                                outlined
+                                auto-grow
+                                :disabled="!showUser"
+                                rows="1">
+                            </v-textarea>
                         </v-col>
                         <v-col class="pa-0">
                             <v-card-actions v-show="showUser||showAccount">
@@ -80,10 +83,7 @@
                                     Сохранить
                                 </v-btn>
                             </v-card-actions>
-
-
                         </v-col>
-
 
                         <v-row>
                             <v-col cols="12" class="pa-5">
@@ -108,11 +108,8 @@
 
                                 </component-redress>
 
-
                             </v-col>
-
                         </v-row>
-
                     </v-col>
 
 
@@ -216,9 +213,9 @@ export default {
             showAccount: false,
 
             Calendar: null,
-            // transfer_at: new Date().toISOString().substr(0, 10),
+            transfer_at: new Date().toISOString().substr(0, 10),
             extensions: [],
-            comment: '',
+            comments: [],
             attachments: [],
             files: [],
             idTransfer: 0,
@@ -312,8 +309,6 @@ export default {
         getTransfer() {
             api.call(endpoint('complaints.transfer.index', this.compId))
                 .then((response) => {
-                    //this.redirectFile.transfer_at = response.data.transfer_at;
-
                     this.redirectFile.comment = response.data.comment;
                     this.files = response.data.attachments;
                     this.idTransfer = response.data.id;
@@ -362,6 +357,8 @@ export default {
 
             api.call(endpoint('complaints.transfer.store', this.compId), formData)
                 .then(response => {
+                    this.attachments = [];
+                    this.redress.redress_at = null;
                 })
                 .catch(error => {
                     this.validationErrors = error.response.data.errors
@@ -379,6 +376,7 @@ export default {
                 .then(response => {
                     this.redress.expenses_redress = '';
                     this.redress.comment = '';
+                    this.redress.redress_at = null;
                 })
                 .catch(error => {
                     this.errors = error.response.data.errors
@@ -412,10 +410,7 @@ export default {
 
         getParamForm() {
             if (!this.showUser) {
-                //   this.paramForm.name = 'Перенаправленные документы';
-                this.paramForm.widthForm = '900';
-                //this.paramForm.smCol = '9';
-
+                this.paramForm.widthForm = '1000';
             }
 
 

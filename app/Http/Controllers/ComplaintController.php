@@ -276,6 +276,15 @@ class ComplaintController extends Controller
         // $complaint = Complaint::findOrFail($id);
 
         $complaint->delete();
+        foreach($complaint->expenses as $item) {
+            $item->delete();
+        }
+        foreach($complaint->redress as $item) {
+            $item->delete();
+        }
+
+
+
     }
 
     public function contractors(Request $request)

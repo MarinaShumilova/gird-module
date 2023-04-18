@@ -75,21 +75,39 @@
                                         </v-list-item-icon>
                                         <v-list-item-title>Прикрепить документы</v-list-item-title>
                                     </v-list-item>
-                                    <v-list-item v-show="showUser" v-if="editedRow.status_id === 1"
-                                                 @click="exitComplaints(editedRow.id)">
+<!--                                    <v-list-item v-show="showUser" v-if="editedRow.status_id === 1"-->
+<!--                                                 @click="exitComplaints(editedRow.id)">-->
+<!--                                        <v-list-item-icon>-->
+<!--                                            <v-icon right>mdi-close</v-icon>-->
+<!--                                        </v-list-item-icon>-->
+<!--                                        <v-list-item-title>Завершить</v-list-item-title>-->
+<!--                                    </v-list-item>-->
+
+<!--                                    <v-list-item v-else-->
+<!--                                                 @click="returnComplaints(editedRow.id)">-->
+<!--                                        <v-list-item-icon>-->
+<!--                                            <v-icon right>mdi-share</v-icon>-->
+<!--                                        </v-list-item-icon>-->
+<!--                                        <v-list-item-title left>Восстанавить</v-list-item-title>-->
+<!--                                    </v-list-item>-->
+
+                                    <v-list-item v-show="showUser" @click.stop="openDataCloseDialog"
+                                                >
                                         <v-list-item-icon>
                                             <v-icon right>mdi-close</v-icon>
                                         </v-list-item-icon>
                                         <v-list-item-title>Завершить</v-list-item-title>
                                     </v-list-item>
 
-                                    <v-list-item v-else
+                                    <v-list-item
                                                  @click="returnComplaints(editedRow.id)">
                                         <v-list-item-icon>
                                             <v-icon right>mdi-share</v-icon>
                                         </v-list-item-icon>
                                         <v-list-item-title left>Восстанавить</v-list-item-title>
                                     </v-list-item>
+
+
 
 
                                 </v-list-item-group>
@@ -166,6 +184,15 @@
                             @store-complaint="getComplaints"
                             @expenses-created="dialogRecord= false">
                         </look-record>
+
+                        <component-close
+                            v-if="dialogDataClose"
+                            v-model="dialogDataClose"
+                            @closeDialog="closeFormMenu"
+                            @data-close="GetDataClose"
+                        >
+                        </component-close>
+
 
                     </template>
                     <template v-slot:item.deleteEntry="{item}">
@@ -330,6 +357,7 @@ import ComponentComment from "./ComponentComment";
 import ComponentFilter from "./ComponentFilter";
 import ComponentRedress from "./ComponentRedress";
 import ComponentEvent from "./ComponentEvent";
+import ComponentClose from "./ComponentClose";
 
 
 export default {
@@ -337,7 +365,8 @@ export default {
         ComponentFilter,
         AddCard, ExpensesCard, SendFile,
         AddFile, BaseMonthPicker, EditCard, LookRecord,
-        BaseDataTable, ComponentComment, ComponentRedress, ComponentEvent,
+        BaseDataTable, ComponentComment, ComponentRedress,
+        ComponentEvent,ComponentClose,
     },
 
 
@@ -418,6 +447,7 @@ export default {
             dialogEdit: false,     /*редактировать запись*/
             dialogRecord: false,     /*редактировать запись*/
 
+            dialogDataClose:false,
 
             rowComplaint: {},
             pagination: {},
@@ -427,7 +457,7 @@ export default {
             warranty_types: [],
            // search:'',
             filters: {},
-
+            data_close:'',
         }
     },
     filters: {
@@ -476,12 +506,21 @@ export default {
         openComponentLookRecord(id) {     //передать id в компонент
             this.dialogRecord = true;
             this.rowComplaint.id = id;
+        },
 
+        GetDataClose(dataClose){
+            this.data_close = dataClose;
+            this.exitComplaints(this.editedRow.id);
+            this.dialogDataClose = false;
         },
 
         openComponentComment(id) {
             this.commentsCreateDialog = true;
             this.rowComplaint.id = id;
+        },
+
+        openDataCloseDialog(){
+            this.dialogDataClose = true;
         },
 
         openAddFileDialog(id) {
@@ -517,7 +556,7 @@ export default {
                 case 1:
                     return 'blue lighten-1';
                 case 2:
-                    return 'teal lighten-1';
+                    return 'red';
 
             }
 
@@ -598,7 +637,7 @@ export default {
         },
         /* завершить */
         exitComplaints(id) {
-            api.call(endpoint('complaints.finish', id))
+            api.call(endpoint('complaints.finish', id), {dataClose: this.data_close})
                 .then((response => {
                     this.getComplaints();
                 }))

@@ -15,6 +15,7 @@ class FirmsTableSeeder extends Seeder
         $firm = [
             'Мизатеф',
             'ГАФ',
+            'ЗСТ'
         ];
 
         foreach ($firm as $f){

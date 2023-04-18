@@ -25,7 +25,6 @@
                             :error-messages="errors['comment']"
                             rows="1"
                             auto-grow
-
                             dense>
                         </v-textarea>
                     </v-col>
@@ -55,8 +54,6 @@
                                         hide-details
                                         rows="1"
                                         dense
-
-
                                         outlined
                                         :value="item.comment">
                                     </v-textarea>

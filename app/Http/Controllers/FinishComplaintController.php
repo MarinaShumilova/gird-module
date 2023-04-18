@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 
 class FinishComplaintController extends Controller
 {
-    public function finish(Complaint $complaint)
+    public function finish(Request $request, Complaint $complaint)
     {
         $complaint->status_id = 2;
-        $complaint->close_at = Carbon::now();
+        $complaint->close_at = $request['dataClose'];
         $complaint->save();
 
     }

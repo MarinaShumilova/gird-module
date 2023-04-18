@@ -300,7 +300,7 @@ class ComplaintController extends Controller
     {
 
         $complaints = Complaint::
-        whereYear('start_at', $request->input('year'))
+        whereYear('pretension_at', $request->input('year'))
             ->
             with([
                 'reasons',
@@ -357,8 +357,8 @@ class ComplaintController extends Controller
 
         for ($i = 0; $i < $complaints->count(); $i++) {
 
-            $start_at = strtotime($complaints[$i]->start_at);
-            $start_date = date('d.m.Y', $start_at);
+            $pretension_at = strtotime($complaints[$i]->pretension_at);
+            $pretension_at = date('d.m.Y', $pretension_at);
 
             $close_at = strtotime($complaints[$i]->close_at);
             $close_date = date('d.m.Y', $close_at);
@@ -368,7 +368,7 @@ class ComplaintController extends Controller
 
 
             $sheet->setCellValue('A' . ($i + 2), $complaints[$i]->id)->getColumnDimension('A');
-            $sheet->setCellValue('B' . ($i + 2), $start_date)->getColumnDimension('B');
+            $sheet->setCellValue('B' . ($i + 2), $pretension_at)->getColumnDimension('B');
             $sheet->setCellValue('C' . ($i + 2), $close_date)->getColumnDimension('C');
             $sheet->setCellValue('D' . ($i + 2), $complaints[$i]->numb_order)->getColumnDimension('D');
             $sheet->setCellValue('E' . ($i + 2), $complaints[$i]->warranty_decree)->getColumnDimension('E');

@@ -1,7 +1,8 @@
-const ru =
+const title =
     {
+
 
     }
 
-export default ru;
+export default title;
 

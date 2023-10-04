@@ -75,22 +75,6 @@
                                         </v-list-item-icon>
                                         <v-list-item-title>Прикрепить документы</v-list-item-title>
                                     </v-list-item>
-<!--                                    <v-list-item v-show="showUser" v-if="editedRow.status_id === 1"-->
-<!--                                                 @click="exitComplaints(editedRow.id)">-->
-<!--                                        <v-list-item-icon>-->
-<!--                                            <v-icon right>mdi-close</v-icon>-->
-<!--                                        </v-list-item-icon>-->
-<!--                                        <v-list-item-title>Завершить</v-list-item-title>-->
-<!--                                    </v-list-item>-->
-
-<!--                                    <v-list-item v-else-->
-<!--                                                 @click="returnComplaints(editedRow.id)">-->
-<!--                                        <v-list-item-icon>-->
-<!--                                            <v-icon right>mdi-share</v-icon>-->
-<!--                                        </v-list-item-icon>-->
-<!--                                        <v-list-item-title left>Восстанавить</v-list-item-title>-->
-<!--                                    </v-list-item>-->
-
                                     <v-list-item v-show="showUser" @click.stop="openDataCloseDialog"
                                                 >
                                         <v-list-item-icon>
@@ -296,7 +280,7 @@
                             </v-tooltip>
 
 <!--                                                                            если виновна другая сторона-->
-                            <v-tooltip right v-if="item.transfer && item.transfer.attachments.length">
+                            <v-tooltip right v-if="item.transfer && (item.transfer.attachments.length)">
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-icon
                                         small

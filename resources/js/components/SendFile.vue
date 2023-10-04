@@ -29,14 +29,16 @@
                         <v-card-title class="justify-center">
                             Документы
                         </v-card-title>
+                        <v-list-item-subtitle v-show="!emptyFile">
+                            Дата перенаправления: {{this.redirectFile.transfer_at| date}}
+                        </v-list-item-subtitle>
                     </v-col>
 
                     <v-col cols="8" class="pa-1">
                         <v-row>
                             <v-col cols="4" v-show="showUser">
-
                                 <base-date-picker
-                                    v-model="redirectFile.transfer_at"
+                                    v-model="transfer_at"
                                     :error-messages="validationErrors['transfer_at']"
                                     outlined
                                     dense
@@ -54,7 +56,6 @@
                                     :error-messages="validationErrors['attachments']"
                                     :clearable="true"
                                 ></base-file-input>
-
                             </v-col>
 
                         </v-row>
@@ -128,6 +129,7 @@
                                         >
                                             <v-list-item-title>{{ item.name }}
                                                 <v-divider></v-divider>
+                                                <h6 style="text-align:center">{{item.created_at| date}}</h6>
                                             </v-list-item-title>
                                             <v-btn
                                                 :href="item.url" target="_blank"
@@ -141,14 +143,12 @@
                                             >
                                                 <v-icon small color="red">mdi-bucket</v-icon>
                                             </v-btn>
+
                                         </v-list-item>
                                     </v-list>
                                 </v-card>
                             </v-col>
-
-
                         </v-row>
-
                     </v-col>
 
                     <v-col class="pa-0" cols="8">
@@ -211,15 +211,17 @@ export default {
             arrResult: [],
             showUser: false,
             showAccount: false,
+            date: new Date().toISOString().substr(0, 7),
 
             Calendar: null,
-            transfer_at: new Date().toISOString().substr(0, 10),
+            transfer_at: null,
             extensions: [],
             comments: [],
             attachments: [],
             files: [],
             idTransfer: 0,
             idComponent: 0,
+
 
             redress: {
                 redress_at: null,
@@ -229,7 +231,7 @@ export default {
             },
 
             redirectFile: {
-                transfer_at: new Date().toISOString().substr(0, 10),
+                transfer_at: null,
                 complaint_id: this.compId,
                 comment: '',
             },
@@ -272,7 +274,6 @@ export default {
 
 
     created() {
-
         this.showDialog = false;
         api.call(endpoint('complaints.transfer.create', this.compId))
             .then((response) => {
@@ -280,7 +281,6 @@ export default {
                 this.extensions = response.data.attachment_rules.extensions;
                 this.getTransfer();
                 this.showDialog = true;
-
 
             });
         this.showUser = this.returnUser();
@@ -312,7 +312,7 @@ export default {
                     this.redirectFile.comment = response.data.comment;
                     this.files = response.data.attachments;
                     this.idTransfer = response.data.id;
-
+                    this.redirectFile.transfer_at = response.data.transfer_at;
                 });
         },
         getRedress() {
@@ -346,7 +346,7 @@ export default {
         submit() {
             this.loading = true;
             let formData = new FormData();
-            formData.append('transfer_at', this.redirectFile.transfer_at ?? ' ');
+            formData.append('transfer_at', this.transfer_at ?? this.date);
             formData.append('complaint_id', this.redirectFile.complaint_id);
             formData.append('comment', this.redirectFile.comment ?? ' ');
             // attachments
@@ -366,6 +366,7 @@ export default {
                 .finally(() => {
                     this.getTransfer();
                     this.loading = false;
+                    this.transfer_at = null;
 
                 })
         },
@@ -410,9 +411,8 @@ export default {
 
         getParamForm() {
             if (!this.showUser) {
-                this.paramForm.widthForm = '1000';
+                this.paramForm.widthForm = '1200';
             }
-
 
             return this.paramForm;
         },

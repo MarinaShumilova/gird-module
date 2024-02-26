@@ -85,7 +85,7 @@
                             :key="item.id"
                         >
                             <v-list-item-title>
-                                <span class="text-caption">{{ item.start_at }}</span>
+                                <span class="text-caption">{{ item.start_at }}</span> {{yearExpense}}
                                 <v-divider></v-divider>
                                 {{ item.sum }}
                             </v-list-item-title>
@@ -174,6 +174,8 @@ export default {
             monthStr: '',
 
             nameMonth: [],
+            yearExpense:'',
+
 
 
             showUser: false,
@@ -215,7 +217,9 @@ export default {
                 .then((response) => {
                     this.expenses = response.data;
 
+
                     this.expenses = this.expenses.map(function (item) {
+
                         let str = item.start_at;
                         let mnt = '';
                         mnt = new Date(str);
@@ -226,10 +230,13 @@ export default {
                         });
                         let res = '';
                         res = DataFormat.format(mnt);
-                        let result = res[0].toUpperCase() + res.slice(1);
+
+
+                        let result = res[0].toUpperCase() + res.slice(1) + ' - ' +  mnt.getFullYear();
 
                         item.start_at = result;
                         return item;
+
 
                     });
 

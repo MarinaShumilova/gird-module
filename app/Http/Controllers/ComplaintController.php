@@ -35,6 +35,9 @@ class ComplaintController extends Controller
                     'culprits',
                     'contractor',
                     'transfer.attachments',
+                    'chassises' => function($query){
+                    $query->select('id', 'number');
+                    },
                 ])->
             withCount([
                 'expenses AS expense_sum' => function ($query) use ($request) {

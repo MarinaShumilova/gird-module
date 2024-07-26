@@ -9,11 +9,20 @@
             </contractor-select>
         </v-col>
         <v-col
-            cols="2">
+            cols="1">
             <v-text-field
                 v-model="filter.search"
-                append-icon="mdi-magnify"
-                label="Поиск приказа"
+                label="Приказ"
+                dense
+                hide-details
+                outlined
+            ></v-text-field>
+        </v-col>
+        <v-col
+            cols="1">
+            <v-text-field
+                v-model="filter.chassis_filter"
+                label="Шасси"
                 dense
                 hide-details
                 outlined
@@ -151,6 +160,7 @@ export default {
                 search: '',         /*Поиск*/
                 contractor_search: '',
                 warranty_decree_filter:'',
+                chassis_filter:'',
             },
             menu: false,
             date: ' ',

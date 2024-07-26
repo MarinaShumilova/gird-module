@@ -13,5 +13,6 @@ class ComplaintFilter extends QueryFilter
                 'search'=>ComplaintSearchCondition::class,
                 'contractor_search'=>ComplaintContractorCondition::class,
                 'warranty_decree_filter'=>ComplaintWarrantyDecreeCondition::class,
+                'chassis_filter'=> ComplaintChassisCondition::class,
     ];
 }

@@ -56,8 +56,9 @@
             ></v-select>
         </v-col>
 
+<!--        изменения колонки на 1-->
         <v-col
-            cols="2">
+            cols="1">
             <v-select
                 v-model="filter.warranty_types"
                 item-value="id"
@@ -68,6 +69,15 @@
                 label="Статус гарантии"
                 clearable
             ></v-select>
+        </v-col>
+        <v-col
+        cols = '1'>
+            <v-text-field
+                v-model="filter.commentstatuses_filter"
+                label="Комментарий"
+                dense
+                outlined
+            ></v-text-field>
         </v-col>
         <v-col cols="2">
             <v-menu
@@ -161,6 +171,7 @@ export default {
                 contractor_search: '',
                 warranty_decree_filter:'',
                 chassis_filter:'',
+                commentstatuses_filter:'',
             },
             menu: false,
             date: ' ',

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Filter\Complaints\ComplaintFilter;
+use App\Models\CommentComplaint;
+use App\Models\CommentStatus;
 use App\Models\ProviderComplaint;
 use App\Models\SideCompany;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -28,6 +30,12 @@ class ComplaintController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewAny', Complaint::class);
+
+        $hasSorting = $request->has(['sortBy', 'sortDesc']);
+
+
+
+
         return response(
             Complaint::
                 with([
@@ -35,6 +43,7 @@ class ComplaintController extends Controller
                     'culprits',
                     'contractor',
                     'transfer.attachments',
+                    'commentstatuses',
                     'chassises' => function($query){
                     $query->select('id', 'number');
                     },
@@ -49,10 +58,12 @@ class ComplaintController extends Controller
                     }
                 },
             ])
-                ->orderBy('created_at', 'desc')
+                ->orderBy('pretension_at', 'desc')
                 ->filter(new ComplaintFilter($request->query()))
                 ->paginate($request->itemsPerPage)
             );
+
+
     }
 
     public function create()
@@ -71,6 +82,8 @@ class ComplaintController extends Controller
             'warranty_decrees' => WarrantyDecree::get(),
             'attachment_rules' => AttachFile::rules(),
             'expenses' => Expense::get(),
+            'commentstatuses'=> CommentStatus::get(),
+
         ];
     }
 

@@ -104,9 +104,15 @@ class Complaint extends Model
     }
 
 
+
     public function comments(){
       return $this->hasMany(CommentComplaint::class,'complaint_id','id');
     }
+
+    public function commentstatuses(){
+        return $this->hasMany(CommentStatus::class,'complaint_id','id');
+    }
+
 
     public function events(){
        return $this->hasMany(EventComplaint::class,'complaint_id', 'id');

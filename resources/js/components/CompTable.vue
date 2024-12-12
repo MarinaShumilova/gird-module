@@ -41,6 +41,13 @@
                         </span>
                     </template>
 
+                    <template v-slot:item.commentstatuses = "{item}">
+                        <span v-for = "commentstatus in item.commentstatuses">
+                            {{commentstatus.comment}}
+                        </span>
+
+                    </template>
+
 
                     <template #footer.prepend>
                         <!--    всплывающее меню-->
@@ -75,6 +82,13 @@
                                         </v-list-item-icon>
                                         <v-list-item-title>Прикрепить документы</v-list-item-title>
                                     </v-list-item>
+                                    <v-list-item v-show="showUser" @click.stop="openAddCommentStatus">
+                                        <v-list-item-icon>
+                                            <v-icon right>mdi-comment-multiple-outline</v-icon>
+                                        </v-list-item-icon>
+                                        <v-list-item-title>Комментарий</v-list-item-title>
+                                    </v-list-item>
+
                                     <v-list-item v-show="showUser" @click.stop="openDataCloseDialog"
                                                 >
                                         <v-list-item-icon>
@@ -115,6 +129,15 @@
                             :complaint_id="rowComplaint.id"
                             @close-comments="closeFormMenu"
                         ></component-comment>
+
+                        <component-comment-status
+                            v-if="commentStatusCreateDialog"
+                            v-model="commentStatusCreateDialog"
+                            v-show="showUser||showAccount"
+                            :complaint_id="editedRow.id"
+                            @close-commentstatus="closeFormMenu">
+
+                        </component-comment-status>
 
                         <!--    перенаправить -->
                         <send-file
@@ -342,6 +365,7 @@ import ComponentFilter from "./ComponentFilter";
 import ComponentRedress from "./ComponentRedress";
 import ComponentEvent from "./ComponentEvent";
 import ComponentClose from "./ComponentClose";
+import ComponentCommentStatus from "./ComponentCommentStatus";
 
 
 export default {
@@ -350,7 +374,7 @@ export default {
         AddCard, ExpensesCard, SendFile,
         AddFile, BaseMonthPicker, EditCard, LookRecord,
         BaseDataTable, ComponentComment, ComponentRedress,
-        ComponentEvent,ComponentClose,
+        ComponentEvent,ComponentClose,ComponentCommentStatus,
     },
 
 
@@ -397,6 +421,7 @@ export default {
                 {text: 'Гарантийный приказ', value: 'warranty_decree'},
                 {text: 'Контрагент', value: 'contractor.name'},
                 {text: 'Причина ГС', value: 'reasons'},
+                {text: 'Комментарий', value:'commentstatuses'},
                 {text: 'Виновная сторона', value: 'culprits'},
                 {text: 'Затраты', value: 'expense_sum', cellClass: 'text-no-wrap'},
 
@@ -417,6 +442,7 @@ export default {
             eventsCreateDialog: false,
 
             commentsCreateDialog: false,
+            commentStatusCreateDialog:false,//комментарий
 
             sendFileCreateDialog: false,  //перенаправить
             addFileCreateDialog: false,   //прикрепить
@@ -439,6 +465,7 @@ export default {
             statuses: [],/* статуса из таблицы Статус*/
             type_comps: [],
             warranty_types: [],
+            commentstatuses:[],
            // search:'',
             filters: {},
             data_close:'',
@@ -511,6 +538,12 @@ export default {
             this.addFileCreateDialog = true;
             this.rowComplaint.id = id;
         },
+
+        openAddCommentStatus(id){
+            this.commentStatusCreateDialog = true;
+            this.rowComplaint.id = id;
+        },
+
         openSendFileDialog(id) {
             this.sendFileCreateDialog = true;
             this.rowComplaint.id = id;
@@ -538,9 +571,9 @@ export default {
         getColor(status_id) {
             switch (status_id) {
                 case 1:
-                    return 'blue lighten-1';
-                case 2:
                     return 'red';
+                case 2:
+                    return '#32CD32';
 
             }
 

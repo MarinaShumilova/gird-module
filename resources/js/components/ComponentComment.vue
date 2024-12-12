@@ -1,4 +1,4 @@
-<!--комментарий к комплайну-->
+<!--контакты к комплайну-->
 <template>
     <v-dialog
         v-model="dialog"
@@ -119,6 +119,7 @@ export default {
             api.call(endpoint('complaints.comment.index', this.complaint_id))
                 .then((response) => {
                     this.comments = response.data;
+
 
                 });
 

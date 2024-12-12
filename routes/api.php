@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\CommentComplaintController;
+use App\Http\Controllers\CommentStatusController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FinishComplaintController;
@@ -42,11 +43,13 @@ Route::resource('complaints', ComplaintController::class);
 
 
 Route::resource('complaints.expenses', ExpensesController::class)->shallow();
+Route::resource('complaints.commentstatus', CommentStatusController::class)->shallow();
 Route::resource('complaints.comments', CommentComplaintController::class)->shallow();
 Route::resource('complaints.events', EventController::class)->shallow();
 Route::resource('complaints.attachments',AttachmentController::class);
 Route::resource('complaints.transfer',TransferFileController::class);
 Route::resource('complaints.redress', RedressComplaintController::class)->shallow();
+
 
 Route::delete('transfers/{transfer}/attachments/{attachment}', [TransferFileController::class, 'delete']);
 
